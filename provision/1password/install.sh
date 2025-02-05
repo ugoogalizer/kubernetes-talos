@@ -9,7 +9,7 @@ OP_ITEM_CREDENTIAL="op://Infrastructure/1Password Connect/credential"
 # This value is the 1password URL for the `1password-credentials.json` file.
 OP_ITEM_FILE="op://Infrastructure/1Password Connect/uhbqchxx7lowhsqfbd7ssc7t64"
 
-KUBE_CONTEXT="admin@btkostner"
+KUBE_CONTEXT="admin@talos-gpu"
 KUBE_NAMESPACE="external-secrets"
 
 echo "=== Pulling 1Password secrets"

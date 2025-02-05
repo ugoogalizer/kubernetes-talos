@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
 
+# Manually authenticate to Bitwarden Secrets Manager first 
+# set +o history
+# export BWS_ACCESS_TOKEN=<MACHINE_TOKEN>
+# set -o history
+
 set -e
 
-if [ ! -f "secrets.yaml" ]; then
-  echo "=== Pulling secrets from 1Password"
+# This value is the Bitwarden GUID of the secret containing your Talos secrets yaml. This can be found by running `bws secret list`.
+TALOS_SECRETS_YAML=99cafebf-6d45-4193-b02e-b27b01756a48
+# If you don't already have one, you can generate a secrets file and then manually upload it as a secret to Bitwarden
+# talosctl gen secrets -o secrets.yaml
 
-  op read "op://Infrastructure/Talos Secrets/secrets.yaml" > secrets.yaml
+# This value is the name of the talos cluster
+TALOS_CLUSTER_NAME=talos-gpu
+
+# This value is the fixed endpoint for your k8s cluster - you'll need to create DNS records to match
+K8S_ENDPOINT=https://talos-gpu.rockyroad.rocks:6443
+
+if [ ! -f "secrets.yaml" ]; then
+  echo "=== Pulling secrets from Bitwarden Secrets Manager"
+
+  # op read "op://Infrastructure/Talos Secrets/secrets.yaml" > secrets.yaml
+  bws secret get $TALOS_SECRETS_YAML | jq -r .value | sed 's/\\n/\n/g' > secrets.yaml
+
 fi
 
 if [ ! -f "./talosconfig" ]; then
@@ -17,20 +35,8 @@ if [ ! -f "./talosconfig" ]; then
     patch_args+=" --config-patch @$patch"
   done
 
-  talosctl gen config btkostner https://talos.btkostner.network:6443 \
+  talosctl gen config $TALOS_CLUSTER_NAME $K8S_ENDPOINT \
     $patch_args \
-    --additional-sans 127.0.0.1 \
-    --additional-sans 192.168.3.10 \
-    --additional-sans 192.168.3.11 \
-    --additional-sans 192.168.3.12 \
-    --additional-sans 192.168.3.13 \
-    --additional-sans 192.168.3.14 \
-    --additional-sans 192.168.3.15 \
-    --additional-sans 192.168.3.16 \
-    --additional-sans 192.168.3.17 \
-    --additional-sans 192.168.3.18 \
-    --endpoints talos.btkostner.network \
-    --force \
     --with-secrets secrets.yaml
 fi
 

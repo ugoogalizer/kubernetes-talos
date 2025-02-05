@@ -5,7 +5,7 @@ Upgrading Cilium is... painful. Because it runs as the networking back bone it's
 1. Run the preflight checks with helm:
 
 ```sh
-helm --kube-context admin@btkostner install cilium-preflight cilium/cilium --version 1.15.0 --namespace=kube-system --set preflight.enabled=true --set agent=false --set operator.enabled=false
+helm --kube-context admin@talos-gpu install cilium-preflight cilium/cilium --version 1.15.0 --namespace=kube-system --set preflight.enabled=true --set agent=false --set operator.enabled=false
 ```
 
 This will pull all of the container images for each node to reduce issues.
