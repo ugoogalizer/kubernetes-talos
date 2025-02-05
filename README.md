@@ -10,7 +10,8 @@
 
 This repository includes all of the configuration and documentation for my home lab cluster.
 
-This cluster consists of 4 Intel Nucs running [Talos Linux](https://www.talos.dev) with a Synology NAS for large data. More information about this repository and cluster is available at <https://infrastructure.btkostner.io>.
+This was taken and customised from https://github.com/btkostner/infrastructure (https://infrastructure.btkostner.io/)
+
 
 ## Features
 
