@@ -1,0 +1,5 @@
+machine:
+    kubelet:
+        nodeIP:
+          validSubnets:
+            - 10.20.0.0/16 # forces kubelets to use IPv4 instead of IPv6

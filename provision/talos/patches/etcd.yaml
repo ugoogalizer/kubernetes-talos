@@ -1,0 +1,5 @@
+cluster:
+  etcd:
+      advertisedSubnets:
+        - 10.20.0.0/16 # Forces etcd to use IPv4 instead of IPv6
+  allowSchedulingOnControlPlanes: true

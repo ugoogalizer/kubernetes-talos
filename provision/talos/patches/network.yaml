@@ -9,6 +9,10 @@ machine:
           physical: true
         dhcp: true
         mtu: 9000
+    extraHostEntries:
+      - ip: 10.20.10.1 
+        aliases:
+          - spiff.rockyroad.rocks
   time:
     servers:
       - time.cloudflare.com
