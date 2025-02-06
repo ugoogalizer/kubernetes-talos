@@ -1,18 +1,22 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: cloudflare-production
+  name: letsencrypt-dns01-staging
   namespace: cert-manager
+  annotations:
+    cert-manager.io/issue-temporary-certificate: "true"
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: "btkostner@gmail.com"
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: signup@mattcurtis.id.au
+    # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: cloudflare-production
+      name: letsencrypt-dns01-staging
     solvers:
-      - dns01:
-          cloudflare:
-            email: "btkostner@gmail.com"
-            apiTokenSecretRef:
-              name: cloudflare-credentials
-              key: api-token
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            name: cloudflare-api-token-secret
+            key: api-token
