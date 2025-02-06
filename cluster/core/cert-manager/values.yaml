@@ -1,0 +1,25 @@
+crds:
+  enabled: true
+# prometheus:
+#   enabled: true
+#   servicemonitor:
+#     enabled: true
+#     labels:
+#       release: kube-prometheus-stack
+# leaderElection:
+#   namespace: cert-manager
+clusterResourceNamespace: cert-manager
+namespace: cert-manager
+extraArgs:
+  # - --enable-gateway-api
+  - '--dns01-recursive-nameservers=1.1.1.1:53,1.0.0.1:53'
+  - '--dns01-recursive-nameservers-only'
+  - '--acme-http01-solver-nameservers=1.1.1.1:53'
+rbac:
+  create: true
+cainjector:
+  enabled: true
+# wtf, this should not be how any of this works.
+global:
+  leaderElection:
+    namespace: cert-manager
