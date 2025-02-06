@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: sm-manager
+
+namespace: sm-operator-system
+
+helmCharts:
+  - name: bitwarden
+    repo: https://charts.bitwarden.com/
+    releaseName: sm-operator
+    # version: v1.15.0
+    namespace: sm-operator-system
+    valuesFile: ./values.yaml
+
+# resources:
+#   - ./resources/namespace.yaml
+#   - ./resources/secret-cloudflare-credentials.yaml
+#   - ./resources/cluster-issuer-production.yaml
+#   - ./resources/cluster-issuer-staging.yaml

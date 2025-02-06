@@ -20,3 +20,35 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 - [Cilium](https://cilium.io) as a kube proxy replacement and sidecar-less networking
 - [Rook Ceph](https://rook.io) for stateful replicated storage for all nodes
 - [Velero](https://velero.io) for offsite cluster backup
+
+
+## Basic steps: 
+
+``` bash
+set +o history
+export BWS_ACCESS_TOKEN=<MACHINE_TOKEN>
+set -o history
+
+cd ~
+git clone https://github.com/ugoogalizer/kubernetes-talos.git
+cd ~/kubernetes-talos/provision/talos
+./generate
+
+# Now apply the patched configuration file (first time):
+talosctl apply-config --insecure -n 10.20.8.62 --file ./controlplane.yaml
+
+# To apply the patched configuration file (all subsequent times, to update configuration):
+talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
+
+# Bootstrap the cluster - DO THIS ONLY ONCE
+talosctl bootstrap -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
+
+# Download the kubeconfig (merging in to defaults)
+talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
+
+
+
+# Install Core resources
+cd ~/kubernetes-talos/provision/core
+./install.sh
+```
