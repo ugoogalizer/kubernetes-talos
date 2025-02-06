@@ -2,7 +2,7 @@
 
 set -e
 
-KUBE_CONTEXT="admin@btkostner"
+KUBE_CONTEXT="admin@talos-gpu"
 
 echo "=== Installing CRDs"
 
