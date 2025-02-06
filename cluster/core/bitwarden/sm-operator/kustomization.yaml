@@ -9,7 +9,7 @@ helmCharts:
   - name: sm-operator
     repo: https://charts.bitwarden.com/
     releaseName: sm-operator
-    version: sm-operator-0.1.0-Beta # removes the need for --devel
+    version: 0.1.0-Beta # removes the need for --devel
     namespace: sm-operator-system
     valuesFile: ./values.yaml
 
