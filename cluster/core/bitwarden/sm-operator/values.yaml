@@ -4,5 +4,5 @@ settings:
   # Cloud region for sync.  Please see: https://bitwarden.com/help/families-for-enterprise-self-hosted/#step-1-enable-cloud-communication
   cloudRegion: US
   # Set only if self-hosted.  These are the URLs for the Bitwarden API and Identity services
-  bwApiUrlOverride: https://vault.bitwarden.com/api
-  bwIdentityUrlOverride: https://vault.bitwarden.com/identity
+  bwApiUrlOverride: "https://vault.bitwarden.com/api"
+  bwIdentityUrlOverride: "https://vault.bitwarden.com/identity"
