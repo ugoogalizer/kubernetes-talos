@@ -48,7 +48,12 @@ talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./t
 
 
 
+
 # Install Core resources
 cd ~/kubernetes-talos/provision/core
 ./install.sh
+
+# Configure BitWarden Token to allow sm-operator to pull from cloud secrets
+kubectl create secret generic bw-auth-token -n sm-operator-system --from-literal=token="$BWS_ACCESS_TOKEN"
+# kubectl get secret bw-auth-token -o jsonpath="{.data.token}" -n sm-operator-system | base64 -d
 ```
