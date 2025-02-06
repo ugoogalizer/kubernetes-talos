@@ -13,8 +13,8 @@ helmCharts:
     namespace: sm-operator-system
     valuesFile: ./values.yaml
 
-# resources:
-#   - ./resources/namespace.yaml
+ resources:
+   - ./resources/namespace.yaml
 #   - ./resources/secret-cloudflare-credentials.yaml
 #   - ./resources/cluster-issuer-production.yaml
 #   - ./resources/cluster-issuer-staging.yaml
