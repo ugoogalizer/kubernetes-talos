@@ -6,7 +6,7 @@ metadata:
 namespace: sm-operator-system
 
 helmCharts:
-  - name: bitwarden
+  - name: sm-operator
     repo: https://charts.bitwarden.com/
     releaseName: sm-operator
     # version: v1.15.0
