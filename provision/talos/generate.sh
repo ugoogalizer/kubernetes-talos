@@ -37,7 +37,8 @@ if [ ! -f "./talosconfig" ]; then
 
   talosctl gen config $TALOS_CLUSTER_NAME $K8S_ENDPOINT \
     $patch_args \
-    --with-secrets secrets.yaml
+    --with-secrets secrets.yaml \
+    --force
 
   for patch in ./patches-controlplane/*.yaml; do
     echo "Detecting controlplane patch file $patch"
