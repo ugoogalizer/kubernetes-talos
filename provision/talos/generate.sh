@@ -38,7 +38,14 @@ if [ ! -f "./talosconfig" ]; then
   talosctl gen config $TALOS_CLUSTER_NAME $K8S_ENDPOINT \
     $patch_args \
     --with-secrets secrets.yaml
+
+  for patch in ./patches-controlplane/*.yaml; do
+    echo "Detecting controlplane patch file $patch"
+    talosctl machineconfig patch ./controlplane.yaml --patch @$patch --output controlplane.yaml
+  done
 fi
+
+
 
 echo "=== Copying local talos configuration to primary storage"
 
