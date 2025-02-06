@@ -1,14 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+metadata:
+  name: metallb
+
+namespace: kube-system
 
 resources:
-  # This does not contain _all_ core directories. Just what's needed to
-  # get argo cd setup and running everything itself.
-  - ./metallb/metallb
-  #- ./kube-system/cilium
-  #- ./argocd/argo-cd
-  #- ./argocd/application-sets
-  #- ./external-secrets/onepassword
-  #- ./external-secrets/external-secrets-operator
-  #- ./rook-ceph/rook-ceph
-  #- ./velero/velero
+  - https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+  - ./resources/metallb-config.yaml
