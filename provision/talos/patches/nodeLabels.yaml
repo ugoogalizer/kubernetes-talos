@@ -1,4 +1,4 @@
 machine:
   nodeLabels:
-      node.kubernetes.io/exclude-from-external-load-balancers:
-          $patch: delete # allow loadbalancer l2 advertisement on the controlplane
+    node.kubernetes.io/exclude-from-external-load-balancers:
+        $patch: delete # allow loadbalancer l2 advertisement on the controlplane
