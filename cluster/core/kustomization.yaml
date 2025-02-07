@@ -5,7 +5,8 @@ resources:
   # This does not contain _all_ core directories. Just what's needed to
   # get argo cd setup and running everything itself.
   - ./cert-manager/cert-manager
-  - ./cert-manager/trust-manager
+  # - ./cert-manager/trust-manager
+  - ./external-secrets/bitwarden-sdk-certificate-issuer
   - ./external-secrets/external-secrets-operator
   # - ./external-secrets/bitwarden-sdk-server
   - ./metallb/metallb
