@@ -10,6 +10,7 @@ data:
   # ga.trackingid: 'UA-105170809-6'
   url: https://argo-cd.rockyroad.rocks
   exec.enabled: "true"
+  kustomize.buildOptions: --enable-helm
   # configManagementPlugins: |
   #   - name: flux
   #     generate:
