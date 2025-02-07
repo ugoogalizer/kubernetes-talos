@@ -13,6 +13,9 @@ spec:
   #   configMap:
   #     key: caBundle
   target:
-    secret:
-      # name: bitwarden-ca-secret
+    configMap:
+      name: bitwarden-ca-configmap
       key: caBundle  # The key inside the secret
+    namespaceSelector:
+      matchLabels:
+        linkerd.io/inject: "enabled"
