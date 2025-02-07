@@ -10,8 +10,12 @@ helmCharts:
     repo: https://charts.external-secrets.io
     releaseName: external-secrets
     namespace: external-secrets
-    version: 0.10.2
+    version: 0.14.0 # 0.14.0 as at 20250207 # https://artifacthub.io/packages/helm/external-secrets-operator/external-secrets
     valuesFile: values.yaml
 
 resources:
+  - ./resources/namespace.yaml
+  - ./resources/bitwarden-cluster-certificate-issuer.yaml
+  - ./resources/bitwarden-certificate.yaml
+  - ./resources/bitwarden-certificate-bundle.yaml
   - ./resources/cluster-secret-store.yaml

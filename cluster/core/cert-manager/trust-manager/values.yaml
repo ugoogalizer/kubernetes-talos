@@ -1,0 +1,4 @@
+secretTargets:
+  enabled: true
+  authorizedSecretsAll: false
+  authorizedSecrets: "{bitwarden/bitwarden-ca-secret}"

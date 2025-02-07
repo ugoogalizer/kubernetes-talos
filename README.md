@@ -54,6 +54,7 @@ cd ~/kubernetes-talos/provision/core
 ./install.sh
 
 # Configure BitWarden Token to allow sm-operator to pull from cloud secrets
-kubectl create secret generic bw-auth-token -n sm-operator-system --from-literal=token="$BWS_ACCESS_TOKEN"
-# kubectl get secret bw-auth-token -o jsonpath="{.data.token}" -n sm-operator-system | base64 -d
+kubectl create secret generic bitwarden-access-token -n external-secrets --from-literal=token="$BWS_ACCESS_TOKEN"
+# kubectl get secret bitwarden-access-token -o jsonpath="{.data.token}" -n external-secrets | base64 -d
+
 ```

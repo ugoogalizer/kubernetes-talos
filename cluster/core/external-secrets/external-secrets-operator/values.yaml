@@ -1,5 +1,5 @@
 bitwarden-sdk-server:
-  enabled: false
+  enabled: true
 revisionHistoryLimit: 1
 installCRDs: true
 crds:

@@ -1,0 +1,18 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: bitwarden-ca-bundle
+  namespace: external-secrets
+spec:
+  sources:
+    - useDefaultCAs: false  # Avoid using system default CAs
+    - secret:
+        name: bitwarden-tls-certs
+        key: ca.crt  # Extracts the CA from this secret
+  # target:
+  #   configMap:
+  #     key: caBundle
+  target:
+    secret:
+      name: bitwarden-ca-secret
+      key: caBundle  # The key inside the secret
