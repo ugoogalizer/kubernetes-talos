@@ -8,8 +8,8 @@ resources:
   # - ./cert-manager/trust-manager
   - ./external-secrets/bitwarden-sdk-certificate-issuer
   - ./external-secrets/external-secrets-operator
-  - ./metallb/metallb
-  - ./nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+  - ./metallb-system/metallb
+  - ./kube-system/nfs-subdir-external-provisioner
   - ./ingress-nginx/ingress-nginx
   # - ./kube-system/cilium
   - ./argocd/argocd
