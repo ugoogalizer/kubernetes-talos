@@ -1,0 +1,31 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: bitwarden-ca-secret
+  namespace: external-secrets
+spec:
+  refreshInterval: "1h"
+  target:
+    name: bitwarden-ca-secret
+  data:
+    - secretKey: caBundle
+      remoteRef:
+        key: bitwarden-ca-bundle
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: bitwarden-ca-secret
+  namespace: external-secrets
+spec:
+  refreshInterval: "1h"  # Syncs every hour
+  secretStoreRef:
+    name: bitwarden-secretsmanager
+    kind: ClusterSecretStore
+  target:
+    name: bitwarden-ca-secret
+    creationPolicy: Owner  # Ensures the Secret is always updated
+  data:
+    - secretKey: caBundle  # Key inside the target Secret
+      remoteRef:
+        key: bitwarden-tls-certs  # Source Secret (from cert-manager)
+        property: ca.crt  # Extracts CA certificate
