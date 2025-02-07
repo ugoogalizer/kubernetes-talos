@@ -1,4 +1,4 @@
 secretTargets:
   enabled: true
   authorizedSecretsAll: false
-  authorizedSecrets: "{bitwarden/bitwarden-ca-secret}"
+  authorizedSecrets: ["bitwarden/bitwarden-ca-secret"]
