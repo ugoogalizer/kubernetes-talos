@@ -14,7 +14,7 @@ spec:
   project: default
   source:
     path: cluster/crds
-    repoURL: https://github.com/btkostner/infrastructure.git
+    repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
   syncPolicy:
     automated:
       allowEmpty: true

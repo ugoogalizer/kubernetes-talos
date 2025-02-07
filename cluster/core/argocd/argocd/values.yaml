@@ -1,0 +1,37 @@
+global:
+  domain: argo-cd.rockyroad.rocks
+configs:
+  params:
+    server.insecure: true
+  cm:
+    exec.enabled: true
+    accounts.readonly: apiKey # Added to create a 'readonly' user to give gethomepage access
+  rbac:
+    policy.csv: "g, readonly, role:readonly"  # Added to create a 'readonly' user to give gethomepage access
+    # You can create a token through the web-up for this `readonly` user once created.
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations: 
+      cert-manager.io/cluster-issuer: letsencrypt-dns01-prod
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      # nginx.org/websocket-services: "argo-cd-argocd-server"        
+      # nginx.org/proxy-read-timeout: "3600"
+      # nginx.org/proxy-send-timeout: "3600" 
+    extraTls:
+      - hosts:
+        - argo-cd.rockyroad.rocks
+        # Based on the ingress controller used secret might be optional
+        secretName: argo-cd-tls
+  replicas: 2
+redis-ha:
+  enabled: true
+controller:
+  replicas: 1
+repoServer:
+  replicas: 2
+applicationSet:
+  replicas: 2

@@ -8,4 +8,4 @@ namespace: argocd
 resources:
   - ./resources/application-set-crds.yaml
   - ./resources/application-set-core.yaml
-  - ./resources/application-set-apps.yaml
+  # - ./resources/application-set-apps.yaml
