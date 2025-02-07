@@ -10,6 +10,7 @@ resources:
   - ./external-secrets/external-secrets-operator
   # - ./external-secrets/bitwarden-sdk-server
   - ./metallb/metallb
+  - ./nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
   # - ./bitwarden/sm-operator
   # - ./kube-system/cilium
   # - ./argocd/argo-cd

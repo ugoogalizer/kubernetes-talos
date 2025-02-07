@@ -52,6 +52,7 @@ talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./t
 # Install Core resources
 cd ~/kubernetes-talos/provision/core
 ./install.sh
+# NOTE - sometimes cert-manager isn't online fast enough to apply the lot, try again after a few minutes if errors occur.
 
 # Configure BitWarden Token to allow sm-operator to pull from cloud secrets
 kubectl create namespace external-secrets
