@@ -1,0 +1,57 @@
+# Example of this file here: https://github.com/argoproj/argoproj-deployments/blob/master/argocd/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: argocd
+
+namespace: argocd
+
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/argo-cd-ui-ingress.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.14.2/manifests/ha/install.yaml # v2.14.2 as at 20250208  https://github.com/argoproj/argo-cd/releases
+  # - ./resources/http-route.yaml
+  # - ./resources/secret-repository.yaml
+  # - ./resources/secret-repo-creds.yaml
+
+# configMapGenerator:
+#   - name: argocd-cm
+#     behavior: merge
+#     literals:
+#       - "accounts.btkostner=apiKey, login"
+#       - "kustomize.buildOptions=--enable-helm"
+#       - "server.insecure=true"
+#       - "timeout.reconciliation=15s"
+#       - |
+#         resource.exclusions=
+#           - apiGroups:
+#               - cilium.io
+#             kinds:
+#               - CiliumIdentity
+#             clusters:
+#               - "*"
+#           - apiGroups:
+#               - velero.io
+#             kinds:
+#               - PodVolumeBackup
+#               - Backup
+#             clusters:
+#               - "*"
+
+patches:
+- path: patches/argocd-cm.yaml
+- path: patches/argocd-cmd-params-cm.yaml
+- path: patches/argocd-server-deployment.yaml
+#   - target:
+#       kind: Deployment
+#       name: argocd-redis-ha-haproxy
+#     patch: |-
+#       - op: remove
+#         path: "/spec/template/spec/initContainers/0"
+#   - target:
+#       kind: Deployment
+#       name: argocd-server
+#     patch: |-
+#       - op: add
+#         path: "/spec/template/spec/containers/0/args/-"
+#         value: "--insecure"

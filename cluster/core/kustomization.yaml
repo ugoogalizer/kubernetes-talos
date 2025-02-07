@@ -12,7 +12,7 @@ resources:
   - ./nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
   - ./ingress-nginx/ingress-nginx
   # - ./kube-system/cilium
-  # - ./argocd/argo-cd
+  - ./argocd/argo-cd
   # - ./argocd/application-sets
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
