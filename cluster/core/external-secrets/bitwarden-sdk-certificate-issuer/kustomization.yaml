@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: bitwarden-sdk-certificate-issuer
+
+namespace: cert-manager
+
+resources:
+  # - ./resources/namespace.yaml
+  - ./resources/bitwarden-cluster-certificate-issuer.yaml
+  # - ./resources/bitwarden-certificate.yaml
+  # - ./resources/bitwarden-certificate-bundle.yaml
+  # - ./resources/cluster-secret-store.yaml

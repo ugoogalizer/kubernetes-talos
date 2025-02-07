@@ -15,7 +15,7 @@ helmCharts:
 
 resources:
   - ./resources/namespace.yaml
-  - ./resources/bitwarden-cluster-certificate-issuer.yaml
+  # - ./resources/bitwarden-cluster-certificate-issuer.yaml
   - ./resources/bitwarden-certificate.yaml
   # - ./resources/bitwarden-certificate-bundle.yaml
   - ./resources/cluster-secret-store.yaml
