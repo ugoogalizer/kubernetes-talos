@@ -8,10 +8,9 @@ resources:
   # - ./cert-manager/trust-manager
   - ./external-secrets/bitwarden-sdk-certificate-issuer
   - ./external-secrets/external-secrets-operator
-  # - ./external-secrets/bitwarden-sdk-server
   - ./metallb/metallb
   - ./nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
-  # - ./bitwarden/sm-operator
+  - ./ingress-nginx/ingress-nginx
   # - ./kube-system/cilium
   # - ./argocd/argo-cd
   # - ./argocd/application-sets
