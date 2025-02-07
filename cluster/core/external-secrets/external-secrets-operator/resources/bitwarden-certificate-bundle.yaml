@@ -14,5 +14,5 @@ spec:
   #     key: caBundle
   target:
     secret:
-      name: bitwarden-ca-secret
+      # name: bitwarden-ca-secret
       key: caBundle  # The key inside the secret
