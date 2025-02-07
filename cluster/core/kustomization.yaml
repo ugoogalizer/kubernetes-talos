@@ -13,6 +13,6 @@ resources:
   - ./ingress-nginx/ingress-nginx
   # - ./kube-system/cilium
   - ./argocd/argocd
-  # - ./argocd/application-sets
+  - ./argocd/application-sets
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
