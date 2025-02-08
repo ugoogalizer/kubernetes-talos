@@ -45,6 +45,17 @@ patches:
 - path: patches/argocd-cmd-params-cm.yaml
 - path: patches/argocd-server-deployment.yaml
 - path: patches/argocd-rbac-cm.yaml
+# - path: patches/argocd-server-clusterrole.yaml
+- target:
+    kind: ClusterRole
+    name: argocd-server
+  patch: |
+    - op: add
+      path: /rules/-
+      value:
+        apiGroups: [""]
+        resources: ["pods/exec"]
+        verbs: ["create"]
 #   - target:
 #       kind: Deployment
 #       name: argocd-redis-ha-haproxy
