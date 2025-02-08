@@ -48,3 +48,6 @@ storageClass:
 
   # Storage class annotations
   annotations: {}
+
+  # create a predictable folder path: 
+  storageClass.pathPattern: ${.PVC.namespace}/${.PVC.name}
