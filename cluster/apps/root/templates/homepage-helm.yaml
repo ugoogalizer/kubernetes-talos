@@ -1,7 +1,10 @@
+# https://gethomepage.dev/installation/k8s/
+# https://gethomepage.dev/installation/k8s/#deployment
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: it-tools
+  name: homepage
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -9,10 +12,15 @@ spec:
   destination:
     # name: talos-gpu
     server: https://kubernetes.default.svc
-    namespace: it-tools
+    namespace: homepage
   project: default
   source:
-    path: cluster/apps/charts/it-tools
+  #   chart: homepage
+  #   repoURL: https://jameswynn.github.io/helm-charts
+  #   targetRevision: 0.9.0 # 0.9.0 as at 20250102
+  #   helm:
+  #     values: |
+    path: cluster/apps/charts/homepage
     repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
     targetRevision: HEAD
   syncPolicy:
