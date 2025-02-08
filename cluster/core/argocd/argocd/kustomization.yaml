@@ -43,9 +43,11 @@ resources:
 patches:
 - path: patches/argocd-cm.yaml
 - path: patches/argocd-cmd-params-cm.yaml
-- path: patches/argocd-server-deployment.yaml
 - path: patches/argocd-rbac-cm.yaml
-# - path: patches/argocd-server-clusterrole.yaml
+- path: patches/argocd-server-deployment.yaml
+  target:
+    kind: Deployment
+    name: argocd-server
 - target:
     kind: ClusterRole
     name: argocd-server
