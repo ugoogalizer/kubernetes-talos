@@ -1,79 +1,23 @@
-
---- # deployment
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  labels:
-    app: it-tools
   name: it-tools
-#  namespace: it-tools
+  namespace: argo-cd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
 spec:
-  selector:
-    matchLabels:
-      app: it-tools
-  template:
-    metadata:
-      labels:
-        app: it-tools
-        app.kubernetes.io/name: it-tools # required for Homepage
-    spec:
-      containers:
-        - name: it-tools
-          image: ghcr.io/corentinth/it-tools:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 80
-              name: http
-              protocol: TCP
-          resources:
-            requests:
-              cpu: 250m
-              memory: 500Mi
-            limits:
-              cpu: "500m"
-              memory: "1000Mi"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: http-svc
-spec:
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: it-tools
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    #kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
-    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
-    kubernetes.io/ingress.class: "nginx"
-    gethomepage.dev/description: Handy online tools for developers
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Handy Tools
-    gethomepage.dev/icon: it-tools-light
-    gethomepage.dev/name: IT Tools
-  name: it-tools
-spec:
-  rules:
-    - host: it-tools.rockyroad.rocks
-      http:
-        paths:
-          - backend:
-              service:
-                name: http-svc
-                port:
-                  number: 80
-            path: /
-            pathType: Prefix
-  tls:
-    - hosts:
-        - it-tools.rockyroad.rocks
-      secretName: it-tools-tls
+  destination:
+    # name: talos-gpu
+    server: https://kubernetes.default.svc
+    namespace: it-tools
+  project: default
+  source:
+    path: cluster/apps/charts/it-tools
+    repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
