@@ -44,6 +44,7 @@ patches:
 - path: patches/argocd-cm.yaml
 - path: patches/argocd-cmd-params-cm.yaml
 - path: patches/argocd-server-deployment.yaml
+- path: patches/argocd-rbac-cm.yaml
 #   - target:
 #       kind: Deployment
 #       name: argocd-redis-ha-haproxy
