@@ -4,5 +4,5 @@ metadata:
   name: argocd-rbac-cm
 data:
   policy.csv: |
-    p, role:admin, applications, exec, *, allow
+    p, role:admin, exec, create, */*, allow
     g, readonly, role:readonly
