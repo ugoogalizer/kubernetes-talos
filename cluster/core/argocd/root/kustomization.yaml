@@ -1,0 +1,24 @@
+# This is the root application of an app of apps, which needs to be deploy in the same cluster as argo-cd
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argo-cd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    # name: talos-gpu
+    server: https://kubernetes.default.svc
+    namespace: argo-cd
+  project: default
+  source:
+    path: cluster/apps/
+    repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -14,5 +14,6 @@ resources:
   # - ./kube-system/cilium
   - ./argocd/argocd
   - ./argocd/application-sets
+  - ./argocd/root\argo-cd-root.yaml
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
