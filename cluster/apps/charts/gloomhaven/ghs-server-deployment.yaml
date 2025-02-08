@@ -56,31 +56,32 @@ spec:
         - name: ghs-configmap
           configMap:
             name: ghs-configfile
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: ghs-storage-pv
+# spec:
+# capacity:
+#   storage: 1Gi
+# accessModes:
+#   - ReadWriteOnce
+# persistentVolumeReclaimPolicy: Retain
+# nfs:
+#   server: 10.20.10.1 
+#   path: /volume1/k8s/provision-talos-gpu/gloomhaven
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: ghs-storage-pvc
 spec:
+  storageClassName: managed-nfs-storage-retain
   accessModes:
     - ReadWriteOnce 
   resources:
     requests:
       storage: 1Gi 
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: ghs-storage-pv
-spec:
-capacity:
-  storage: 1Gi
-accessModes:
-  - ReadWriteOnce
-persistentVolumeReclaimPolicy: Retain
-nfs:
-  server: 10.20.10.1 
-  path: /volume1/k8s/provision-talos-gpu/gloomhaven
 ---
 apiVersion: v1
 kind: Service
