@@ -1,0 +1,94 @@
+# https://github.com/siderolabs/talos-backup/blob/main/cronjob.sample.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: talos-backup
+spec:
+  schedule: "0/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: talos-backup
+            image: ghcr.io/siderolabs/talos-backup:latest
+            workingDir: /tmp
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: talos-backup-secrets
+                    key: access-key-id
+                value: talosbackupawsaccesskeyid
+              - name: AWS_SECRET_ACCESS_KEY
+                # consider storing this as a secret.
+                valueFrom:
+                  secretKeyRef:
+                    name: talos-backup-secrets
+                    key: secret-access-key
+              - name: AWS_REGION
+                value: east
+              # CUSTOM_S3_ENDPOINT is optional; if omitted the service will fallback to default AWS endpoints.
+              - name: CUSTOM_S3_ENDPOINT
+                valueFrom:
+                  secretKeyRef:
+                    name: talos-backup-secrets
+                    key: endpoint
+              - name: BUCKET
+                value: etcd-omni
+              # CLUSTER_NAME is optional; if omitted it will fall back to the name of the default context.
+              # - name: CLUSTER_NAME
+              #   value: "prod-cluster"
+              # S3_PREFIX is optional; if omitted it will fall back to the cluster name.
+              - name: S3_PREFIX
+                value: "talos-gpu/backups"
+              - name: AGE_X25519_PUBLIC_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: talos-backup-secrets
+                    key: age-public-key
+              # USE_PATH_STYLE is optional; set this to false if you have another s3 like endpoint such as minio.
+              # If not, the S3 will resolve to a hostname based on https://$BUCKET_NAME.$CUSTOM_S3_ENDPOINT/
+              - name: USE_PATH_STYLE
+                value: "true"
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              allowPrivilegeEscalation: false
+              runAsNonRoot: true
+              capabilities:
+                drop:
+                  - ALL
+              seccompProfile:
+                type: RuntimeDefault
+            command:
+            - /talos-backup
+            volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /var/run/secrets/talos.dev
+              name: talos-secrets
+          restartPolicy: OnFailure
+          volumes:
+          - emptyDir: {}
+            name: tmp
+          - name: talos-secrets
+            secret:
+              secretName: talos-backup-secrets
+---
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+    name: talos-backup-secrets
+spec:
+    roles:
+        - os:etcd:backup
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: talos-backup-secrets
+  annotations:
+    kubernetes.io/service-account.name: talos-backup-secrets
+---

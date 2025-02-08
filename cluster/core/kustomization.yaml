@@ -14,5 +14,6 @@ resources:
   # - ./kube-system/cilium
   - ./argocd/argocd
   - ./argocd/application-sets
+  - ./talos/talos-backup
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
