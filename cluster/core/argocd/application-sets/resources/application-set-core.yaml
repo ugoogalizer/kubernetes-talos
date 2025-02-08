@@ -50,12 +50,14 @@ spec:
           kind: ConfigMap
           jsonPointers:
             - /data/ca.crt
+            - /data/ca.key
             - /data/tls.crt
             - /data/tls.key
         - group: ""
           kind: Secret
           jsonPointers:
             - /data/ca.crt
+            - /data/ca.key
             - /data/tls.crt
             - /data/tls.key
         - group: apiextensions.k8s.io
