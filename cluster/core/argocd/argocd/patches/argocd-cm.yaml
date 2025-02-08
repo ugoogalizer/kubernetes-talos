@@ -11,6 +11,12 @@ data:
   url: https://argo-cd.rockyroad.rocks
   exec.enabled: "true"
   kustomize.buildOptions: --enable-helm
+  resource.customizations.ignoreDifferences.all: |
+    managedFieldsManagers:
+      - MetalLB
+      - controller #metallb
+      - external-secrets
+      - metallb-controller
   # configManagementPlugins: |
   #   - name: flux
   #     generate:
