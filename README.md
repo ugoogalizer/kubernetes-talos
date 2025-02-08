@@ -59,4 +59,11 @@ kubectl create namespace external-secrets
 kubectl create secret generic bitwarden-access-token -n external-secrets --from-literal=token="$BWS_ACCESS_TOKEN"
 # kubectl get secret bitwarden-access-token -o jsonpath="{.data.token}" -n external-secrets | base64 -d
 
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
+
+
+# Troubleshooting
+
+If you have issues with argocd, and need to downgrade it / uninstall it, this guide was good to remove the finalizers:  https://phalanx.lsst.io/applications/argocd/upgrade.html#recovering-from-a-botched-upgrade
