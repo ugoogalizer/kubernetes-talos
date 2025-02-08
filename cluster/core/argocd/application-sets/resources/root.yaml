@@ -13,7 +13,7 @@ spec:
     namespace: argo-cd
   project: default
   source:
-    path: cluster/apps/
+    path: cluster/apps/root/
     repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
     targetRevision: HEAD
   syncPolicy:
