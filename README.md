@@ -32,7 +32,7 @@ set -o history
 cd ~
 git clone https://github.com/ugoogalizer/kubernetes-talos.git
 cd ~/kubernetes-talos/provision/talos
-./generate
+./generate.sh
 
 # Now apply the patched configuration file (first time):
 talosctl apply-config --insecure -n 10.20.8.62 --file ./controlplane.yaml
@@ -48,16 +48,16 @@ talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./t
 
 
 
+# Configure BitWarden Token to allow sm-operator to pull from cloud secrets
+kubectl create namespace external-secrets
+kubectl create secret generic bitwarden-access-token -n external-secrets --from-literal=token="$BWS_ACCESS_TOKEN"
+# kubectl get secret bitwarden-access-token -o jsonpath="{.data.token}" -n external-secrets | base64 -d
 
 # Install Core resources
 cd ~/kubernetes-talos/provision/core
 ./install.sh
 # NOTE - sometimes cert-manager isn't online fast enough to apply the lot, try again after a few minutes if errors occur.
 
-# Configure BitWarden Token to allow sm-operator to pull from cloud secrets
-kubectl create namespace external-secrets
-kubectl create secret generic bitwarden-access-token -n external-secrets --from-literal=token="$BWS_ACCESS_TOKEN"
-# kubectl get secret bitwarden-access-token -o jsonpath="{.data.token}" -n external-secrets | base64 -d
 
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
