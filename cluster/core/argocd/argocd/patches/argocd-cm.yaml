@@ -17,6 +17,11 @@ data:
       - controller #metallb
       - external-secrets
       - metallb-controller
+  resource.customizations.ignoreDifferences: |
+    v1/Secret:
+      name: external-secrets-webhook
+      jqPathExpressions:
+        - .data
   # configManagementPlugins: |
   #   - name: flux
   #     generate:
