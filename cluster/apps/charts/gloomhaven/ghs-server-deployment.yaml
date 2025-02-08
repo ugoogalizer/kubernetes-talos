@@ -1,0 +1,145 @@
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloomhaven
+  name: gloomhaven
+#  namespace: gloomhaven
+spec:
+  selector:
+    matchLabels:
+      app: gloomhaven
+  template:
+    metadata:
+      labels:
+        app: gloomhaven
+        app.kubernetes.io/name: gloomhaven # required for Homepage
+    spec:
+      containers:
+        - name: ghs
+          image: gloomhavensecretariat/ghs-server:latest
+          imagePullPolicy: Always
+          env:
+            # - name: PUID
+            #   value: "1000"
+            # - name: PGID
+            #   value: "1000"
+            - name: TZ
+              value: "Australia/Sydney"
+          ports:
+            - containerPort: 8080
+              name: ghs-http
+              protocol: TCP
+            - containerPort: 8081
+              name: ghs-http2
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 750Mi
+            limits:
+              cpu: "1000m"
+              memory: "2000Mi"
+          volumeMounts:
+            - mountPath: /root/.ghs
+              name: ghs-storage-pv
+          #   - name: ghs-configmap
+          #     mountPath: /root/.ghs/application.properties
+          #     subPath: application.properties
+      volumes:
+        - name: ghs-storage-pv
+          # If this is NFS backed, you may have to add the nolock mount option to the storage class
+          persistentVolumeClaim:
+            claimName: ghs-storage-pvc
+        - name: ghs-configmap
+          configMap:
+            name: ghs-configfile
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ghs-storage-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ghs-storage-pv
+spec:
+capacity:
+  storage: 1Gi
+accessModes:
+  - ReadWriteOnce
+persistentVolumeReclaimPolicy: Retain
+nfs:
+  server: 10.20.10.1 
+  path: /volume1/k8s/provision-talos-gpu/gloomhaven
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghs-http-svc
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: ghs-http
+  selector:
+    app: gloomhaven
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    nginx.org/websocket-services: "ghs-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    gethomepage.dev/description: Gloomhaven Secreariat
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Gaming
+    gethomepage.dev/icon: https://raw.githubusercontent.com/Lurkars/gloomhavensecretariat/refs/heads/main/src/assets/icons/icon-72x72.png
+    gethomepage.dev/name: Gloomhaven
+
+  name: gloomhaven
+spec:
+  rules:
+    - host: gloomhaven.rockyroad.rocks
+      http:
+        paths:
+          - backend:
+              service:
+                name: ghs-http-svc
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - gloomhaven.rockyroad.rocks
+      secretName: gloomhaven-tls
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghs-configfile
+data:
+  application.properties: |
+    ghs-server.lastestClientOnStartup=true
+    ghs-server.public=false

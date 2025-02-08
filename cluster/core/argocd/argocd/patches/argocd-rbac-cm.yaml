@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: argocd-rbac-cm
 data:
-  policy.csv: |
+  policy.overlay.csv: |
     p, role:admin, exec, create, */*, allow
     g, readonly, role:readonly
+  policy.default: role:admin
