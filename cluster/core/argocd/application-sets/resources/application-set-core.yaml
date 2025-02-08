@@ -105,3 +105,10 @@ spec:
           kind: ValidatingWebhookConfiguration
           jqPathExpressions:
           - .webhooks[]?.clientConfig.caBundle
+        # Ignore the entire data field in the metallb-webhook-cert as it is managed by an external controller
+        - group: ""
+          kind: Secret
+          name: metallb-webhook-cert
+          namespace: metallb
+          jsonPointers:
+            - /data
