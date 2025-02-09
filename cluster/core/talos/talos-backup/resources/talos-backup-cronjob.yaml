@@ -9,6 +9,10 @@ spec:
     spec:
       template:
         spec:
+          hostAliases:
+            - ip: "10.20.10.1"
+              hostnames:
+                - "spiff.rockyroad.rocks"
           containers:
           - name: talos-backup
             image: ghcr.io/siderolabs/talos-backup:latest
