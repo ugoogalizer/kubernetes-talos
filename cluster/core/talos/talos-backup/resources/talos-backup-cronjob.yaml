@@ -18,13 +18,13 @@ spec:
               - name: AWS_ACCESS_KEY_ID
                 valueFrom:
                   secretKeyRef:
-                    name: talos-backup-secrets
+                    name: talos-backup-externalsecrets
                     key: access-key-id
               - name: AWS_SECRET_ACCESS_KEY
                 # consider storing this as a secret.
                 valueFrom:
                   secretKeyRef:
-                    name: talos-backup-secrets
+                    name: talos-backup-externalsecrets
                     key: secret-access-key
               - name: AWS_REGION
                 value: east
@@ -32,7 +32,7 @@ spec:
               - name: CUSTOM_S3_ENDPOINT
                 valueFrom:
                   secretKeyRef:
-                    name: talos-backup-secrets
+                    name: talos-backup-externalsecrets
                     key: endpoint
               - name: BUCKET
                 value: etcd-omni
@@ -45,7 +45,7 @@ spec:
               - name: AGE_X25519_PUBLIC_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: talos-backup-secrets
+                    name: talos-backup-externalsecrets
                     key: age-public-key
               # USE_PATH_STYLE is optional; set this to false if you have another s3 like endpoint such as minio.
               # If not, the S3 will resolve to a hostname based on https://$BUCKET_NAME.$CUSTOM_S3_ENDPOINT/
