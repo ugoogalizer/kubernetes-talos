@@ -8,6 +8,7 @@ machine:
       enabled: true
       allowedRoles:
       - os:etcd:backup
+      - os:reader
       allowedKubernetesNamespaces:
       - talos-backup
       - default
