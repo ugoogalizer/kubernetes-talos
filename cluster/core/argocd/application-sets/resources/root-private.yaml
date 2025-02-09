@@ -41,12 +41,11 @@ spec:
       metadata:
         labels:
           argocd.argoproj.io/secret-type: repository
-      data: 
-        stringData:
-          type: git
-          url: git@github.com:ugoogalizer/argo-cd
-          name: github-private-repo-ugoogalizer-argo-cd
-          sshPrivateKey: "{{ .sshPrivateKey }}"
+      stringData:
+        type: git
+        url: git@github.com:ugoogalizer/argo-cd
+        name: github-private-repo-ugoogalizer-argo-cd
+        sshPrivateKey: "{{ .sshPrivateKey }}"
   data:
     - secretKey: sshPrivateKey
       remoteRef:
