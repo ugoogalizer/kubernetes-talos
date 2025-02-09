@@ -9,4 +9,5 @@ resources:
   - ./resources/application-set-crds.yaml
   - ./resources/application-set-core.yaml
   - ./resources/root.yaml
+  - ./resources/root-private.yaml # apps setup not in public github
   # - ./resources/application-set-apps.yaml
