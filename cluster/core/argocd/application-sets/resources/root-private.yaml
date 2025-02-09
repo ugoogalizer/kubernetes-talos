@@ -34,9 +34,10 @@ spec:
     kind: ClusterSecretStore
     name: bitwarden-secretsmanager
   target: 
-    name: github-private-repo-ugoogalizer-argo-cd
-    creationPolicy: Owner
+    name: github-private-repo-ugoogalizer-argo-cd-new
+    # creationPolicy: Owner
     template:
+      engineVersion: v2
       metadata:
         labels:
           argocd.argoproj.io/secret-type: repository
@@ -44,6 +45,7 @@ spec:
         type: git
         url: git@github.com:ugoogalizer/argo-cd
         name: github-private-repo-ugoogalizer-argo-cd
+        sshPrivateKey: "{{ .sshPrivateKey }}"
   data:
     - secretKey: sshPrivateKey
       remoteRef:
