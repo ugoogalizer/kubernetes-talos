@@ -10,7 +10,7 @@ machine:
       - os:etcd:backup
       - os:reader
       allowedKubernetesNamespaces:
-      - talos-backup
+      - talos
       - default
     #   - kube-system
     #   - default
