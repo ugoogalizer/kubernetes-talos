@@ -66,12 +66,16 @@ spec:
             volumeMounts:
             - mountPath: /tmp
               name: tmp
+            - mountPath: /.talos # fix as per: https://github.com/siderolabs/talos-backup/issues/27
+              name: talos
             - mountPath: /var/run/secrets/talos.dev
               name: talos-secrets
           restartPolicy: OnFailure
           volumes:
           - emptyDir: {}
             name: tmp
+          - emptyDir: {} # fix as per: https://github.com/siderolabs/talos-backup/issues/27
+            name: talos
           - name: talos-secrets
             secret:
               secretName: talos-backup-secrets
