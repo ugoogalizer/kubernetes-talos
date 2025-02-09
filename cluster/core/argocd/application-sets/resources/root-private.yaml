@@ -22,3 +22,29 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: github-private-repo-ugoogalizer-argo-cd
+  # namespace: NOTREQUIREDINSIDECHART
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: bitwarden-secretsmanager
+  target: 
+    name: github-private-repo-ugoogalizer-argo-cd
+    creationPolicy: Owner
+    template:
+      metadata:
+        labels:
+          argocd.argoproj.io/secret-type: repository
+      stringData:
+        type: git
+        url: git@github.com:ugoogalizer/argo-cd
+        name: github-private-repo-ugoogalizer-argo-cd
+  data:
+    - secretKey: sshPrivateKey
+      remoteRef:
+        key: "e35c9f9b-001b-4fa8-8016-b27f009c0e29"
