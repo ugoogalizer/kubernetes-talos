@@ -9,6 +9,8 @@ machine:
       allowedRoles:
       - os:etcd:backup
       allowedKubernetesNamespaces:
+      - talos-backup
+      - kube-system
       - default
   network:
     interfaces:
