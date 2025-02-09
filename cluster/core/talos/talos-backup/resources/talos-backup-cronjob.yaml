@@ -20,7 +20,6 @@ spec:
                   secretKeyRef:
                     name: talos-backup-secrets
                     key: access-key-id
-                value: talosbackupawsaccesskeyid
               - name: AWS_SECRET_ACCESS_KEY
                 # consider storing this as a secret.
                 valueFrom:
