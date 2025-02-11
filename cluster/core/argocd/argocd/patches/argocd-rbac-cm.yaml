@@ -5,5 +5,6 @@ metadata:
 data:
   policy.overlay.csv: |
     p, role:admin, exec, create, */*, allow
-    g, readonly, role:readonly
+    g, homepagereadonly, role:readonly
+  # Added to create a 'homepagereadonly' user to give gethomepage access
   policy.default: role:admin

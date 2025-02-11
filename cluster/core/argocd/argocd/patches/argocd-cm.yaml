@@ -22,6 +22,8 @@ data:
       name: external-secrets-webhook
       jqPathExpressions:
         - .data
+  accounts.homepagereadonly: apiKey # Added to create a 'homepagereadonly' user to give gethomepage access
+
   # configManagementPlugins: |
   #   - name: flux
   #     generate:
