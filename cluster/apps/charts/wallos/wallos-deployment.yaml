@@ -17,6 +17,7 @@ spec:
     metadata:
       labels:
         app: wallos
+        app.kubernetes.io/name: wallos # required for Homepage
     spec:
       containers:
         - name: wallos
