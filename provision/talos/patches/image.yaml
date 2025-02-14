@@ -1,0 +1,11 @@
+machine: 
+  install: 
+    image: factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3
+    # version=v1.9.3
+    # platform=metal
+    # arch amd64
+    # extensions:
+    #   - nvidia-container-toolkit-production
+    #   - nvidia-open-gpu-kernel-modules-production
+    #
+    #  https://factory.talos.dev/?arch=amd64&cmdline-set=true&extensions=-&extensions=siderolabs%2Fnvidia-container-toolkit-production&extensions=siderolabs%2Fnvidia-open-gpu-kernel-modules-production&platform=metal&target=metal&version=1.9.3
