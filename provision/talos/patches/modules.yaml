@@ -1,0 +1,9 @@
+machine:
+  kernel:
+    modules: 
+      - name: nvidia # required for NVIDIA GPU https://www.talos.dev/v1.9/talos-guides/configuration/nvidia-gpu/
+      - name: nvidia_uvm # required for NVIDIA GPU
+      - name: nvidia_drm # required for NVIDIA GPU
+      - name: nvidia_modeset # required for NVIDIA GPU
+  sysctls:
+    net.core.bpf_jit_harden: 1 # required for NVIDIA GPU
