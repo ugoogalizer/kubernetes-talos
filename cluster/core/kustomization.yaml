@@ -16,6 +16,7 @@ resources:
   - ./argocd/argocd
   - ./argocd/application-sets
   - ./talos/talos-backup
+  - ./nvidia-device-plugin/k8s-device-plugin
   # - ./node-feature-discovery/node-feature-discovery
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
