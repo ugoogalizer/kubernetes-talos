@@ -1,6 +1,7 @@
 # https://github.com/NVIDIA/k8s-device-plugin/blob/v0.17.0/deployments/helm/nvidia-device-plugin/values.yaml
-# gfd:
-#   enabled: true
+gfd:
+  enabled: true
 runtimeClassName: nvidia
 # nfd: # nfd is already installed in the cluster 
 #   enabled: false
+migStrategy: "single"
