@@ -30,6 +30,9 @@ spec:
             number: 1
         ingress:
           enabled: true
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+            kubernetes.io/ingress.class: "nginx"
           hosts:
           - host: ollama.rockyroad.rocks
             paths:
