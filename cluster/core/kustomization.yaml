@@ -9,6 +9,7 @@ resources:
   - ./external-secrets/bitwarden-sdk-certificate-issuer
   - ./external-secrets/external-secrets-operator
   - ./metallb-system/metallb
+  - ./local-path-storage/local-path-provisioner
   - ./kube-system/nfs-subdir-external-provisioner
   - ./ingress-nginx/ingress-nginx
   # - ./kube-system/cilium
