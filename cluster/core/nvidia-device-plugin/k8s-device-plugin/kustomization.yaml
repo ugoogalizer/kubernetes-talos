@@ -6,6 +6,7 @@ metadata:
 namespace: nvidia-device-plugin
 
 resources:
+  - ./resources/namespace.yaml
   - ./resources/runtimeclass.yaml
 
 helmCharts:
