@@ -16,5 +16,6 @@ resources:
   - ./argocd/argocd
   - ./argocd/application-sets
   - ./talos/talos-backup
+  - ./node-feature-discovery/node-feature-discovery
   # - ./rook-ceph/rook-ceph
   # - ./velero/velero
