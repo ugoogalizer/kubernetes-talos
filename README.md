@@ -114,7 +114,7 @@ rm talosconfig # the config file doesn't generate if this still exists
 ./generate.sh
 talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
 # Now actually upgrade the node/s: 
-talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3
+talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/installer/bf15920e4fb61a67819ed5311e240dde640765ae84840c2c82f71cd6b36b3075:v1.9.3
 # Note this actually takes a few minutes before it starts to apply for some reason, be patient (I almost sent a follow up command to tell it to reboot, but then it did reboot all on it's own)
 ```
 
