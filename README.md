@@ -22,7 +22,14 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) for ingress (yeah I still need to learn about the gateway-api). Also not to be confused with `nginx-ingress` a similar but different ingress extension
 - [cert-manager](https://cert-manager.io/) to manage certificates, in particular provision valid HTTPS certificates.
 - [external-secrets](https://external-secrets.io/latest/) and [bitwarden-sdk-server](https://github.com/external-secrets/bitwarden-sdk-server)to connect to the cloud instance of Bitwarden Secrets Manager for secrets storage and dynamic sync into the cluster. Only needs to be unlocked once at the start. Relies on cert-manager to create a self-signed certificate in order to allow the bitwarden-sdk-server to function.
-- [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning
+- [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning\
+- [Talos NVIDIA GPU Extensions](https://www.talos.dev/v1.9/talos-guides/configuration/nvidia-gpu/) Kernel modules and everything required to run GPU workloads within the cluster
+- [NVIDIA k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) - TODO
+- [KubeVirt]() - Ability to run VMs ontop of K8s in Talos (special guide [here](https://github.com/NVIDIA/k8s-device-plugin)).  Steps included: 
+  - [local-path-provisioner](https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/)
+  - A NFS-CSI - I believe the nfs-subdir-external-provisioner above is sufficient for this, skipped
+  - [Multus](https://www.talos.dev/v1.9/kubernetes-guides/network/multus/) Multi-homed CNI - Optional TODO
+  - KubeVirt - TODO
 
 App deployments: 
 - "root" sets up some example apps and shows how an app of apps can be deployed in Argocd
@@ -90,3 +97,22 @@ age-keygen
 # Troubleshooting
 
 If you have issues with argocd, and need to downgrade it / uninstall it, this guide was good to remove the finalizers:  https://phalanx.lsst.io/applications/argocd/upgrade.html#recovering-from-a-botched-upgrade
+
+# Upgrading and/or Installing Extensions
+
+If you need to upgrade the Talos Linux cluster, either in version or adding extensions (such as the NVIDIA extensions) you are supposed to do it via API.  I think this is **really stupid**, because the whole point of Talos was to declaratively define it's state in a configuration file.  Running an API command moves your Talos Configuration out of sync with your configuration files.  So in my case, I tried to ensure my process ensured they stayed in sync by: 
+1. go to https://factory.talos.dev/ and select what you want (i.e. newer version / new extensions)
+1. Copy the image link (i.e. factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3)
+1. Patch it into the machine config at machine.install.image.  
+1. commit/pull the patch to your control server with talosctl then run:
+
+``` bash
+# Upgrade the configuration file (which seems meaningless)
+cd /kubernetes-talos/provision/talos
+rm talosconfig # the config file doesn't generate if this still exists
+./generate.sh
+talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
+# Now actually upgrade the node/s: 
+talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3
+# Note this actually takes a few minutes before it starts to apply for some reason, be patient (I almost sent a follow up command to tell it to reboot, but then it did reboot all on it's own)
+```
