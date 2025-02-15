@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: k8s-device-plugin
+
+namespace: nvidia-device-plugin
+
+resources:
+  - ./resources/runtimeclass.yaml
+
+helmCharts:
+  - name: nvidia-device-plugin
+    repo: https://nvidia.github.io/k8s-device-plugin
+    releaseName: nfs-subdir-external-provisioner
+    version: 0.17.0  # 0.17.0 as at 20250215 https://artifacthub.io/packages/helm/nvidia-k8s-device-plugin/nvidia-device-plugin
+    namespace: nvidia-device-plugin
+    valuesFile: ./values.yaml
+

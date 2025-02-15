@@ -2,5 +2,5 @@ prometheus:
   enable: false
 master:
   enableTaints: true
-  # extraLabelNs:
+  extraLabelNs: ["nvidia.com"]
   #   - "gpu.intel.com"
