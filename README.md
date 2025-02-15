@@ -25,6 +25,7 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 - [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning\
 - [Talos NVIDIA GPU Extensions](https://www.talos.dev/v1.9/talos-guides/configuration/nvidia-gpu/) Kernel modules and everything required to run GPU workloads within the cluster
 - [NVIDIA k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) - TODO
+  - [node-feature-discovery]()
 - [KubeVirt]() - Ability to run VMs ontop of K8s in Talos (special guide [here](https://github.com/NVIDIA/k8s-device-plugin)).  Steps included: 
   - [local-path-provisioner](https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/)
   - A NFS-CSI - I believe the nfs-subdir-external-provisioner above is sufficient for this, skipped
@@ -115,4 +116,21 @@ talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --t
 # Now actually upgrade the node/s: 
 talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3
 # Note this actually takes a few minutes before it starts to apply for some reason, be patient (I almost sent a follow up command to tell it to reboot, but then it did reboot all on it's own)
+```
+
+# View GPU Workload and stats
+
+``` bash
+kubectl create ns temp
+kubectl run \
+  nvidia-test \
+  --restart=Never \
+  -ti --rm \
+  --namespace temp \
+  --image nvcr.io/nvidia/cuda:12.5.0-base-ubuntu22.04 \
+  --overrides '{"spec": {"runtimeClassName": "nvidia"}}' \
+  nvidia-smi
+
+# kubectl delete ns temp
+
 ```
