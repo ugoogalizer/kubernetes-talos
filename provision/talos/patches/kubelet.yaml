@@ -1,5 +1,13 @@
 machine:
-    kubelet:
-        nodeIP:
-          validSubnets:
-            - 10.20.0.0/16 # forces kubelets to use IPv4 instead of IPv6
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.20.0.0/16 # forces kubelets to use IPv4 instead of IPv6
+    extraMounts: # added for local-path-provisioner required for KubeVirt as per https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/
+      - destination: /var/local-path-provisioner
+        type: bind
+        source: /var/local-path-provisioner
+        options:
+          - bind
+          - rshared
+          - rw
