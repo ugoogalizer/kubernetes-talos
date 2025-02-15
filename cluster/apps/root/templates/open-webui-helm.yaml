@@ -56,9 +56,10 @@ spec:
           class: "nginx"
           host: open-webui.rockyroad.rocks
           tls: true
-          # annotations:
-          #   cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
-          #   # kubernetes.io/ingress.class: "nginx"
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+            # kubernetes.io/ingress.class: "nginx"
+            
           # hosts:
           # - host: open-webui.rockyroad.rocks
           #   paths:
