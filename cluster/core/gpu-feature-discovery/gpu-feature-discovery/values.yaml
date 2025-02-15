@@ -7,3 +7,4 @@ gfd:
 devicePlugin:
   enabled: false
 migStrategy: "single"
+runtimeClassName: nvidia # needs this in order to detect the GPU
