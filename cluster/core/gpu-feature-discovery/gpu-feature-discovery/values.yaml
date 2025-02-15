@@ -6,3 +6,4 @@ gfd:
 #   enabled: false
 devicePlugin:
   enabled: false
+migStrategy: "single"
