@@ -134,3 +134,29 @@ kubectl run \
 # kubectl delete ns temp
 
 ```
+
+# Useful Talos Commands
+
+``` bash
+# Stats about the talos cluster itself (can be done before k8s bootstrapping):
+talosctl -e 10.20.8.62 -n 10.20.8.62 containers --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get rd
+talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get disk
+talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get namespace
+talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get extensions
+
+# Explore the cluster: 
+talosctl -e 10.20.8.62 -n 10.20.8.62 health --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 dashboard --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 containers -k --talosconfig=./talosconfig
+
+# Explore NVIDIA Setup
+talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/modules --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 get pcidevices -n gpu --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 get pcidevices -n gpu 0000:01:00.0 -o yaml --talosconfig=./talosconfig # Change `0000:01:00.0` with the id of your device from the above command
+talosctl -e 10.20.8.62 -n 10.20.8.62 get extensions --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/driver/nvidia/version --talosconfig=./talosconfig
+
+# Explore Network
+talosctl  -e 10.20.8.62 -n 10.20.8.62 get links  --talosconfig=./talosconfig
+```

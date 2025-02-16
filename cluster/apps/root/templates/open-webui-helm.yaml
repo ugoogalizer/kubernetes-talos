@@ -21,10 +21,6 @@ spec:
       values: |
         ollama:
           enabled: true
-
-          runtimeClassName: "nvidia" # Required to make the nvidia drivers available
-          ollama:
-            gpu:
               # -- Enable GPU integration
               enabled: true
               # -- GPU type: 'nvidia' or 'amd'
@@ -44,7 +40,7 @@ spec:
             tls:
               - hosts:
                 - ollama.rockyroad.rocks
-                secretName: ollama-tls   
+                secretName: ollama-tls
           persistentVolume:
             enabled: true
         extraEnvVars:
@@ -62,7 +58,7 @@ spec:
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
             # kubernetes.io/ingress.class: "nginx"
-            
+
           # hosts:
           # - host: open-webui.rockyroad.rocks
           #   paths:
@@ -71,7 +67,7 @@ spec:
           # tls:
           #   - hosts:
           #     - open-webui.rockyroad.rocks
-          #     secretName: open-webui-tls   
+          #     secretName: open-webui-tls
   syncPolicy:
     automated:
       prune: true
