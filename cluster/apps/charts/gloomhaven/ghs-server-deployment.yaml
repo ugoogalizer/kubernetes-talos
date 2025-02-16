@@ -45,9 +45,9 @@ spec:
           volumeMounts:
             - mountPath: /root/.ghs
               name: ghs-storage-pv
-          #   - name: ghs-configmap
-          #     mountPath: /root/.ghs/application.properties
-          #     subPath: application.properties
+            - name: ghs-configmap
+              mountPath: /root/.ghs/application.properties
+              subPath: application.properties
       volumes:
         - name: ghs-storage-pv
           # If this is NFS backed, you may have to add the nolock mount option to the storage class
