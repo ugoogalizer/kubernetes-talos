@@ -47,6 +47,9 @@ spec:
                 secretName: ollama-tls   
           persistentVolume:
             enabled: true
+        extraEnvVars:
+          - name: WEBUI_URL
+            value: "https://open-webui.rockyroad.rocks"
         pipelines:
           enabled: true
         tika:
