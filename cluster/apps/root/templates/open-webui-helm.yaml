@@ -34,11 +34,6 @@ spec:
             annotations:
               cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
               kubernetes.io/ingress.class: "nginx"
-              gethomepage.dev/description: Open-WebUI Self Hosted AI Interface
-              gethomepage.dev/enabled: "true"
-              gethomepage.dev/group: Handy Tools
-              gethomepage.dev/icon: open-webui
-              gethomepage.dev/name: Open WebUI
             hosts:
             - host: ollama.rockyroad.rocks
               paths:
@@ -64,6 +59,11 @@ spec:
           tls: true
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+            gethomepage.dev/description: Open-WebUI Self Hosted AI Interface
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/group: Handy Tools
+            gethomepage.dev/icon: open-webui
+            gethomepage.dev/name: Open WebUI
             # kubernetes.io/ingress.class: "nginx"
 
           # hosts:
