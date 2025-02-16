@@ -20,7 +20,9 @@ spec:
     helm:
       values: |
         ollama:
-          enabled: true
+          runtimeClassName: "nvidia" # Required to make the nvidia drivers available
+          ollama:
+            gpu:
               # -- Enable GPU integration
               enabled: true
               # -- GPU type: 'nvidia' or 'amd'
