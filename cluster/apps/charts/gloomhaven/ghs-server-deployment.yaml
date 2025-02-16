@@ -143,4 +143,4 @@ metadata:
 data:
   application.properties: |
     ghs-server.lastestClientOnStartup=true
-    ghs-server.public=false
+    ghs-server.public=true
