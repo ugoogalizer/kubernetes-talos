@@ -17,24 +17,33 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 
 - [Talos Linux](https://www.talos.dev) cluster with NVMe as a boot drive and SSD for data
 - [Talos Backup](https://github.com/siderolabs/talos-backup) a dead simple backup tool for Talos Linux-based Kubernetes clusters to push to s3
-- [Argo CD ](https://argo-cd.readthedocs.io/en/stable/) for cluster bootstrapping
+- [Argo CD](https://argo-cd.readthedocs.io/en/stable/) for cluster bootstrapping
 - [Metallb](https://metallb.io/) for L2 loadbalancing
 - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) for ingress (yeah I still need to learn about the gateway-api). Also not to be confused with `nginx-ingress` a similar but different ingress extension
 - [cert-manager](https://cert-manager.io/) to manage certificates, in particular provision valid HTTPS certificates.
 - [external-secrets](https://external-secrets.io/latest/) and [bitwarden-sdk-server](https://github.com/external-secrets/bitwarden-sdk-server)to connect to the cloud instance of Bitwarden Secrets Manager for secrets storage and dynamic sync into the cluster. Only needs to be unlocked once at the start. Relies on cert-manager to create a self-signed certificate in order to allow the bitwarden-sdk-server to function.
-- [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning\
+- [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning
 - [Talos NVIDIA GPU Extensions](https://www.talos.dev/v1.9/talos-guides/configuration/nvidia-gpu/) Kernel modules and everything required to run GPU workloads within the cluster
-- [NVIDIA k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) - TODO
-  - [node-feature-discovery]()
-- [KubeVirt]() - Ability to run VMs ontop of K8s in Talos (special guide [here](https://github.com/NVIDIA/k8s-device-plugin)).  Steps included: 
+- [NVIDIA k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) - advertises GPU stats on nodes that have GPUs
+  - [gpu-feature-discovery](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#deploying-with-gpu-feature-discovery-for-automatic-node-labels) Installed automatically with the NVIDIA k8s-device-plugin, advertises basic k8s node features.
+  - [node-feature-discovery](https://github.com/kubernetes-sigs/node-feature-discovery) Installed automatically with the NVIDIA k8s-device-plugin, advertises basic k8s node features.
+- [KubeVirt](https://kubevirt.io/) - Ability to run VMs ontop of K8s in Talos (special guide [here](https://github.com/NVIDIA/k8s-device-plugin)).  Steps included: 
   - [local-path-provisioner](https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/)
   - A NFS-CSI - I believe the nfs-subdir-external-provisioner above is sufficient for this, skipped
   - [Multus](https://www.talos.dev/v1.9/kubernetes-guides/network/multus/) Multi-homed CNI - Optional TODO
   - KubeVirt - TODO
 
-App deployments: 
-- "root" sets up some example apps and shows how an app of apps can be deployed in Argocd
-- "root-private" points at a personal repo that is setup the same as "root"
+## High Level Concepts
+
+1. Setup Talos configuration and form a Talos Cluster
+1. Bootstrap k8s cluster
+1. Add BitWarden Secrets Manager key to k8s cluster
+1. Deploy once the `core` Kustomize manifests.  Deploys the core services the cluster requires, and Argo-cd
+1. Argo-cd then automatically deploys the following app deployments
+    1. The same `core` manifests from above, ensuring compliance and declarative git-ops from then on of the core cluster services.
+    1. "root" found in the `./cluster/apps/root` folder of this repo, and sets up some example apps and shows how an app of apps can be deployed in Argocd
+    1. "root-private" points at a personal repo that is setup the same as "root" 
+1. NOTE - because there are some operators installed within this cluster, Argo-cd has been told what to ignore, otherwise the Operators and Argo have a fight over state.
 
 Disabled from the original repository
 - [Cilium](https://cilium.io) as a kube proxy replacement and sidecar-less networking
@@ -42,7 +51,7 @@ Disabled from the original repository
 - [Velero](https://velero.io) for offsite cluster backup
 
 
-## Basic steps: 
+## Steps to Form Cluster and Bootstrap Argo-CD 
 
 ``` bash
 set +o history
@@ -67,8 +76,6 @@ talosctl bootstrap -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
 
 # Download the kubeconfig (merging in to defaults)
 talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
-
-
 
 # Configure BitWarden Token to allow sm-operator to pull from cloud secrets
 kubectl create namespace external-secrets
