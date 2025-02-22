@@ -1,0 +1,23 @@
+# https://www.talos.dev/v1.9/reference/configuration/v1alpha1/config/#Config.machine.registries
+machine:
+    registries:
+        # Specifies mirror configuration for each registry host namespace.
+        mirrors:
+            docker.io:
+                # List of endpoints (URLs) for registry mirrors to use.
+                endpoints:
+                    - https://spiff.rockyroad.rocks:5005
+                    # - https://registry-1.docker.io # default, enable if spiff is broken
+        # Specifies TLS & auth configuration for HTTPS image registries.
+        # config:
+        #     registry.local:
+        #         # The TLS configuration for the registry.
+        #         # tls:
+        #         #     # Enable mutual TLS authentication with the registry.
+        #         #     clientIdentity:
+        #         #         crt: LS0tIEVYQU1QTEUgQ0VSVElGSUNBVEUgLS0t
+        #         #         key: LS0tIEVYQU1QTEUgS0VZIC0tLQ==
+        #         # The auth configuration for this registry.
+        #         auth:
+        #             username: username # Optional registry authentication.
+        #             password: password # Optional registry authentication.
