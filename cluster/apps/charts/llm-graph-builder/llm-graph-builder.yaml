@@ -21,16 +21,16 @@ spec:
           image: harbor.rockyroad.rocks/llm-graph-builder/llm-graph-builder-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8000
               name: http
               protocol: TCP
           resources:
             requests:
               cpu: 250m
-              memory: 500Mi
+              memory: 1000Mi
             limits:
               cpu: "500m"
-              memory: "1000Mi"          
+              memory: "4000Mi"          
           envFrom:
             - configMapRef:
                 name: backend-config
@@ -104,7 +104,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8080
+      port: 8000
       protocol: TCP
       targetPort: http
   selector:
@@ -118,7 +118,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8080
+      port: 8000
       protocol: TCP
       targetPort: http
       nodePort: 30007
