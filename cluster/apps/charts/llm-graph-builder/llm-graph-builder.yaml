@@ -17,12 +17,12 @@ spec:
         app.kubernetes.io/name: llm-graph-builder # required for Homepage
     spec:
       containers:
-        - name: llm-graph-builder
+        - name: llm-graph-builder-backend
           image: harbor.rockyroad.rocks/llm-graph-builder/llm-graph-builder-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
-              name: http
+            - containerPort: 8000 # backend defaults to 8000
+              name: http-backend
               protocol: TCP
           resources:
             requests:
@@ -34,6 +34,23 @@ spec:
           envFrom:
             - configMapRef:
                 name: backend-config
+        - name: llm-graph-builder-frontend
+          image: harbor.rockyroad.rocks/llm-graph-builder/llm-graph-builder-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080 # frontend defaults to 8080
+              name: http-frontend
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 500Mi
+            limits:
+              cpu: "500m"
+              memory: "1000Mi"          
+          envFrom:
+            - configMapRef:
+                name: frontend-config
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -98,15 +115,22 @@ data:
   MAX_TOKEN_CHUNK_SIZE: "2000" #Max token used to process/extract the file content.
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  PLACEHOLDER: ""   
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: backend
 spec:
   ports:
-    - name: http
+    - name: http-backend
       port: 8000
       protocol: TCP
-      targetPort: http
+      targetPort: http-backend
   selector:
     app: llm-graph-builder
   type: ClusterIP
@@ -114,14 +138,43 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: http-svc-np-test
+  name: frontend
 spec:
   ports:
-    - name: http
+    - name: http-frontend
+      port: 8080
+      protocol: TCP
+      targetPort: http-frontend
+  selector:
+    app: llm-graph-builder
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-svc-np-back
+spec:
+  ports:
+    - name: http-backend
       port: 8000
       protocol: TCP
-      targetPort: http
+      targetPort: http-backend
       nodePort: 30007
+  selector:
+    app: llm-graph-builder
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-svc-np-front
+spec:
+  ports:
+    - name: http-frontend
+      port: 8080
+      protocol: TCP
+      targetPort: http-frontend
+      nodePort: 30008
   selector:
     app: llm-graph-builder
   type: NodePort
