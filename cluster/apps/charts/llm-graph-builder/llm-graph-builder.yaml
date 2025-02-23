@@ -88,6 +88,7 @@ data:
   DEFAULT_DIFFBOT_CHAT_MODEL: "openai_gpt_4o"  #whichever model specified here , need to add config for that model in below format)
   #examples
   LLM_MODEL_CONFIG_ollama_qwen2.5-coder: "qwen2.5-coder,http://open-webui-ollama.ollama.svc.cluster.local:11434"
+  LLM_MODEL_CONFIG_ollama_deepseek-r1:8b: "deepseek-r1:8b,http://open-webui-ollama.ollama.svc.cluster.local:11434"
   #LLM_MODEL_CONFIG_openai_gpt_3.5: "gpt-3.5-turbo-0125,openai_api_key"
   #LLM_MODEL_CONFIG_openai_gpt_4o_mini: "gpt-4o-mini-2024-07-18,openai_api_key"
   #LLM_MODEL_CONFIG_openai_gpt_4o: "gpt-4o-2024-11-20,openai_api_key"
