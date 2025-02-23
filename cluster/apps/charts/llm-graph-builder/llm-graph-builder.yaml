@@ -117,7 +117,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: backend-config
+  name: frontend-config
 data:
   PLACEHOLDER: ""   
 ---
