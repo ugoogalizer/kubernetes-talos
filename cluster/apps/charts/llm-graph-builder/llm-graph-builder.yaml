@@ -26,10 +26,10 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 250m
+              cpu: 500m
               memory: 4000Mi
             limits:
-              cpu: "500m"
+              cpu: "400m"
               memory: "8000Mi"          
           envFrom:
             - configMapRef:
