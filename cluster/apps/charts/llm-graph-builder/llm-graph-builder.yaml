@@ -178,34 +178,34 @@ spec:
   selector:
     app: llm-graph-builder
   type: NodePort
-# ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   annotations:
-#     #kubernetes.io/ingress.class: nginx
-#     cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
-#     #cert-manager.io/cluster-issuer: "letsencrypt-staging"
-#     kubernetes.io/ingress.class: "nginx"
-#     gethomepage.dev/description: Handy online tools for developers
-#     gethomepage.dev/enabled: "true"
-#     gethomepage.dev/group: Handy Tools
-#     gethomepage.dev/icon: it-tools-light
-#     gethomepage.dev/name: IT Tools
-#   name: it-tools
-# spec:
-#   rules:
-#     - host: it-tools.rockyroad.rocks
-#       http:
-#         paths:
-#           - backend:
-#               service:
-#                 name: http-svc
-#                 port:
-#                   number: 80
-#             path: /
-#             pathType: Prefix
-#   tls:
-#     - hosts:
-#         - it-tools.rockyroad.rocks
-#       secretName: it-tools-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    gethomepage.dev/description: Neo4j LLM Graph Builder
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Handy Tools
+    gethomepage.dev/icon: neo4j
+    gethomepage.dev/name: Neo4j LLM Graph Builder
+  name: llm-graph-builder
+spec:
+  rules:
+    - host: llm-graph-builder.rockyroad.rocks
+      http:
+        paths:
+          - backend:
+              service:
+                name: frontend
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - llm-graph-builder.rockyroad.rocks
+      secretName: llm-graph-builder-tls
