@@ -77,7 +77,7 @@ docker push ${HARBORURL}:443/llm-graph-builder/llm-graph-builder-backend:${VERSI
 git pull
 
 #Set Build Parameters
-export VERSIONTAG=0.4
+export VERSIONTAG=0.5
 
 # FRONTEND
 cd ~/llm-graph-builder/frontend

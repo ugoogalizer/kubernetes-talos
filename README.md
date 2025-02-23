@@ -167,3 +167,19 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/driver/nvidia/version --taloscon
 # Explore Network
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get links  --talosconfig=./talosconfig
 ```
+
+# Basic Containers to test things with: 
+``` bash
+kubectl create ns temp
+kubectl run \
+  hello-world \
+  --restart=Never \
+  -ti --rm \
+  --namespace temp \
+  --image hello-world:latest 
+
+kubectl run  ubuntu --restart=Never -ti --rm --namespace temp --image ubuntu:latest bash
+kubectl run busybox --restart=Never -ti --rm --namespace temp --image busybox:latest sh
+kubectl run curl --restart=Never -ti --rm --namespace temp --image curlimages/curl:latest sh
+# kubectl delete ns temp
+```
