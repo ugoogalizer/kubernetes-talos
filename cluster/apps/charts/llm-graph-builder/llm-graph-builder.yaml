@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   labels:
     app: llm-graph-builder
-  name: llm-graph-builder
+  name: llm-graph-builder-backend
 #  namespace: llm-graph-builder
 spec:
   selector:
@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: llm-graph-builder
-        app.kubernetes.io/name: llm-graph-builder # required for Homepage
     spec:
       containers:
         - name: llm-graph-builder-backend
@@ -34,6 +33,25 @@ spec:
           envFrom:
             - configMapRef:
                 name: backend-config
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: llm-graph-builder
+  name: llm-graph-builder-frontend
+#  namespace: llm-graph-builder
+spec:
+  selector:
+    matchLabels:
+      app: llm-graph-builder
+  template:
+    metadata:
+      labels:
+        app: llm-graph-builder
+        app.kubernetes.io/name: llm-graph-builder # required for Homepage
+    spec:
+      containers:
         - name: llm-graph-builder-frontend
           image: harbor.rockyroad.rocks/llm-graph-builder/llm-graph-builder-frontend:latest
           imagePullPolicy: Always
@@ -121,6 +139,8 @@ metadata:
   name: frontend-config
 data:
   PLACEHOLDER: ""   
+  VITE_LLM_MODELS_PROD: "ollama_qwen2.5-coder,openai_gpt_4o,openai_gpt_4o_mini,diffbot,gemini_1.5_flash"
+  VITE_LLM_MODELS: "ollama_qwen2.5-coder,diffbot,openai_gpt_3.5,openai_gpt_4o"
 ---
 apiVersion: v1
 kind: Service
