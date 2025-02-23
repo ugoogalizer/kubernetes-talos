@@ -187,6 +187,33 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
     #cert-manager.io/cluster-issuer: "letsencrypt-staging"
     kubernetes.io/ingress.class: "nginx"
+  name: llm-graph-builder-backend
+spec:
+  rules:
+    - host: llm-graph-builder-backend.rockyroad.rocks
+      http:
+        paths:
+          - backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - llm-graph-builder-backend.rockyroad.rocks
+      secretName: llm-graph-builder-backend-tls
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
     gethomepage.dev/description: Neo4j LLM Graph Builder
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Handy Tools
