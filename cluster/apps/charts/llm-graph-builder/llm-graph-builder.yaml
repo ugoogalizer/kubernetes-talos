@@ -139,8 +139,8 @@ metadata:
   name: frontend-config
 data:
   PLACEHOLDER: ""   
-  VITE_LLM_MODELS_PROD: "ollama_qwen2.5-coder,openai_gpt_4o,openai_gpt_4o_mini,diffbot,gemini_1.5_flash"
-  VITE_LLM_MODELS: "ollama_qwen2.5-coder,diffbot,openai_gpt_3.5,openai_gpt_4o"
+  VITE_LLM_MODELS_PROD: "ollama_deepseek-r1,ollama_qwen2.5-coder,openai_gpt_4o,openai_gpt_4o_mini,diffbot,gemini_1.5_flash"
+  VITE_LLM_MODELS: "ollama_deepseek-r1,ollama_qwen2.5-coder,diffbot,openai_gpt_3.5,openai_gpt_4o"
 ---
 apiVersion: v1
 kind: Service
