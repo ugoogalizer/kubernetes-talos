@@ -9,4 +9,4 @@ spec:
         - name: argocd-repo-server
           args:
             - /usr/local/bin/argocd-repo-server
-            - --enable-oci  # required to be able to deploy charts from oci:// sources, like nifikop
+            # - --enable-oci  # required to be able to deploy charts from oci:// sources, like nifikop
