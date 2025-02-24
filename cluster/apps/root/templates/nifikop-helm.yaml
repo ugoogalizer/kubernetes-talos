@@ -15,7 +15,8 @@ spec:
   project: default
   source:
     chart: nifikop
-    repoURL: oci://ghcr.io/konpyutaika/helm-charts
+    # repoURL: oci://ghcr.io/konpyutaika/helm-charts
+    repoURL: ghcr.io/konpyutaika/helm-charts
     targetRevision: 1.12.0 # 1.12.0 as at 20250224 https://github.com/orgs/konpyutaika/packages?repo_name=helm-charts
     # Also installs a whole bunch of CRDs into the cluster
     helm:
