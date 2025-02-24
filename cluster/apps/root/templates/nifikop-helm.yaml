@@ -21,7 +21,7 @@ spec:
     # Also installs a whole bunch of CRDs into the cluster
     helm:
       values: |
-        rbacEnable: true # need this to create the roles in the cluster for the operator to work within Talos
+        rbacEnable: true
         resources:
           requests:
             memory: 256Mi
