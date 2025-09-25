@@ -1,6 +1,6 @@
 machine: 
   install: 
-    image: factory.talos.dev/installer/bf15920e4fb61a67819ed5311e240dde640765ae84840c2c82f71cd6b36b3075:v1.9.3
+    image: factory.talos.dev/installer/d42a2ca2457225af85b071aafac019c6bf80c3782efa3c35104df0858ffb2f9d:v1.9.3
     # NOTE - This only applies once on inital installation - so not properly declarative...  
     #        After that you need to patch the image in manually via API
     #
@@ -11,6 +11,8 @@ machine:
     #   - nvidia-container-toolkit-production
     #   - nvidia-open-gpu-kernel-modules-production
     #   - dvb-cx23885
+    # extraKernelArgs:
+    #    - talos.halt_if_installed=0
     #
     #  https://factory.talos.dev/?arch=amd64&cmdline-set=true&extensions=-&extensions=siderolabs%2Fdvb-cx23885&extensions=siderolabs%2Fnvidia-container-toolkit-production&extensions=siderolabs%2Fnvidia-open-gpu-kernel-modules-production&platform=metal&target=metal&version=1.9.3
 
