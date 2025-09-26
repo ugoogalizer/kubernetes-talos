@@ -144,3 +144,6 @@ data:
   application.properties: |
     ghs-server.lastestClientOnStartup=true
     ghs-server.public=true
+    # replace <path-to-backup> with an accessible path to store the backup files and <token> as authorization header for authentication.
+    ghs-server.backup.path=/root/.ghs/backups
+    ghs-server.backup.authorization=fLJhBKZzsdrFlFJhSroXOAv42ZuwUXyeKEDl9J66Uu0MUJ8BDioEFzCrpmVJDBjE
