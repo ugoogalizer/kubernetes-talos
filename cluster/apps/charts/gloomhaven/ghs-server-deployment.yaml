@@ -124,6 +124,7 @@ metadata:
     nginx.org/websocket-services: "ghs-http-svc"        
     nginx.org/proxy-read-timeout: "3600"
     nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
     gethomepage.dev/description: Gloomhaven Secreariat
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Gaming
