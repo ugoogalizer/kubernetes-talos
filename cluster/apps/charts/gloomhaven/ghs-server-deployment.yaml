@@ -162,6 +162,6 @@ data:
 
     # postgresql: replace <database>, <username> and <password> to your needs, remove *mariadb* lines below
     spring.liquibase.change-log=classpath:db/postgresql/main.xml
-    spring.datasource.url=jdbc:postgresql://postgres.default.svc.cluster.local/gloomhaven
+    spring.datasource.url=jdbc:postgresql://postgres-service/gloomhaven
     spring.datasource.username=ghs-server-user
     # spring.datasource.password=<password> # injected directly as SPRING_DATASOURCE_PASSWORD
