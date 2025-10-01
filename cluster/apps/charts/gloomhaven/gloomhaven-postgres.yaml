@@ -62,50 +62,6 @@ spec:
       port: 5432
       targetPort: 5432
 ---
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: postgres-backup-cronjob
-spec:
-  schedule: "0 2 * * *" # Runs daily at 2 AM
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: postgres-backup
-            image: postgres:18.0 # Use the official PostgreSQL image
-            command: ["sh", "-c"]
-            args:
-              - |
-                PGPASSWORD=$(cat /etc/postgres-secrets/POSTGRES_PASSWORD) pg_dump -h postgres-service -U $(cat /etc/postgres-secrets/POSTGRES_USER) -d $(cat /etc/postgres-secrets/POSTGRES_DB) > /var/lib/postgresql/data/backup_$(date +%Y%m%d%H%M%S).sql
-            env:
-            - name: POSTGRES_DB
-              value: "gloomhaven"
-            - name: POSTGRES_USER
-              value: "ghs-server-user"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: gloomhaven-externalsecrets
-                  key: gloomhaven-postgres-secret
-
-
-            volumeMounts:
-            - name: postgres-data-volume
-              mountPath: /var/lib/postgresql/data
-            - name: postgres-secrets
-              mountPath: /etc/postgres-secrets
-              readOnly: true
-          volumes:
-          - name: postgres-data-volume
-            persistentVolumeClaim:
-              claimName: your-pvc-name # Replace with your PostgreSQL PVC name
-          # - name: postgres-secrets
-          #   secret:
-          #     secretName: postgres-credentials
-          restartPolicy: OnFailure
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
