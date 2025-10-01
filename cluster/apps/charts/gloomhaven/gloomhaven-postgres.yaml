@@ -91,7 +91,7 @@ spec:
             env:
               # "normal" env vars you want to keep as inline values
               - name: POSTGRES_HOST
-                value: "postgres.default.svc.cluster.local"
+                value: "postgres-service"
               - name: POSTGRES_DB
                 value: "gloomhaven"
               - name: POSTGRES_USER
