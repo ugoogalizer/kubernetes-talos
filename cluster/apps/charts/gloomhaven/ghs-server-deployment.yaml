@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - name: ghs
-          image: gloomhavensecretariat/ghs-server:latest
+          #image: gloomhavensecretariat/ghs-server:latest
+          image: gloomhavensecretariat/ghs-server-postgresql:latest
           imagePullPolicy: Always
           env:
             # - name: PUID
@@ -28,6 +29,11 @@ spec:
             #   value: "1000"
             - name: TZ
               value: "Australia/Sydney"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gloomhaven-externalsecrets
+                  key: gloomhaven-postgres-secret
           ports:
             - containerPort: 8080
               name: ghs-http
@@ -144,6 +150,18 @@ data:
   application.properties: |
     ghs-server.lastestClientOnStartup=true
     ghs-server.public=true
+    
     # replace <path-to-backup> with an accessible path to store the backup files and <token> as authorization header for authentication.
     ghs-server.backup.path=/root/.ghs/backups
     ghs-server.backup.authorization=fLJhBKZzsdrFlFJhSroXOAv42ZuwUXyeKEDl9J66Uu0MUJ8BDioEFzCrpmVJDBjE
+    
+    #To enable a Postgres Backend:
+    # keep those blank
+    spring.datasource.driverClassName=
+    spring.jpa.database-platform=
+
+    # postgresql: replace <database>, <username> and <password> to your needs, remove *mariadb* lines below
+    spring.liquibase.change-log=classpath:db/postgresql/main.xml
+    spring.datasource.url=jdbc:postgresql://postgres.default.svc.cluster.local/gloomhaven
+    spring.datasource.username=ghs-server-user
+    # spring.datasource.password=<password> # injected directly as SPRING_DATASOURCE_PASSWORD

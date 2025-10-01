@@ -26,19 +26,6 @@ spec:
       labels:
         app: postgres
     spec:
-      # initContainers:
-      #   - name: init-postgres-data
-      #     image: busybox
-      #     command:
-      #       - sh
-      #       - -c
-      #       - |
-      #         mkdir -p /var/lib/postgresql/data && \
-      #         chown -R 999:999 /var/lib/postgresql/data
-      #     volumeMounts:
-      #       - name: postgres-storage
-      #         mountPath: /var/lib/postgresql/data
-      #         subPath: data
       containers:
         - name: postgres
           image: postgres:18.0 # Use a specific PostgreSQL version
