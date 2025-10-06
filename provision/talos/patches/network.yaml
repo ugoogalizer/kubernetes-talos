@@ -1,7 +1,7 @@
 machine:
   features:
     hostDNS:
-      enabled: false
+      enabled: true
       forwardKubeDNSToHost: false
     kubernetesTalosAPIAccess:
       # allows access for backup https://github.com/siderolabs/talos-backup
