@@ -9,6 +9,8 @@ endpointRoutes:
   enabled: true
 externalIPs:
   enabled: true
+fqdn: # added from chatgpt recommendation
+  enablePoller: true # added from chatgpt recommendation
 gatewayAPI:
   enabled: true
   hostNetwork:
@@ -46,9 +48,10 @@ nodePort:
   enabled: true
 operator:
   rollOutPods: true
-  replicas: 2
+  replicas: 1 # reduced to one because of single node cluster
   podDisruptionBudget:
     enabled: true
+policyEnforcementMode: always # added from chatgpt recommendation
 rollOutCiliumPods: true
 securityContext:
   capabilities:
