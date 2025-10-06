@@ -13,6 +13,7 @@ helmCharts:
     version: 1.18.2 # make sure you update the CRDs in the separate file at the same time
     valuesFile: ./values.yaml
 
-resources:
-  - ./resources/cilium-l2-announcement-policy.yaml
-  - ./resources/cilium-load-balancer-ip-pool.yaml
+# Disabled these - best to install cilium fully before trying to use it or else it may not be able to install properly.
+# resources:
+#   - ./resources/cilium-l2-announcement-policy.yaml
+#   - ./resources/cilium-load-balancer-ip-pool.yaml
