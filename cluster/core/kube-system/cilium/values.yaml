@@ -34,7 +34,7 @@ ingressController:
   secretsNamespace:
     create: false
     name: kube-system
-installCRDs: true
+# installCRDs: true
 ipam:
   mode: kubernetes
 k8sClientRateLimit:
@@ -54,7 +54,7 @@ operator:
   replicas: 1 # reduced to one because of single node cluster
   podDisruptionBudget:
     enabled: true
-policyEnforcementMode: always # added from chatgpt recommendation
+policyEnforcementMode: default # THIS WAS WRONG # added from chatgpt recommendation
 rollOutCiliumPods: true
 securityContext:
   capabilities:
