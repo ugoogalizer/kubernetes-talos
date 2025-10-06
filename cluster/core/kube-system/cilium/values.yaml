@@ -42,7 +42,7 @@ k8sClientRateLimit:
   qps: 200
 k8sServiceHost: localhost
 k8sServicePort: 7445
-kubeProxyReplacement: strict # was true
+kubeProxyReplacement: true
 l2announcements:
   enabled: true
   interfaces:
