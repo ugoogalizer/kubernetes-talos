@@ -45,6 +45,8 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 l2announcements:
   enabled: true
+  interfaces:
+   - eno2 # temporary to allow metallb to announce
 nodePort:
   enabled: true
 operator:
