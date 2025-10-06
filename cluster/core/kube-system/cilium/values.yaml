@@ -34,6 +34,7 @@ ingressController:
   secretsNamespace:
     create: false
     name: kube-system
+installCRDs: true
 ipam:
   mode: kubernetes
 k8sClientRateLimit:

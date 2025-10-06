@@ -12,7 +12,7 @@ resources:
   - ./local-path-storage/local-path-provisioner
   - ./kube-system/nfs-subdir-external-provisioner
   - ./ingress-nginx/ingress-nginx
-  # - ./kube-system/cilium
+  - ./kube-system/cilium
   - ./argocd/argocd
   - ./argocd/application-sets
   - ./talos/talos-backup
