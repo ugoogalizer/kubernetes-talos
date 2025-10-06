@@ -2,12 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # Cilium - https://github.com/cilium/cilium/tree/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1
-  - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumbgppeeringpolicies.yaml
-  - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumendpointslices.yaml
-  - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumgatewayclassconfigs.yaml
-  - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliuml2announcementpolicies.yaml
-  - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumpodippools.yaml
+  # # Cilium - https://github.com/cilium/cilium/tree/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1
+  # - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumbgppeeringpolicies.yaml
+  # - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumendpointslices.yaml
+  # - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumgatewayclassconfigs.yaml
+  # - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliuml2announcementpolicies.yaml
+  # - https://raw.githubusercontent.com/cilium/cilium/refs/tags/v1.18.2/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumpodippools.yaml
 
   # Gateway API
   # - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_backendtlspolicies.yaml
