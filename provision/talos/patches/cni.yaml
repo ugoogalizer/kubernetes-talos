@@ -1,0 +1,13 @@
+cluster:
+  network:
+    # https://www.talos.dev/v1.11/kubernetes-guides/network/deploying-cilium/
+    cni:
+      name: none
+  proxy:
+    disabled: true
+machine:
+  features:
+    kubePrism:
+      # https://www.talos.dev/v1.11/kubernetes-guides/configuration/kubeprism/
+      enabled: true
+      port: 7445
