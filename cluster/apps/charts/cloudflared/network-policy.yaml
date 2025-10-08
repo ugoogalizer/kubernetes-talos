@@ -85,8 +85,8 @@ spec:
     #     - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
     - toEndpoints: # Permit access to the Gloomhaven webapp service
       - matchLabels:
-        k8s:io.kubernetes.service.name: ghs-http-svc
-        k8s:io.kubernetes.pod.namespace: gloomhaven
+          "k8s:io.kubernetes.service.name": ghs-http-svc
+          "k8s:io.kubernetes.pod.namespace": gloomhaven
       toPorts:
         - ports:
             - port: "8080"
