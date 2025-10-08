@@ -1,0 +1,93 @@
+# # https://docs.cilium.io/en/stable/security/policy/language/
+---
+# Allow access to cluster dns
+# Note the existance of this policy applies a default deny-all for anything not listed.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cloudflared-network-policy
+  # namespace: cloudflared
+spec:
+  endpointSelector: {}  # all pods in this namespace
+  egress:
+    - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system # mandatory and doesn't matter that this label doesn't actually exist on the cluster
+            "k8s:k8s-app": kube-dns   # selects the cluster DNS pods, note that the "k8s:" is required to tell Cilium it's not its own label (I think)
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
+            dns:
+              - matchPattern: "*" # allow all DNS lookups
+    # cloudflared servers as per: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/tunnel-with-firewall/
+    # - toCIDR: 
+    #   # Region 1
+    #   - 198.41.192.167/32
+    #   - 198.41.192.67/32
+    #   - 198.41.192.57/32
+    #   - 198.41.192.107/32
+    #   - 198.41.192.27/32
+    #   - 198.41.192.7/32
+    #   - 198.41.192.227/32
+    #   - 198.41.192.47/32
+    #   - 198.41.192.37/32
+    #   - 198.41.192.77/32
+    #   # Region 2
+    #   - 198.41.200.13/32
+    #   - 198.41.200.193/32
+    #   - 198.41.200.33/32
+    #   - 198.41.200.233/32
+    #   - 198.41.200.53/32
+    #   - 198.41.200.63/32
+    #   - 198.41.200.113/32
+    #   - 198.41.200.73/32
+    #   - 198.41.200.43/32
+    #   - 198.41.200.23/32
+    #   toPorts:
+    #     - ports:
+    #         - port: "7844"
+    #           protocol: UDP
+    #         - port: "7844"
+    #           protocol: TCP
+    - toFQDNs: # Core requirement for the Cloudfare Tunnel
+        - matchName: "region1.v2.argotunnel.com" 
+        - matchName: "region2.v2.argotunnel.com"
+      toPorts:
+        - ports:
+            - port: "7844"
+              protocol: UDP
+            - port: "7844"
+              protocol: TCP
+    - toFQDNs: # only required for firewalls that enforce SNI
+        - matchName: "_v2-origintunneld._tcp.argotunnel.com" 
+        - matchName: "cftunnel.com"
+        - matchName: "h2.cftunnel.com" 
+        - matchName: "quic.cftunnel.com"
+      toPorts:
+        - ports:
+            - port: "7844"
+              protocol: TCP
+    - toFQDNs: # Optional Requirement for the Cloudflare Tunnel
+        - matchName: "api.cloudflare.com" 
+        - matchName: "update.argotunnel.com"
+        - matchName: "github.com" 
+        - matchName: "rockyroadrocks.cloudflareaccess.com"
+        - matchName: "pqtunnels.cloudflareresearch.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toFQDNs: # Permit access to the Gloomhaven webapp service
+        - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+ 
+# # Testing pod: 
+
+# kubectl -n cloudflared run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh
