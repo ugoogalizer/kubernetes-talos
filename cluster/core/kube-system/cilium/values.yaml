@@ -29,6 +29,29 @@ hubble:
       server:
         ipv6:
           enabled: false
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+        #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+        #nginx.org/websocket-services: "ghs-http-svc"        
+        nginx.org/proxy-read-timeout: "3600"
+        nginx.org/proxy-send-timeout: "3600" 
+        nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+        gethomepage.dev/description: Cilium Hubble
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Utils
+        gethomepage.dev/icon: cilium
+        gethomepage.dev/name: Cilium Hubble
+ 
+      hosts: 
+        - cilium-hubble.rockyroad.rocks
+      tls:
+        - hosts:
+            - cilium-hubble.rockyroad.rocks
+          secretName: cilium-hubble-tls
+
 ingressController:
   enabled: false
   secretsNamespace:
