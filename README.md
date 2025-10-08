@@ -51,6 +51,16 @@ Disabled from the original repository
 - [Velero](https://velero.io) for offsite cluster backup
 
 
+## Management Client
+
+``` bash
+brew install siderolabs/tap/talosctl
+```
+
+## DNS
+
+Set up a dns record for talos-gpu.rockyroad.rocks
+
 ## Steps to Form Cluster and Bootstrap Argo-CD 
 
 ``` bash
@@ -64,7 +74,7 @@ cd ~/kubernetes-talos/provision/talos
 ./generate.sh
 
 # Now apply the patched configuration file (first time):
-talosctl apply-config --insecure -n 10.20.8.62 --file ./controlplane.yaml
+talosctl apply-config --insecure -n 10.20.8.62 --file ./controlplane.yaml 
 
 # To apply the patched configuration file (all subsequent times, to update configuration):
 talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
@@ -116,7 +126,7 @@ If you need to upgrade the Talos Linux cluster, either in version or adding exte
 
 ``` bash
 # Upgrade the configuration file (which seems meaningless)
-cd /kubernetes-talos/provision/talos
+cd ~/kubernetes-talos/provision/talos
 rm talosconfig # the config file doesn't generate if this still exists
 ./generate.sh
 talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
@@ -145,6 +155,7 @@ kubectl run \
 # Useful Talos Commands
 
 ``` bash
+cd ~/kubernetes-talos/provision/talos
 # Stats about the talos cluster itself (can be done before k8s bootstrapping):
 talosctl -e 10.20.8.62 -n 10.20.8.62 containers --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get rd
@@ -166,6 +177,8 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/driver/nvidia/version --taloscon
 
 # Explore Network
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get links  --talosconfig=./talosconfig
+talosctl  -e 10.20.8.62 -n 10.20.8.62 get machineconfig -o yaml
+talosctl  -e 10.20.8.62 -n 10.20.8.62  exec ip link
 ```
 
 # Basic Containers to test things with: 
