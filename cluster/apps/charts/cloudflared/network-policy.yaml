@@ -59,9 +59,9 @@ spec:
       toPorts:
         - ports:
             - port: "7844"
-              protocol: UDP
-            - port: "7844"
-              protocol: TCP
+              protocol: ANY # Required to allow TCP, UDP and ICMP - as you cannot select on ICMP for some reason
+            # - port: "7844"
+            #   protocol: TCP
     - toFQDNs: # only required for firewalls that enforce SNI
         - matchName: "_v2-origintunneld._tcp.argotunnel.com" 
         - matchName: "cftunnel.com"
@@ -70,7 +70,7 @@ spec:
       toPorts:
         - ports:
             - port: "7844"
-              protocol: TCP
+              protocol: ANY # (only TCP required?) Required to allow TCP, UDP and ICMP - as you cannot select on ICMP for some reason
     - toFQDNs: # Optional Requirement for the Cloudflare Tunnel
         - matchName: "api.cloudflare.com" 
         - matchName: "update.argotunnel.com"
@@ -80,7 +80,7 @@ spec:
       toPorts:
         - ports:
             - port: "443"
-              protocol: TCP
+              protocol: ANY # (only TCP required?) Required to allow TCP, UDP and ICMP - as you cannot select on ICMP for some reason
     - toFQDNs: # Permit access to the Gloomhaven webapp service
         - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
       toPorts:
