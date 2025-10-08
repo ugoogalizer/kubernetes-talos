@@ -83,10 +83,16 @@ spec:
               protocol: ANY # (only TCP required?) Required to allow TCP, UDP and ICMP - as you cannot select on ICMP for some reason
     # - toFQDNs: # Permit access to the Gloomhaven webapp service
     #     - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
-    - toEndpoints: # Permit access to the Gloomhaven webapp service
-      - matchLabels:
-          "k8s:io.kubernetes.service.name": ghs-http-svc
-          "k8s:io.kubernetes.pod.namespace": gloomhaven
+    # - toEndpoints: # Permit access to the Gloomhaven webapp service
+    #     - matchLabels:
+    #         "k8s:io.kubernetes.service.name": ghs-http-svc
+    #         "k8s:io.kubernetes.pod.namespace": gloomhaven
+    - toServices: # Permit access to the Gloomhaven webapp service
+      # Services may be referenced by namespace + name
+      - k8sService:
+          serviceName: ghs-http-svc
+          namespace: gloomhaven
+        # Note there are also ways to select a service by its labels through a k8sServiceSelector
       toPorts:
         - ports:
             - port: "8080"
