@@ -81,8 +81,12 @@ spec:
         - ports:
             - port: "443"
               protocol: ANY # (only TCP required?) Required to allow TCP, UDP and ICMP - as you cannot select on ICMP for some reason
-    - toFQDNs: # Permit access to the Gloomhaven webapp service
-        - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
+    # - toFQDNs: # Permit access to the Gloomhaven webapp service
+    #     - matchName: "ghs-http-svc.gloomhaven.svc.cluster.local"
+    - toEndpoints: # Permit access to the Gloomhaven webapp service
+      - matchLabels:
+        k8s:io.kubernetes.service.name: ghs-http-svc
+        k8s:io.kubernetes.pod.namespace: gloomhaven
       toPorts:
         - ports:
             - port: "8080"
