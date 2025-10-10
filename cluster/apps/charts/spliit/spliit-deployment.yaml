@@ -1,0 +1,423 @@
+
+# Example chart: https://github.com/dixneuf19/brassberry-gitops/blob/main/spliit/spliit/values.yaml
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spliit
+  name: spliit
+#  namespace: spliit
+spec:
+  selector:
+    matchLabels:
+      app: spliit
+  template:
+    metadata:
+      labels:
+        app: spliit
+        app.kubernetes.io/name: spliit # required for Homepage
+    spec:
+      containers:
+        - name: spliit
+          # https://github.com/spliit-app/spliit/pkgs/container/spliit 
+          image: ghcr.io/spliit-app/spliit:1.18.0
+          imagePullPolicy: Always
+          env:
+            # - name: PUID
+            #   value: "1000"
+            # - name: PGID
+            #   value: "1000"
+            - name: TZ
+              value: "Australia/Sydney"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spliit-externalsecrets
+                  key: spliit-postgres-secret
+          ports:
+            - containerPort: 8080
+              name: ghs-http
+              protocol: TCP
+            - containerPort: 8081
+              name: ghs-http2
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 750Mi
+            limits:
+              cpu: "1000m"
+              memory: "2000Mi"
+          volumeMounts:
+            - mountPath: /root/.ghs
+              name: ghs-storage-pv
+            - name: ghs-configmap
+              mountPath: /root/.ghs/application.properties
+              subPath: application.properties
+            - name: default-settings-volume
+              mountPath: /root/.ghs/ghs-settings-default.json # Directory where the JSON file will be mounted
+              subPath: ghs-settings-default.json
+      volumes:
+        - name: ghs-storage-pv
+          # If this is NFS backed, you may have to add the nolock mount option to the storage class
+          persistentVolumeClaim:
+            claimName: ghs-storage-pvc
+        - name: ghs-configmap
+          configMap:
+            name: ghs-configfile
+        - name: default-settings-volume
+          configMap:
+            name: ghs-settingsfile
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: ghs-storage-pv
+# spec:
+# capacity:
+#   storage: 1Gi
+# accessModes:
+#   - ReadWriteOnce
+# persistentVolumeReclaimPolicy: Retain
+# nfs:
+#   server: 10.20.10.1 
+#   path: /volume1/k8s/provision-talos-gpu/spliit
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ghs-storage-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghs-http-svc
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: ghs-http
+  selector:
+    app: spliit
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    nginx.org/websocket-services: "ghs-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+    gethomepage.dev/description: spliit Secreariat
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Gaming
+    gethomepage.dev/icon: https://raw.githubusercontent.com/Lurkars/spliitsecretariat/refs/heads/main/src/assets/icons/icon-72x72.png
+    gethomepage.dev/name: spliit
+
+  name: spliit
+spec:
+  rules:
+    - host: spliit.rockyroad.rocks
+      http:
+        paths:
+          - backend:
+              service:
+                name: ghs-http-svc
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - spliit.rockyroad.rocks
+      secretName: spliit-tls
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghs-configfile
+data:
+  application.properties: |
+    ghs-server.lastestClientOnStartup=true
+    ghs-server.public=true
+    
+    # replace <path-to-backup> with an accessible path to store the backup files and <token> as authorization header for authentication.
+    ghs-server.backup.path=/root/.ghs/backups
+    ghs-server.backup.authorization=fLJhBKZzsdrFlFJhSroXOAv42ZuwUXyeKEDl9J66Uu0MUJ8BDioEFzCrpmVJDBjE
+    
+    #To enable a Postgres Backend:
+    # keep those blank
+    spring.datasource.driverClassName=
+    spring.jpa.database-platform=
+
+    # postgresql: replace <database>, <username> and <password> to your needs, remove *mariadb* lines below
+    spring.liquibase.change-log=classpath:db/postgresql/main.xml
+    spring.datasource.url=jdbc:postgresql://postgres-service/spliit
+    spring.datasource.username=ghs-server-user
+    # spring.datasource.password=<password> # injected directly as SPRING_DATASOURCE_PASSWORD
+---
+# Auto server settings upon client startup:
+# from: https://github.com/Lurkars/ghs-server/issues/24
+# Settings file exported from client and formatted using: https://jsonformatter.org/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghs-settingsfile
+data:
+  ghs-settings-default.json: |
+    {
+    "abilities": true,
+    "abilityNumbers": true,
+    "abilityReveal": true,
+    "activeApplyConditions": true,
+    "activeApplyConditionsAuto": [],
+    "activeApplyConditionsExcludes": [
+      "shield"
+    ],
+    "activeStandees": true,
+    "activeSummons": true,
+    "addAllMonsters": false,
+    "allyAttackModifierDeck": true,
+    "alwaysAllyAttackModifierDeck": false,
+    "alwaysFhAdvantage": false,
+    "alwaysFhEnhancements": false,
+    "alwaysFhSolo": false,
+    "alwaysHazardousTerrain": false,
+    "alwaysLootApplyDialog": false,
+    "alwaysLootDeck": false,
+    "amAdvantage": false,
+    "amAdvantageHouseRule": false,
+    "animations": true,
+    "animationSpeed": 1,
+    "applyBuildingRewards": true,
+    "applyConditions": true,
+    "applyConditionsExcludes": [
+      "shield"
+    ],
+    "applyLongRest": true,
+    "applyLoot": true,
+    "applyLootRandomItem": true,
+    "applyRetirement": true,
+    "artwork": true,
+    "autoBackup": 1,
+    "autoBackupFinish": true,
+    "autoBackupUrl": {
+      "url": "https://spliit.rockyroad.rocks/backup/{WINDOWS_FILENAME}",
+      "method": "POST",
+      "fileUpload": false,
+      "username": "",
+      "password": "",
+      "authorization": "fLJhBKZzsdrFlFJhSroXOAv42ZuwUXyeKEDl9J66Uu0MUJ8BDioEFzCrpmVJDBjE"
+    },
+    "automaticAttackModifierFullscreen": true,
+    "automaticFirstFigure": true,
+    "automaticGameClock": true,
+    "automaticGameClockFocus": false,
+    "automaticPassTime": true,
+    "automaticStandees": true,
+    "automaticStandeesDialog": false,
+    "automaticTheme": true,
+    "automaticUnlocking": true,
+    "autoscroll": true,
+    "barsize": 1,
+    "backupHint": true,
+    "battleGoals": false,
+    "battleGoalsCharacter": false,
+    "battleGoalsFh": false,
+    "battleGoalsReminder": true,
+    "bbAm": true,
+    "bbChars": true,
+    "bbStandeeLimit": true,
+    "browserNavigation": false,
+    "buildingEffectsVisible": false,
+    "buildingInteractionsVisible": false,
+    "calculate": true,
+    "calculateAdvantageStats": true,
+    "calculateShieldStats": true,
+    "calculateStats": true,
+    "calendarLocked": false,
+    "characterAttackModifierAnimate": true,
+    "characterAttackModifierDeck": true,
+    "characterAttackModifierDeckPermanent": false,
+    "characterAttackModifierDeckPermanentActive": false,
+    "characterCompact": false,
+    "characterFullView": false,
+    "characterHandSize": false,
+    "characterIdentities": true,
+    "characterIdentityHint": true,
+    "characterItems": false,
+    "characterItemsApply": true,
+    "characterItemsPermanent": false,
+    "characterItemsPermanentActive": false,
+    "characterItemsPermanentEquipped": true,
+    "characterItemsPermanentSorted": true,
+    "characterItemsPermanentZoom": 1,
+    "playerNumber": false,
+    "characterSheet": true,
+    "characterSheetCompact": false,
+    "characterSheetLocked": false,
+    "characterShieldRetaliate": false,
+    "characterSortIndex": false,
+    "characterTraits": false,
+    "columns": true,
+    "columnsForce": false,
+    "combineInteractiveAbilities": true,
+    "combineSummonAction": true,
+    "damageHP": false,
+    "damageHPToggle": true,
+    "debugEditWorldMap": false,
+    "debugRightClick": false,
+    "disableAnimations": false,
+    "disableArtwork": false,
+    "disableColumns": false,
+    "disableDragFigures": false,
+    "disablePinchZoom": false,
+    "disabledTurnConfirmation": false,
+    "disableSortFigures": false,
+    "disableStandees": false,
+    "disableWakeLock": false,
+    "dragFigures": true,
+    "dragValues": true,
+    "editionDataUrls": [
+      "./assets/data/gh.json",
+      "./assets/data/cs.json",
+      "./assets/data/fh.json",
+      "./assets/data/jotl.json",
+      "./assets/data/toa.json",
+      "./assets/data/bb.json",
+      "./assets/data/solo.json",
+      "./assets/data/fh-crossover.json",
+      "./assets/data/fc.json",
+      "./assets/data/gh-envx.json",
+      "./assets/data/toa-envv.json",
+      "./assets/data/sc.json",
+      "./assets/data/gh-solo-items.json",
+      "./assets/data/sox.json",
+      "./assets/data/bas.json",
+      "./assets/data/cc.json",
+      "./assets/data/gh2e.json",
+      "./assets/data/ir.json",
+      "./assets/data/r100kc.json",
+      "./assets/data/sits.json"
+    ],
+    "editions": [
+      "gh",
+      "fh",
+      "jotl",
+      "fc",
+      "cs",
+      "toa",
+      "bb",
+      "gh2e",
+      "solo"
+    ],
+    "eliteFirst": true,
+    "errata": false,
+    "excludeEditionDataUrls": [],
+    "expireConditions": true,
+    "events": false,
+    "eventsApply": true,
+    "eventsDraw": true,
+    "eventsDrawReminder": false,
+    "feedbackErrors": true,
+    "feedbackErrorsIgnore": [],
+    "fhChallenges": false,
+    "fhChallengesApply": true,
+    "fhGarden": true,
+    "fhGhItems": false,
+    "fhPets": true,
+    "fhSecondEdition": false,
+    "fhStyle": false,
+    "fhTrials": false,
+    "fhTrialsApply": true,
+    "fontsize": 1,
+    "gameClock": false,
+    "gameClockMerge": true,
+    "gh2eImbuement": true,
+    "globalFontsize": 1,
+    "globalMapHighlighting": true,
+    "fullscreen": false,
+    "hideAbsent": false,
+    "hideCharacterHP": false,
+    "hideCharacterLoot": false,
+    "hideCharacterXP": false,
+    "hideStats": false,
+    "hints": true,
+    "initiativeRequired": true,
+    "initiativeRoundConfirm": false,
+    "interactiveAbilities": true,
+    "keyboardShortcuts": true,
+    "locale": "en",
+    "logServerMessages": false,
+    "lootDeck": true,
+    "maxUndo": 100,
+    "portraitMode": true,
+    "monsters": true,
+    "monsterAttackModifierDeck": true,
+    "moveElements": true,
+    "partySheet": true,
+    "pinchZoom": true,
+    "pressDoubleClick": true,
+    "randomStandees": false,
+    "removeUnusedMonster": false,
+    "scenarioNumberInput": false,
+    "scenarioRewards": true,
+    "scenarioRewardsItems": true,
+    "scenarioRooms": true,
+    "scenarioRules": true,
+    "scenarioRulesAutoapply": false,
+    "scenarioStats": false,
+    "serverAutoconnect": true,
+    "serverCode": "23969154-6623-4099-8256-636fc6842510",
+    "serverPing": "45",
+    "serverPort": "443",
+    "serverSettings": true,
+    "serverUrl": "spliit.rockyroad.rocks",
+    "serverWss": true,
+    "showBossMonster": true,
+    "showAllSections": false,
+    "showExpandedAbilityCard": false,
+    "showFullAbilityCard": false,
+    "showHiddenMonster": false,
+    "showOnlyUnfinishedScenarios": false,
+    "sortFigures": true,
+    "spoilers": [],
+    "standaloneInitiativeAutomatic": false,
+    "standees": true,
+    "standeeShieldRetaliate": false,
+    "standeeStats": false,
+    "statAnimations": false,
+    "stats": true,
+    "summons": true,
+    "temporaryEnhancements": false,
+    "theme": "default",
+    "tooltips": true,
+    "treasures": true,
+    "treasuresLoot": true,
+    "treasuresLootItem": true,
+    "treasuresLootScenario": true,
+    "turnConfirmation": true,
+    "unlockEnvelopeBuildings": true,
+    "wakeLock": true,
+    "wrapProsperity": false,
+    "zoom": 100
+    }
