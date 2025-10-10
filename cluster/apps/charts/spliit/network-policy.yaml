@@ -23,6 +23,9 @@ spec:
           rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
             dns:
               - matchPattern: "*" # allow all DNS lookups
+    - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": spliit
     # - toFQDNs: # allow access to the FQDNs
     #     - matchName: "shift.gearboxsoftware.com" # to redeem codes
     #     - matchName: "raw.githubusercontent.com" # to pull in codes
