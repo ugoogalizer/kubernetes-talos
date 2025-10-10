@@ -43,6 +43,18 @@ spec:
                 secretKeyRef:
                   name: spliit-externalsecrets
                   key: spliit-postgres-secret
+            - name: POSTGRES_PRISMA_URL
+              # value: "postgresql://postgres:${POSTGRES_PASSWORD}@db"
+              valueFrom:
+                secretKeyRef:
+                  name: spliit-externalsecrets
+                  key: spliit-postgres-url # templated by external secrets
+            - name: POSTGRES_URL_NON_POOLING
+              # value: "postgresql://postgres:${POSTGRES_PASSWORD}@db"
+              valueFrom:
+                secretKeyRef:
+                  name: spliit-externalsecrets
+                  key: spliit-postgres-url # templated by external secrets
             - name: POSTGRES_TIMEOUT
               value: "60"
           ports:
