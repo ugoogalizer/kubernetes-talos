@@ -33,7 +33,7 @@ spec:
             - name: POSTGRES_DB
               value: "spliit"
             - name: POSTGRES_USER
-              value: "spliit-server-user"
+              value: "spliit-user"
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -95,7 +95,7 @@ spec:
               - name: POSTGRES_DB
                 value: "spliit"
               - name: POSTGRES_USER
-                value: "spliit-server-user"
+                value: "spliit-user"
               # ExternalSecret provides POSTGRES_USER and POSTGRES_PASSWORD
               - name: POSTGRES_PASSWORD
                 valueFrom:
