@@ -71,15 +71,15 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/health/liveness
-              port: http
+              port: spliit-http
           readinessProbe:
             httpGet:
              path: /api/health/readiness
-             port: http
+             port: spliit-http
           startupProbe:
             httpGet:
               path: /api/health/readiness
-              port: http
+              port: spliit-http
             failureThreshold: 30
 ---
 apiVersion: v1
