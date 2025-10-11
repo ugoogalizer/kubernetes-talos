@@ -107,6 +107,16 @@ spec:
         - ports:
             - port: "8123"
               protocol: TCP
+    - toServices: # Permit access to the HomeAssistant webapp service
+      # Services may be referenced by namespace + name
+      - k8sService:
+          serviceName: spliit-http-svc
+          namespace: spliit
+        # Note there are also ways to select a service by its labels through a k8sServiceSelector
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
 
 # TODO  --- Still not letting through ICMP packets
 
