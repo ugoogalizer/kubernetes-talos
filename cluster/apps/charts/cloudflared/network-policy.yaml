@@ -105,7 +105,9 @@ spec:
         # Note there are also ways to select a service by its labels through a k8sServiceSelector
       toPorts:
         - ports:
-            - port: "8123"
+            - port: "80" # Service Port
+              protocol: TCP
+            - port: "8123" # for some reason you need the container port too ? I don't understand why.
               protocol: TCP
     - toServices: # Permit access to the HomeAssistant webapp service
       # Services may be referenced by namespace + name
