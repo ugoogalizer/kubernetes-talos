@@ -97,17 +97,24 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    - toServices: # Permit access to the HomeAssistant webapp service
+    # - toServices: # Permit access to the HomeAssistant webapp service
+    #   # Services may be referenced by namespace + name
+    #   - k8sService:
+    #       serviceName: home-assistant-lb
+    #       namespace: home-assistant
+    #     # Note there are also ways to select a service by its labels through a k8sServiceSelector
+    #   toPorts:
+    #     - ports:
+    #         # - port: "80" # Service Port
+    #         #   protocol: TCP
+    #         - port: "8123" # LB port
+    #           protocol: TCP
+    - toEntities: # Permit access to the HomeAssistant webapp service
       # Services may be referenced by namespace + name
-      - k8sService:
-          serviceName: home-assistant-lb
-          namespace: home-assistant
-        # Note there are also ways to select a service by its labels through a k8sServiceSelector
+      - host # this is ugly, but required because Home Assistant is running `hostNetwork: true`
       toPorts:
         - ports:
-            # - port: "80" # Service Port
-            #   protocol: TCP
-            - port: "8123" # LB port
+            - port: "8123" 
               protocol: TCP
     - toServices: # Permit access to the HomeAssistant webapp service
       # Services may be referenced by namespace + name
