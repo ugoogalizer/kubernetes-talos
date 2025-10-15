@@ -1,4 +1,6 @@
-# https://artifacthub.io/packages/helm/ollama-helm/ollama/0.4.0
+# SCRAPED https://artifacthub.io/packages/helm/ollama-helm/ollama/0.4.0
+
+# https://artifacthub.io/packages/helm/open-webui/open-webui
 
 # Note you can access the ollama api at: http://open-webui-ollama.ollama.svc.cluster.local:11434
 
@@ -18,7 +20,8 @@ spec:
   source:
     chart: open-webui
     repoURL: https://helm.openwebui.com/
-    targetRevision: 5.13.0 # 5.13.0 as at 20250216
+    #targetRevision: 5.13.0 # 5.13.0 as at 20250216
+    targetRevision: 8.11.0  #8.11.0 as at 20251015
     helm:
       values: |
         ollama:
