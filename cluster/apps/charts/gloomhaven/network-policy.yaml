@@ -25,9 +25,9 @@ spec:
               - matchPattern: "*" # allow all DNS lookups
     - toFQDNs: # Allow the container to pull the latest copy of the client down
         - matchName: "github.com" 
-        - matchName: "*.github.com"
+        - matchPattern: "*.github.com"
         - matchName: "githubusercontent.com"
-        - matchName: "*.githubusercontent.com"
+        - matchPattern: "*.githubusercontent.com"
         - matchName: "champonthis.de"
       toPorts:
         - ports:
