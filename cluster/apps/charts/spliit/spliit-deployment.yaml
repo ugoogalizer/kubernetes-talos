@@ -32,17 +32,17 @@ spec:
             #   value: "1000"
             - name: TZ
               value: "Australia/Sydney"
-            - name: POSTGRES_HOST
-              value: "postgres-service"
-            - name: POSTGRES_NAME
-              value: "spliit"
-            - name: POSTGRES_USER
-              value: "spliit-user"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: spliit-externalsecrets
-                  key: spliit-postgres-secret
+            # - name: POSTGRES_HOST
+            #   value: "postgres-service"
+            # - name: POSTGRES_NAME
+            #   value: "spliit"
+            # - name: POSTGRES_USER
+            #   value: "spliit-user"
+            # - name: POSTGRES_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: spliit-externalsecrets
+            #       key: spliit-postgres-secret
             - name: POSTGRES_PRISMA_URL
               # value: "postgresql://postgres:${POSTGRES_PASSWORD}@db"
               valueFrom:
