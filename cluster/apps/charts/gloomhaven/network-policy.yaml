@@ -26,6 +26,7 @@ spec:
     - toFQDNs: # Allow the container to pull the latest copy of the client down
         - matchName: "github.com" 
         - matchName: "raw.github.com"
+        - matchName: "api.github.com"
         - matchName: "champonthis.de"
       toPorts:
         - ports:
