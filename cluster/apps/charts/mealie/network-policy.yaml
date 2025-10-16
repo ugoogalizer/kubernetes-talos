@@ -6,7 +6,7 @@ apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   name: allow-dns-to-cluster
-  namespace: gloomhaven
+  namespace: mealie
 spec:
   endpointSelector: {}  # all pods
   egress:
@@ -23,21 +23,15 @@ spec:
           rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
             dns:
               - matchPattern: "*" # allow all DNS lookups
-    - toFQDNs: # Allow the container to pull the latest copy of the client down
+    - toFQDNs: # Allow the container to connect to websites
         - matchName: "github.com" 
-        - matchPattern: "*.github.com"
-        - matchPattern: "raw.github.com"
-        - matchPattern: "api.github.com"
-        - matchName: "githubusercontent.com"
-        - matchPattern: "*.githubusercontent.com"
-        - matchName: "champonthis.de"
       toPorts:
         - ports:
             - port: "443"
               protocol: TCP # Required to allow TCP, UDP and ICMP
     - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
       - matchLabels:
-          "k8s:io.kubernetes.pod.namespace": gloomhaven
+          "k8s:io.kubernetes.pod.namespace": mealie
 
  
 # # Testing pod: 
