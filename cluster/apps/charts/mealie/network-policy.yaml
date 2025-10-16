@@ -24,7 +24,7 @@ spec:
             dns:
               - matchPattern: "*" # allow all DNS lookups
     - toFQDNs: # Allow the container to connect to websites
-        - matchName: "github.com" 
+        - matchName: "recipetineats.com" 
       toPorts:
         - ports:
             - port: "443"
