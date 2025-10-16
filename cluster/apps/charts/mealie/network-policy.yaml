@@ -25,6 +25,7 @@ spec:
               - matchPattern: "*" # allow all DNS lookups
     - toFQDNs: # Allow the container to connect to websites
         - matchName: "recipetineats.com" 
+        - matchName: "www.recipetineats.com" 
       toPorts:
         - ports:
             - port: "443"
