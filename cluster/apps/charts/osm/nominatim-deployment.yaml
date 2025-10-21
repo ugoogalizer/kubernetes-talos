@@ -201,7 +201,7 @@ metadata:
     gethomepage.dev/group: Utils
     gethomepage.dev/icon: nominatim
     gethomepage.dev/name: nominatim
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
 
   name: nominatim
@@ -222,7 +222,7 @@ spec:
                 name: nominatim-ui-http-svc
                 port:
                   number: 80
-            path: /ui(/|$)(.*) # rewrite /ui/* as /*
+            path: /ui/(.*) # rewrite /ui/* as /*
             pathType: ImplementationSpecific
   tls:
     - hosts:
