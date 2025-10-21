@@ -237,6 +237,11 @@ metadata:
     gethomepage.dev/name: nominatim
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
+    # Permanent redirect of /ui to /ui/
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~ "^/ui$") {
+        return 301 $request_uri/;
+      }
   name: nominatim-ui
 spec:
   rules:
@@ -261,6 +266,8 @@ spec:
 # Auto server settings upon client startup:
 # from: https://github.com/Lurkars/ghs-server/issues/24
 # Settings file exported from client and formatted using: https://jsonformatter.org/
+
+# Options can be found here: https://github.com/osm-search/nominatim-ui/blob/master/dist/config.defaults.js
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -268,6 +275,8 @@ metadata:
 data:
   config.theme.js: |
     Nominatim_Config.Nominatim_API_Endpoint='https://nominatim.rockyroad.rocks/';
+    Nominatim_Config.Page_Title = 'Matt's Geocoder';
+    Map_Tile_URL: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 ---
 
 # apiVersion: batch/v1
