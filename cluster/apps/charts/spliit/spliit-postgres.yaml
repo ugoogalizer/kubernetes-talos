@@ -121,7 +121,7 @@ spec:
                   -h "$POSTGRES_HOST" \
                   -U "$POSTGRES_USER" \
                   -d "$POSTGRES_DB" \
-                  > /backups/${POSTGRES_DB}_${TIMESTAMP}.sql
+                  | gzip > /backups/${POSTGRES_DB}_${TIMESTAMP}.sql.gz
                 echo "Backup finished: /backups/${POSTGRES_DB}_${TIMESTAMP}.sql"
           volumes:
             - name: backup-storage
