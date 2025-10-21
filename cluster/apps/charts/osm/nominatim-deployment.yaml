@@ -222,7 +222,7 @@ spec:
                 port:
                   number: 80
             path: /ui(/|$)(.*) # rewrite /ui/* as /*
-            pathType: Prefix
+            pathType: ImplementationSpecific
   tls:
     - hosts:
         - nominatim.rockyroad.rocks
