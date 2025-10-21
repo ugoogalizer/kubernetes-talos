@@ -141,7 +141,7 @@ spec:
               service:
                 name: nominatim-http-svc
                 port:
-                  number: 80
+                  number: 8080
             path: /
             pathType: Prefix
   tls:
