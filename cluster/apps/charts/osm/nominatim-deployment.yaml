@@ -29,10 +29,10 @@ spec:
             - name: TZ
               value: "Australia/Sydney"
             # can only have one of PBF_URL or PBF_PATH
-            - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
-              value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
-            # - name: PBF_PATH 
-            #   value: "/nominatim/data/new-zealand-251020.osm.pbf"
+            # - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
+            #   value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
+            - name: PBF_PATH 
+              value: "/nominatim/data/new-zealand-251020.osm.pbf"
             #- name: REPLICATION_URL
             #  value: "https://download.geofabrik.de/europe/monaco-updates/"
             # - name: REPLICATION_UPDATE_INTERVAL # seconds
@@ -63,6 +63,8 @@ spec:
               mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
             - name: source-storage
               mountPath: /nominatim/data
+            - name: flatnode-storage
+              mountPath: /nominatim/flatnode
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
@@ -70,6 +72,9 @@ spec:
         - name: source-storage
           persistentVolumeClaim:
             claimName: nominatim-source-pvc
+        - name: flatnode-storage
+          persistentVolumeClaim:
+            claimName: nominatim-flatnode-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -94,6 +99,19 @@ spec:
   resources:
     requests:
       storage: 10Gi 
+---
+# https://github.com/mediagis/nominatim-docker/blob/master/howto.md#flatnode-files
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nominatim-flatnode-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 100Gi 
 ---
 apiVersion: v1
 kind: Service
