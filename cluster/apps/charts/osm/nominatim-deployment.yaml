@@ -267,7 +267,7 @@ metadata:
   name: nominatim-config
 data:
   config.theme.js: |
-    Nominatim_Config.Nominatim_API_Endpoint='http://localhost:8080/';
+    Nominatim_Config.Nominatim_API_Endpoint='https://nominatim.rockyroad.rocks/';
 ---
 
 # apiVersion: batch/v1
