@@ -1,0 +1,39 @@
+# # https://docs.cilium.io/en/stable/security/policy/language/
+---
+# Allow access to cluster dns
+# Note the existance of this policy applies a default deny-all for anything not listed.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-dns-to-cluster
+  namespace: osm
+spec:
+  endpointSelector: {}  # all pods
+  egress:
+    - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system # mandatory and doesn't matter that this label doesn't actually exist on the cluster
+            "k8s:k8s-app": kube-dns   # selects the cluster DNS pods, note that the "k8s:" is required to tell Cilium it's not its own label (I think)
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
+            dns:
+              - matchPattern: "*" # allow all DNS lookups
+    - toFQDNs: # Allow the container to pull the latest copy of the client down
+        - matchName: "download.geofabrik.de" # allow ability to download map files
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP # Required to allow TCP, UDP and ICMP
+    - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": osm
+
+ 
+# # Testing pod: 
+
+# kubectl -n autoshift2025 run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh
