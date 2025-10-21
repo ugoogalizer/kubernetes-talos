@@ -67,7 +67,6 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: nominatim-postgres-pvc
-      volumes:
         - name: source-storage
           persistentVolumeClaim:
             claimName: nominatim-source-pvc
