@@ -216,6 +216,9 @@ spec:
                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "CREATE DATABASE nominatim;"
 
                 echo "✅ Database 'nominatim' successfully dropped and recreated."
+
+                echo "remove nominatim docker flags to trigger recreate"
+                rm /var/lib/postgresql/16/main/import-finished
             env:
             - name: PGUSER
               value: nominatim
