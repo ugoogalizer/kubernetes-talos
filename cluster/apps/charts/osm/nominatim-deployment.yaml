@@ -74,7 +74,7 @@ spec:
               value: "Australia/Sydney"
           ports:
             - containerPort: 80
-              name: nominatim-ui-http
+              name: nominatim-ui-ht
               protocol: TCP
           resources:
             requests:
@@ -161,7 +161,7 @@ spec:
     - name: http-ui
       port: 80
       protocol: TCP
-      targetPort: nominatim-ui-http
+      targetPort: nominatim-ui-ht
   selector:
     app: nominatim
   type: ClusterIP
