@@ -271,10 +271,10 @@ metadata:
 data:
   config.theme.js: |
     Nominatim_Config.Nominatim_API_Endpoint='https://nominatim.rockyroad.rocks/';
-    Nominatim_Config.Page_Title='Matt's Geocoder';
-    Map_Tile_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 ---
-
+# 
+#    Nominatim_Config.Page_Title='Matt's Geocoder';
+#    Map_Tile_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 # apiVersion: batch/v1
 # kind: CronJob
 # metadata:
