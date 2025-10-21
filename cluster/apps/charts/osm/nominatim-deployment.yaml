@@ -53,8 +53,8 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 1000m
-              memory: 1000Mi
+              cpu: 5000m
+              memory: 5000Mi
             limits:
               cpu: "10000m"
               memory: "10000Mi"
@@ -78,11 +78,11 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 500m
+              memory: 300Mi
             limits:
-              cpu: "500m"
-              memory: "200Mi"
+              cpu: "1000m"
+              memory: "500Mi"
           volumeMounts:
             - name: nominatim-config-volume
               mountPath: /usr/share/nginx/html/theme/config.theme.js # Directory where the JSON file will be mounted
