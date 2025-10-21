@@ -48,9 +48,9 @@ spec:
             - containerPort: 8080
               name: nominatim-http
               protocol: TCP
-            - containerPort: 5432
-              name: postgres
-              protocol: TCP
+            # - containerPort: 5432
+            #   name: postgres
+            #   protocol: TCP
           resources:
             requests:
               cpu: 5000m
@@ -165,20 +165,20 @@ spec:
   selector:
     app: nominatim
   type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-svc
-spec:
-  ports:
-    - name: postgres
-      port: 5432
-      protocol: TCP
-      targetPort: postgres
-  selector:
-    app: nominatim
-  type: ClusterIP
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: postgres-svc
+# spec:
+#   ports:
+#     - name: postgres
+#       port: 5432
+#       protocol: TCP
+#       targetPort: postgres
+#   selector:
+#     app: nominatim
+#   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -274,62 +274,3 @@ data:
     Nominatim_Config.Page_Title="Matt's Geocoder";
     Nominatim_Config.Map_Tile_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 ---
-# 
-#    Nominatim_Config.Page_Title='Matt's Geocoder';
-#    Nominatim_Config.Map_Tile_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-# apiVersion: batch/v1
-# kind: CronJob
-# metadata:
-#   name: osmtools-nominatim-reset
-#   namespace: osm
-# spec:
-#   schedule: "0 0 31 2 *" # arbitrary schedule that never happens
-#   suspend: true           # prevent automatic execution
-#   jobTemplate:
-#     spec:
-#       template:
-#         spec:
-#           restartPolicy: Never
-#           containers:
-#           - name: db-reset
-#             image: postgres:16
-#             command: ["/bin/bash", "-c"]
-#             args:
-#               - |
-#                 set -uo pipefail
-#                 echo "remove nominatim docker flags to trigger recreate"
-#                 rm /var/lib/postgresql/16/main/import-finished
-
-#                 echo "🔄 Connecting to Postgres at ${PGHOST}..."
-#                 echo "🔄 Terminating all active sessions on 'nominatim'..."
-
-#                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "
-#                   SELECT pg_terminate_backend(pid)
-#                   FROM pg_stat_activity
-#                   WHERE datname='nominatim' AND pid<>pg_backend_pid();
-#                 "
-                
-#                 echo "Dropping and recreating database 'nominatim'..."
-
-#                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "DROP DATABASE IF EXISTS nominatim;"
-#                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "CREATE DATABASE nominatim;"
-
-#                 echo "✅ Database 'nominatim' successfully dropped and recreated."
-
-#             env:
-#             - name: PGUSER
-#               value: nominatim
-#             - name: PGPASSWORD
-#               valueFrom:
-#                 secretKeyRef:
-#                   name: nominatim-externalsecrets
-#                   key: nominatim-postgres-secret
-#             - name: PGHOST
-#               value: postgres-svc
-#           volumeMounts:
-#             - name: postgres-storage
-#               mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
-#       volumes:
-#         - name: postgres-storage
-#           persistentVolumeClaim:
-#             claimName: nominatim-postgres-pvc
