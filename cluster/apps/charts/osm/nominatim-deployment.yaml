@@ -202,11 +202,18 @@ spec:
               - |
                 set -euo pipefail
                 echo "🔄 Connecting to Postgres at ${PGHOST}..."
+                echo "🔄 Terminating all active sessions on 'nominatim'..."
+
+                psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "
+                  SELECT pg_terminate_backend(pid)
+                  FROM pg_stat_activity
+                  WHERE datname='nominatim' AND pid<>pg_backend_pid();
+
                 echo "Dropping and recreating database 'nominatim'..."
 
                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "DROP DATABASE IF EXISTS nominatim;"
                 psql -U "${PGUSER}" -h "${PGHOST}" -d postgres -c "CREATE DATABASE nominatim;"
-              
+
                 echo "✅ Database 'nominatim' successfully dropped and recreated."
             env:
             - name: PGUSER
