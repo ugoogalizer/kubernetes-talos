@@ -122,7 +122,7 @@ spec:
                   -U "$POSTGRES_USER" \
                   -d "$POSTGRES_DB" \
                   | gzip > /backups/${POSTGRES_DB}_${TIMESTAMP}.sql.gz
-                echo "Backup finished: /backups/${POSTGRES_DB}_${TIMESTAMP}.sql"
+                echo "Backup finished: /backups/${POSTGRES_DB}_${TIMESTAMP}.sql.gz"
           volumes:
             - name: backup-storage
               persistentVolumeClaim:
