@@ -1,0 +1,145 @@
+
+# https://docs.mealie.io/documentation/getting-started/installation/installation-checklist/
+# https://docs.mealie.io/documentation/getting-started/installation/postgres/
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mealie
+  name: mealie
+#  namespace: mealie
+spec:
+  selector:
+    matchLabels:
+      app: mealie
+  template:
+    metadata:
+      labels:
+        app: mealie
+        app.kubernetes.io/name: mealie # required for Homepage
+    spec:
+      containers:
+        - name: mealie
+          image: ghcr.io/mealie-recipes/mealie:v3.3.2 # https://github.com/mealie-recipes/mealie/pkgs/container/mealie
+          imagePullPolicy: Always
+          env:
+              # PUID: 1000
+              # PGID: 1000
+            - name: TZ
+              value: "Australia/Sydney"
+            - name: ALLOW_SIGNUP
+              value: "false"
+            - name: BASE_URL
+              value: https://mealie.rockyroad.rocks
+            - name: DB_ENGINE
+              value: postgres
+            - name: POSTGRES_USER
+              value: mealie
+            - name: POSTGRES_SERVER
+              value: postgres-service
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: mealie
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-externalsecrets
+                  key: mealie-postgres-password
+            # TODO:       
+            # - name: OpenID Connect
+            #   value: 
+            # - name: SMTP
+            #   value: 
+            # - name: 
+            #   value: 
+            # - name: 
+            #   value: 
+          ports:
+            - containerPort: 9000 # or 9925, not well documented
+              name: mealie-http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 750Mi
+            limits:
+              cpu: "500m"
+              memory: "2000Mi"
+          volumeMounts:
+            - mountPath: /app/data/
+              name: mealie-storage-pv
+      volumes:
+        - name: mealie-storage-pv
+          # If this is NFS backed, you may have to add the nolock mount option to the storage class
+          persistentVolumeClaim:
+            claimName: mealie-storage-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mealie-storage-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mealie-http-svc
+spec:
+  ports:
+    - name: http
+      port: 9000
+      protocol: TCP
+      targetPort: mealie-http
+  selector:
+    app: mealie
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    # nginx.org/websocket-services: "mealie-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+    gethomepage.dev/description: Mealie
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Gaming
+    gethomepage.dev/icon: mealie
+    gethomepage.dev/name: Mealie
+
+  name: mealie
+spec:
+  rules:
+    - host: mealie.rockyroad.rocks
+      http:
+        paths:
+          - backend:
+              service:
+                name: mealie-http-svc
+                port:
+                  number: 9000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - mealie.rockyroad.rocks
+      secretName: mealie-tls
+---
