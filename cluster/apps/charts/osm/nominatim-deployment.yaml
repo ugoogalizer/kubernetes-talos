@@ -210,7 +210,7 @@ spec:
             echo "✅ Database 'nominatim' successfully dropped and recreated."
             env:
             - name: PGUSER
-              value: postgres
+              value: nominatim
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
