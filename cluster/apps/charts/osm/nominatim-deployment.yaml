@@ -202,13 +202,13 @@ spec:
     - host: nominatim.rockyroad.rocks
       http:
         paths:
-          - backend:
+          - path: /
+            pathType: Prefix
+            backend:
               service:
                 name: nominatim-http-svc
                 port:
                   number: 8080
-            path: /
-            pathType: Prefix
   tls:
     - hosts:
         - nominatim.rockyroad.rocks
@@ -235,7 +235,7 @@ metadata:
     gethomepage.dev/group: Utils
     gethomepage.dev/icon: nominatim
     gethomepage.dev/name: nominatim
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
   name: nominatim-ui
 spec:
@@ -243,13 +243,20 @@ spec:
     - host: nominatim.rockyroad.rocks
       http:
         paths:
-          - backend:
+          - path: /ui/(.*) # rewrite /ui/* as /*
+            pathType: ImplementationSpecific
+            backend:
               service:
                 name: nominatim-ui-http-svc
                 port:
                   number: 80
-            path: /ui(/|$)(.*) # rewrite /ui/* as /*
+          - path: /ui # catch /ui exactly (lack of trailing slash)
             pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nominatim-ui-http-svc
+                port:
+                  number: 80
 ---
 # Auto server settings upon client startup:
 # from: https://github.com/Lurkars/ghs-server/issues/24
