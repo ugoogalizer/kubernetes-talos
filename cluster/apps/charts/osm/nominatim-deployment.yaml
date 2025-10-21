@@ -65,6 +65,28 @@ spec:
               mountPath: /nominatim/data
             - name: flatnode-storage
               mountPath: /nominatim/flatnode
+        - name: nominatim-ui
+          # https://github.com/nominatim-app/nominatim/pkgs/container/nominatim 
+          image: smithmicro/n7m-ui:3.5 # as at 20251021
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+          ports:
+            - containerPort: 80
+              name: nominatim-ui-http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: "500m"
+              memory: "200Mi"
+          volumeMounts:
+            - name: nominatim-config-volume
+              mountPath: /usr/share/nginx/html/theme/config.theme.js # Directory where the JSON file will be mounted
+              subPath: config.theme.js
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
@@ -75,6 +97,9 @@ spec:
         - name: flatnode-storage
           persistentVolumeClaim:
             claimName: nominatim-flatnode-pvc
+        - name: nominatim-config-volume
+          configMap:
+            name: nominatim-config
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -130,6 +155,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: nominatim-ui-http-svc
+spec:
+  ports:
+    - name: http-ui
+      port: 80
+      protocol: TCP
+      targetPort: nominatim-ui-http
+  selector:
+    app: nominatim
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: postgres-svc
 spec:
   ports:
@@ -176,11 +215,30 @@ spec:
                   number: 8080
             path: /
             pathType: Prefix
+          - backend:
+              service:
+                name: nominatim-ui-http-svc
+                port:
+                  number: 80
+            path: /ui
+            pathType: Prefix
   tls:
     - hosts:
         - nominatim.rockyroad.rocks
       secretName: nominatim-tls
 ---
+# Auto server settings upon client startup:
+# from: https://github.com/Lurkars/ghs-server/issues/24
+# Settings file exported from client and formatted using: https://jsonformatter.org/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nominatim-config
+data:
+  config.theme.js: |
+    Nominatim_Config.Nominatim_API_Endpoint='https://nominatim-http-svc.osm.svc.cluster.local:8080';
+---
+
 # apiVersion: batch/v1
 # kind: CronJob
 # metadata:
