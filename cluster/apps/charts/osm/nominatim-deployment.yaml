@@ -202,6 +202,7 @@ metadata:
     gethomepage.dev/icon: nominatim
     gethomepage.dev/name: nominatim
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 
   name: nominatim
 spec:
