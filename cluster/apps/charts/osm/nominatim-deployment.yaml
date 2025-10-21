@@ -237,11 +237,6 @@ metadata:
     gethomepage.dev/name: nominatim
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
-    # Permanent redirect of /ui to /ui/
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($request_uri ~ "^/ui$") {
-        return 301 $request_uri/;
-      }
   name: nominatim-ui
 spec:
   rules:
@@ -256,7 +251,7 @@ spec:
                 port:
                   number: 80
           - path: /ui # catch /ui exactly (lack of trailing slash)
-            pathType: ImplementationSpecific
+            pathType: Exact
             backend:
               service:
                 name: nominatim-ui-http-svc
