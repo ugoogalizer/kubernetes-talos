@@ -28,8 +28,11 @@ spec:
           env:
             - name: TZ
               value: "Australia/Sydney"
+            # can only have one of PBF_URL or PBF_PATH
             - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
               value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
+            # - name: PBF_PATH 
+            #   value: "/nominatim/data/new-zealand-251020.osm.pbf"
             #- name: REPLICATION_URL
             #  value: "https://download.geofabrik.de/europe/monaco-updates/"
             # - name: REPLICATION_UPDATE_INTERVAL # seconds
@@ -57,16 +60,34 @@ spec:
               memory: "10000Mi"
           volumeMounts:
             - name: postgres-storage
-              mountPath: /var/lib/postgresql
+              mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
+            - name: source-storage
+              mountPath: /nominatim/data
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: nominatim-postgres-pvc
+      volumes:
+        - name: source-storage
+          persistentVolumeClaim:
+            claimName: nominatim-source-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nominatim-postgres-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 10Gi 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nominatim-source-pvc
 spec:
   storageClassName: managed-nfs-storage-retain
   accessModes:
