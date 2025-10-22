@@ -97,6 +97,26 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    - toServices: # Permit access to the argocd webapp service
+      # Services may be referenced by namespace + name
+      - k8sService:
+          serviceName: argocd-server
+          namespace: argocd
+        # Note there are also ways to select a service by its labels through a k8sServiceSelector
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+    - toServices: # Permit access to the cilium-hubble webapp service
+      # Services may be referenced by namespace + name
+      - k8sService:
+          serviceName: hubble-ui
+          namespace: kube-system
+        # Note there are also ways to select a service by its labels through a k8sServiceSelector
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
     # - toServices: # Permit access to the HomeAssistant webapp service
     #   # Services may be referenced by namespace + name
     #   - k8sService:
@@ -116,7 +136,7 @@ spec:
         - ports:
             - port: "8123" 
               protocol: TCP
-    - toServices: # Permit access to the HomeAssistant webapp service
+    - toServices: # Permit access to the spliit webapp service
       # Services may be referenced by namespace + name
       - k8sService:
           serviceName: spliit-http-svc
