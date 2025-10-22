@@ -97,6 +97,9 @@ spec:
         - ports:
             - port: "8080" # has to be the targetPort became Cilium's policy effectively bypasses the service port 
               protocol: TCP
+    - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": argocd
     - toServices: # Permit access to the argocd webapp service
       # Services may be referenced by namespace + name
       - k8sService:
@@ -144,7 +147,7 @@ spec:
         # Note there are also ways to select a service by its labels through a k8sServiceSelector
       toPorts:
         - ports:
-            # - port: "80" # Service Port
+            # - port: "80" # Service Port # you need to point the cloudflare tunnel to the port (not targetPort though)
             #   protocol: TCP
             - port: "3000" # has to be the targetPort became Cilium's policy effectively bypasses the service port 
               protocol: TCP
