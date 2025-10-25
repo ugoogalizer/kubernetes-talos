@@ -3,17 +3,6 @@ machine:
     hostDNS:
       enabled: true
       forwardKubeDNSToHost: false
-    kubernetesTalosAPIAccess:
-      # allows access for backup https://github.com/siderolabs/talos-backup
-      enabled: true
-      allowedRoles:
-      - os:etcd:backup
-      - os:reader
-      allowedKubernetesNamespaces:
-      - talos
-      - default
-    #   - kube-system
-    #   - default
   network:
     interfaces:
       - deviceSelector:
