@@ -1,0 +1,285 @@
+
+# https://github.com/mediagis/nominatim-docker/tree/master
+# https://github.com/mediagis/nominatim-docker/blob/master/howto.md
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nominatim
+  name: nominatim
+spec:
+  selector:
+    matchLabels:
+      app: nominatim
+  template:
+    metadata:
+      labels:
+        app: nominatim
+        app.kubernetes.io/name: nominatim # required for Homepage
+    spec:
+      tolerations:
+      - key: "workload"
+        operator: "Equal"
+        value: "LargeWorkload"
+        effect: "NoSchedule"
+      nodeSelector:
+        workload: "LargeWorkload"
+      containers:
+        - name: nominatim
+          # https://github.com/nominatim-app/nominatim/pkgs/container/nominatim 
+          image: mediagis/nominatim:5.1 # as at 20251021
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+            # can only have one of PBF_URL or PBF_PATH
+            # - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
+            #   value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
+            # - name: PBF_PATH 
+            #   value: "/nominatim/data/planet-251013.osm.pbf"
+            - name: PBF_PATH 
+              value: "/nominatim/data/monaco-251025.osm.pbf"
+              
+            #- name: REPLICATION_URL
+            #  value: "https://download.geofabrik.de/europe/monaco-updates/"
+            # - name: REPLICATION_UPDATE_INTERVAL # seconds
+            #   value: "86400"
+            - name: IMPORT_STYLE
+              value: "full"
+            - name: NOMINATIM_PASSWORD # to connect to postgres with
+              valueFrom:
+                secretKeyRef:
+                  name: nominatim-externalsecrets
+                  key: nominatim-postgres-secret
+          ports:
+            - containerPort: 8080
+              name: nominatim-http
+              protocol: TCP
+            # - containerPort: 5432
+            #   name: postgres
+            #   protocol: TCP
+          resources:
+            requests:
+              cpu: 18000m
+              memory: 60000Mi
+            limits:
+              cpu: 18000m
+              memory: 60000Mi
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
+            - name: source-storage
+              mountPath: /nominatim/data
+            - name: flatnode-storage
+              mountPath: /nominatim/flatnode
+        - name: nominatim-ui
+          # https://github.com/nominatim-app/nominatim/pkgs/container/nominatim 
+          image: smithmicro/n7m-ui:3.5 # as at 20251021
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+          ports:
+            - containerPort: 80
+              name: nominatim-ui-ht
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 300Mi
+            limits:
+              cpu: "1000m"
+              memory: "500Mi"
+          volumeMounts:
+            - name: nominatim-config-volume
+              mountPath: /usr/share/nginx/html/theme/config.theme.js # Directory where the JSON file will be mounted
+              subPath: config.theme.js
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: nominatim-postgres-pvc
+        - name: source-storage
+          persistentVolumeClaim:
+            claimName: nominatim-source-pvc
+        - name: flatnode-storage
+          persistentVolumeClaim:
+            claimName: nominatim-flatnode-pvc
+        - name: nominatim-config-volume
+          configMap:
+            name: nominatim-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nominatim-postgres-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 10Gi 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nominatim-source-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 10Gi 
+---
+# https://github.com/mediagis/nominatim-docker/blob/master/howto.md#flatnode-files
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nominatim-flatnode-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 100Gi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nominatim-http-svc
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: nominatim-http
+  selector:
+    app: nominatim
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nominatim-ui-http-svc
+spec:
+  ports:
+    - name: http-ui
+      port: 80
+      protocol: TCP
+      targetPort: nominatim-ui-ht
+  selector:
+    app: nominatim
+  type: ClusterIP
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: postgres-svc
+# spec:
+#   ports:
+#     - name: postgres
+#       port: 5432
+#       protocol: TCP
+#       targetPort: postgres
+#   selector:
+#     app: nominatim
+#   type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    # nginx.org/websocket-services: "nominatim-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+  name: nominatim
+spec:
+  rules:
+    - host: nominatim-world.rockyroad.rocks
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nominatim-http-svc
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - nominatim-world.rockyroad.rocks
+      secretName: nominatim-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    nginx.org/websocket-services: "nominatim-http-ui-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+    gethomepage.dev/description: nominatim
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Utils
+    gethomepage.dev/icon: nominatim
+    gethomepage.dev/name: nominatim
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: nominatim-ui
+spec:
+  rules:
+    - host: nominatim-world.rockyroad.rocks
+      http:
+        paths:
+          - path: /ui(/(.*))? # rewrite /ui/* as /*
+          # - path: /ui/(.*) # rewrite /ui/* as /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nominatim-ui-http-svc
+                port:
+                  number: 80
+          # - path: /ui # catch /ui exactly (lack of trailing slash)
+          #   pathType: Exact
+          #   backend:
+          #     service:
+          #       name: nominatim-ui-http-svc
+          #       port:
+          #         number: 80
+---
+# Auto server settings upon client startup:
+# from: https://github.com/Lurkars/ghs-server/issues/24
+# Settings file exported from client and formatted using: https://jsonformatter.org/
+
+# Options can be found here: https://github.com/osm-search/nominatim-ui/blob/master/dist/config.defaults.js
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nominatim-config
+data:
+  config.theme.js: |
+    Nominatim_Config.Nominatim_API_Endpoint='https://nominatim-world.rockyroad.rocks/';
+    Nominatim_Config.Page_Title="Matt's Geocoder";
+    Nominatim_Config.Map_Tile_URL='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+---
