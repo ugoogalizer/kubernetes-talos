@@ -137,7 +137,8 @@ git pull
 talosctl get disk  --insecure  -n 10.20.8.61  # Get disks topology, useful to confirm you're installing to the right disk
 
 # Add node to the cluster:
-talosctl apply-config --insecure -n 10.20.8.61 --file ./worker.yaml --talosconfig=./talosconfig
+talosctl apply-config --insecure -n 10.20.8.61 --file ./worker.yaml --talosconfig=./talosconfig # for a generic worker
+talosctl apply-config --insecure -n 10.20.8.61 --file ./worker-largeworkload.yaml --talosconfig=./talosconfig # for a worker reserved for large workloads
 
 ```
 

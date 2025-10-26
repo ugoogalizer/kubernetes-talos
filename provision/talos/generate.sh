@@ -35,15 +35,24 @@ if [ ! -f "./talosconfig" ]; then
     patch_args+=" --config-patch @$patch"
   done
 
+  # Create the basic configuration files
   talosctl gen config $TALOS_CLUSTER_NAME $K8S_ENDPOINT \
     $patch_args \
     --with-secrets secrets.yaml \
     --force
 
+  # Patch in specific configuration for the control pane
   for patch in ./patches-controlplane/*.yaml; do
     echo "Detecting controlplane patch file $patch"
     talosctl machineconfig patch ./controlplane.yaml --patch @$patch --output controlplane.yaml
   done
+
+  # Generate a dedicated config file for nodes tainted (reserved) just for large workloads
+  for patch in ./patches-worker-largeworkload/*.yaml; do
+    echo "Detecting worker-largeworkload patch file $patch"
+    talosctl machineconfig patch ./worker.yaml --patch @$patch --output worker-largeworkload.yaml
+  done
+  
 fi
 
 
