@@ -38,10 +38,17 @@ spec:
             # - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
             #   value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
             - name: PBF_PATH 
-              value: "/nominatim/data/planet-251013.osm.pbf"
+              value: "/nominatim/data/planet-251020.osm.pbf" # Download in advance from: https://planet.openstreetmap.org/ either via torrent or direct link: https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf
             # - name: PBF_PATH 
             #   value: "/nominatim/data/monaco-251025.osm.pbf"
-              
+            - name: IMPORT_WIKIPEDIA
+              value: "/nominatim/data/wikimedia-importance.csv.gz" # Downloaded in advance from: https://nominatim.org/data/wikimedia-importance.csv.gz
+            # - name: IMPORT_US_POSTCODES
+            #   value: 
+            # - name: IMPORT_GB_POSTCODES
+            #   value: 
+            - name: IMPORT_TIGER_ADDRESSES
+              value: "/nominatim/data/tiger-nominatim-preprocessed-latest.csv.tar.gz" # Downloaded in advance from: https://nominatim.org/data/tiger-nominatim-preprocessed-latest.csv.tar.gz
             #- name: REPLICATION_URL
             #  value: "https://download.geofabrik.de/europe/monaco-updates/"
             # - name: REPLICATION_UPDATE_INTERVAL # seconds
