@@ -36,9 +36,10 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 ## High Level Concepts
 
 1. Setup Talos configuration and form a Talos Cluster
-1. Bootstrap k8s cluster
+1. Bootstrap k8s cluster (disabling default CNI)
 1. Add BitWarden Secrets Manager key to k8s cluster
 1. Deploy once the `core` Kustomize manifests.  Deploys the core services the cluster requires, and Argo-cd
+1. Install [Cilium](https://cilium.io) as CNI for sidecar-less networking and L2-L7 policy enforcement
 1. Argo-cd then automatically deploys the following app deployments
     1. The same `core` manifests from above, ensuring compliance and declarative git-ops from then on of the core cluster services.
     1. "root" found in the `./cluster/apps/root` folder of this repo, and sets up some example apps and shows how an app of apps can be deployed in Argocd
@@ -46,7 +47,7 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 1. NOTE - because there are some operators installed within this cluster, Argo-cd has been told what to ignore, otherwise the Operators and Argo have a fight over state.
 
 Disabled from the original repository
-- [Cilium](https://cilium.io) as a kube proxy replacement and sidecar-less networking
+-  as a kube proxy replacement and sidecar-less networking
 - [Rook Ceph](https://rook.io) for stateful replicated storage for all nodes
 - [Velero](https://velero.io) for offsite cluster backup
 
@@ -62,6 +63,10 @@ brew install siderolabs/tap/talosctl
 Set up a dns record for talos-gpu.rockyroad.rocks
 
 ## Steps to Form Cluster and Bootstrap Argo-CD 
+
+Boot the control pane machine with the specific Talos Linux image (i.e. via USB boot disk)
+
+Make sure it has a statically defined IP address (best with a static DHCP reservation)
 
 ``` bash
 set +o history
@@ -108,6 +113,31 @@ Create keys for talos-backup
 ``` bash
 # sudo apt install age -y # https://github.com/FiloSottile/age#installation
 age-keygen
+
+```
+
+
+# Adding Worker Node/s
+
+Boot the machine with the specific Talos Linux image (i.e. via USB boot disk).
+
+Make sure it has a statically defined IP address (best with a static DHCP reservation)
+
+On the management client:
+``` bash
+cd ~/kubernetes-talos/provision/talos
+git pull
+# if not already setup on this client, run: 
+  # set +o history
+  # export BWS_ACCESS_TOKEN=<MACHINE_TOKEN>
+  # set -o history
+  # ./generate.sh
+
+# some steps to explore the node before configuration is applied: 
+talosctl get disk  --insecure  -n 10.20.8.61  # Get disks topology, useful to confirm you're installing to the right disk
+
+# Add node to the cluster:
+talosctl apply-config --insecure -n 10.20.8.61 --file ./worker.yaml --talosconfig=./talosconfig
 
 ```
 
@@ -167,6 +197,7 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get extensions
 talosctl -e 10.20.8.62 -n 10.20.8.62 health --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 dashboard --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 containers -k --talosconfig=./talosconfig
+talosctl -e 10.20.8.62 -n 10.20.8.62 get securitystate --talosconfig=./talosconfig
 
 # Explore NVIDIA Setup
 talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/modules --talosconfig=./talosconfig
@@ -179,6 +210,9 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/driver/nvidia/version --taloscon
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get links  --talosconfig=./talosconfig
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get machineconfig -o yaml
 talosctl  -e 10.20.8.62 -n 10.20.8.62  exec ip link
+
+# Safely power down the Node
+talosctl  -e 10.20.8.62 -n 10.20.8.62 shutdown --force # The force skips cordon/drain step, useful in a single node cluster
 ```
 
 # Basic Containers to test things with: 
