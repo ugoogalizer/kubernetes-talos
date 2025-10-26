@@ -37,10 +37,10 @@ spec:
             # can only have one of PBF_URL or PBF_PATH
             # - name: PBF_URL  # https://wiki.openstreetmap.org/wiki/Planet.osm#Planet.osm_mirrors
             #   value: "https://download.geofabrik.de/europe/monaco-latest.osm.pbf"
-            # - name: PBF_PATH 
-            #   value: "/nominatim/data/planet-251013.osm.pbf"
             - name: PBF_PATH 
-              value: "/nominatim/data/monaco-251025.osm.pbf"
+              value: "/nominatim/data/planet-251013.osm.pbf"
+            # - name: PBF_PATH 
+            #   value: "/nominatim/data/monaco-251025.osm.pbf"
               
             #- name: REPLICATION_URL
             #  value: "https://download.geofabrik.de/europe/monaco-updates/"
@@ -62,11 +62,11 @@ spec:
             #   protocol: TCP
           resources:
             requests:
-              cpu: 18000m
-              memory: 60000Mi
+              cpu: 18000m # setting to import the world
+              memory: 60000Mi # setting to import the world
             limits:
-              cpu: 18000m
-              memory: 60000Mi
+              cpu: 18000m # setting to import the world
+              memory: 60000Mi # setting to import the world
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
