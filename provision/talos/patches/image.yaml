@@ -1,6 +1,6 @@
 machine: 
   install: 
-    image: factory.talos.dev/installer/d42a2ca2457225af85b071aafac019c6bf80c3782efa3c35104df0858ffb2f9d:v1.9.3
+    image: factory.talos.dev/metal-installer/a3b4bff57156c8e7908d7022add93b0572513a195d5bb2e699238a173520fc7d:v1.11.1
     # NOTE - This only applies once on inital installation - so not properly declarative...  
     #        After that you need to patch the image in manually via API
     #
