@@ -140,6 +140,13 @@ talosctl get disk  --insecure  -n 10.20.8.61  # Get disks topology, useful to co
 talosctl apply-config --insecure -n 10.20.8.61 --file ./worker.yaml --talosconfig=./talosconfig # for a generic worker
 talosctl apply-config --insecure -n 10.20.8.61 --file ./worker-largeworkload.yaml --talosconfig=./talosconfig # for a worker reserved for large workloads
 
+# Alternatively, if config already applied and you need to update
+talosctl apply-config -e 10.20.8.62 -n 10.20.8.61 --file ./worker-largeworkload.yaml --talosconfig=./talosconfig --mode=reboot
+
+# To apply a taint and label: 
+
+kubectl taint nodes maurice workload=LargeWorkload:NoSchedule
+kubectl label nodes maurice workload=LargeWorkload
 ```
 
 
@@ -211,6 +218,9 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/driver/nvidia/version --taloscon
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get links  --talosconfig=./talosconfig
 talosctl  -e 10.20.8.62 -n 10.20.8.62 get machineconfig -o yaml
 talosctl  -e 10.20.8.62 -n 10.20.8.62  exec ip link
+
+# Manually Edit Config
+talosctl -e 10.20.8.62  -n 10.20.8.61 edit machineconfig
 
 # Safely power down the Node
 talosctl  -e 10.20.8.62 -n 10.20.8.62 shutdown --force # The force skips cordon/drain step, useful in a single node cluster
