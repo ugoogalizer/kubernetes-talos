@@ -23,12 +23,12 @@ spec:
           rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
             dns:
               - matchPattern: "*" # allow all DNS lookups
-    - toFQDNs: # Allow the container to pull the latest copy of the client down
-        - matchName: "download.geofabrik.de" # allow ability to download map files
-      toPorts:
-        - ports:
-            - port: "443"
-              protocol: TCP # Required to allow TCP, UDP and ICMP
+    # - toFQDNs: # Allow the container to pull the latest copy of the client down
+    #     - matchName: "download.geofabrik.de" # allow ability to download map files
+    #   toPorts:
+    #     - ports:
+    #         - port: "443"
+    #           protocol: TCP # Required to allow TCP, UDP and ICMP
     - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": osm
