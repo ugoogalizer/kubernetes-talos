@@ -200,6 +200,7 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get rd
 talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get disk
 talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get namespace
 talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get extensions
+ talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/cpuinfo --talosconfig=./talosconfig
 
 # Explore the cluster: 
 talosctl -e 10.20.8.62 -n 10.20.8.62 health --talosconfig=./talosconfig
