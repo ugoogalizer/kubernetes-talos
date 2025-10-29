@@ -1,6 +1,7 @@
 machine:
   kubelet:
     extraConfig:
+      # Note this doesn't exist/work in Talos 1.11 but may in a future version
       registerWithTaints:
         - key: "workload"
           value: "LargeWorkload"
