@@ -57,6 +57,8 @@ Disabled from the original repository
 brew install siderolabs/tap/talosctl
 ```
 
+see wsl.md for details on how to install the management client within Windows Subsystem for Linux (Ubuntu 24.04)
+
 ## DNS
 
 Set up a dns record for talos-gpu.rockyroad.rocks
