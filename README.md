@@ -30,7 +30,7 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 - [KubeVirt](https://kubevirt.io/) - Ability to run VMs ontop of K8s in Talos (special guide [here](https://github.com/NVIDIA/k8s-device-plugin)).  Steps included: 
   - [local-path-provisioner](https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/)
   - A NFS-CSI - I believe the nfs-subdir-external-provisioner above is sufficient for this, skipped
-  - [Multus](https://www.talos.dev/v1.9/kubernetes-guides/network/multus/) Multi-homed CNI - Optional TODO
+  - Cilium CNI
   - KubeVirt - TODO
 
 ## High Level Concepts
