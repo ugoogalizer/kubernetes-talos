@@ -18,8 +18,8 @@ This was taken and customised from https://github.com/btkostner/infrastructure (
 - [Talos Linux](https://www.talos.dev) cluster with NVMe as a boot drive and SSD for data
 - [Talos Backup](https://github.com/siderolabs/talos-backup) a dead simple backup tool for Talos Linux-based Kubernetes clusters to push to s3
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/) for cluster bootstrapping
-- [Metallb](https://metallb.io/) for L2 loadbalancing
-- [ingress-nginx](https://github.com/kubernetes/ingress-nginx) for ingress (yeah I still need to learn about the gateway-api). Also not to be confused with `nginx-ingress` a similar but different ingress extension
+- [Metallb](https://metallb.io/) for L2 loadbalancing (note I intend to deprecate this in time with the inbuilt L2 loadbalancing of the Cilium CNI
+- [ingress-nginx](https://github.com/kubernetes/ingress-nginx) for ingress (yeah I still need to learn about the gateway-api, and intend to deprecate this with gateway-api). Also not to be confused with `nginx-ingress` a similar but different ingress extension
 - [cert-manager](https://cert-manager.io/) to manage certificates, in particular provision valid HTTPS certificates.
 - [external-secrets](https://external-secrets.io/latest/) and [bitwarden-sdk-server](https://github.com/external-secrets/bitwarden-sdk-server)to connect to the cloud instance of Bitwarden Secrets Manager for secrets storage and dynamic sync into the cluster. Only needs to be unlocked once at the start. Relies on cert-manager to create a self-signed certificate in order to allow the bitwarden-sdk-server to function.
 - [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning
