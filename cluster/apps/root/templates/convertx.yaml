@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: convertx
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    # name: talos-gpu
+    server: https://kubernetes.default.svc
+    namespace: convertx
+  project: default
+  source:
+    # path: charts/convertx
+    # repoURL: git@github.com:ugoogalizer/argo-cd.git
+    path: cluster/apps/charts/convertx
+    repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

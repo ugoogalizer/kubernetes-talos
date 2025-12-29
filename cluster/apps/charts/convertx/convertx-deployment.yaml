@@ -1,0 +1,123 @@
+# https://github.com/schlagmichdoch/convertx/blob/master/docs/host-your-own.md
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: convertx
+  name: convertx
+#  namespace: convertx
+spec:
+  selector:
+    matchLabels:
+      app: convertx
+  template:
+    metadata:
+      labels:
+        app: convertx
+        app.kubernetes.io/name: convertx # required for Homepage
+    spec:
+      # imagePullSecrets:
+      #   # Required to pull from private harbor repo
+      #   - name: harbor-devuser-registry-secret
+      containers:
+        - name: convertx
+          image: ghcr.io/c4illin/convertx:v0.16.1 # as at 20251229 
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: JWT_SECRET
+                  key: convertx-jwt-secret
+            - name: HTTP_ALLOWED
+              value: "false"
+            - name: ALLOW_UNAUTHENTICATED
+              value: "true"
+            - name: AUTO_DELETE_EVERY_N_HOURS
+              value: "24"
+            - name: LANGUAGE
+              value: "en"
+          ports:
+            - containerPort: 3000
+              name: convertx-http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: "1000m"
+              memory: "1000Mi"
+          volumeMounts:
+            - mountPath: /app/data
+              name: convertx-storage-pv
+      volumes:
+        - name: convertx-storage-pv
+          # If this is NFS backed, you may have to add the nolock mount option to the storage class
+          persistentVolumeClaim:
+            claimName: convertx-storage-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: convertx-storage-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: convertx-http-svc
+spec:
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: convertx-http
+  selector:
+    app: convertx
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    # nginx.org/websocket-services: "convertx-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100g" # allow uploads (aka backups) of up to 100GB
+  name: convertx
+spec:
+  rules:
+    - host: convertx.rockyroad.rocks
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: convertx-http-svc
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - convertx.rockyroad.rocks
+      secretName: convertx-tls
+---
