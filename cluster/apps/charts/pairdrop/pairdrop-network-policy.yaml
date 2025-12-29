@@ -1,0 +1,39 @@
+# # https://docs.cilium.io/en/stable/security/policy/language/
+# https://github.com/schlagmichdoch/PairDrop/blob/master/docs/host-your-own.md#firewall
+---
+# Allow access to cluster dns
+# Note the existance of this policy applies a default deny-all for anything not listed.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pairdrop-allow-egress
+  namespace: pairdrop
+spec:
+  endpointSelector: {}  # all pods
+  egress:
+    # DNS
+    - toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+    # TURN/STUN ports for coturn
+    # Not required for a local deployment without TURN server for internet access/capability
+    # - toPorts:
+    #     - ports:
+    #         - port: "3478"
+    #           protocol: TCP
+    #         - port: "3478"
+    #           protocol: UDP
+    #         - port: "5349"
+    #           protocol: TCP
+    #         - port: "5349"
+    #           protocol: UDP
+    #         - port: "10000-20000"
+    #           protocol: TCP
+    #         - port: "10000-20000"
+    #           protocol: UDP
+  ingress: []
+ 
+# # Testing pod: 
+
+# kubectl -n autoshift2025 run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh

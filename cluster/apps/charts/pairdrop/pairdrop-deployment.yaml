@@ -1,0 +1,98 @@
+# https://github.com/schlagmichdoch/PairDrop/blob/master/docs/host-your-own.md
+
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pairdrop
+  name: pairdrop
+#  namespace: pairdrop
+spec:
+  selector:
+    matchLabels:
+      app: pairdrop
+  template:
+    metadata:
+      labels:
+        app: pairdrop
+        app.kubernetes.io/name: pairdrop # required for Homepage
+    spec:
+      # imagePullSecrets:
+      #   # Required to pull from private harbor repo
+      #   - name: harbor-devuser-registry-secret
+      containers:
+        - name: pairdrop
+          image: lscr.io/linuxserver/pairdrop:1.11.2
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+            - name: WS_FALLBACK  # Set to true to enable websocket fallback if the peer to peer WebRTC connection is not available to the client.
+              value: "false"
+            - name: RATE_LIMIT # Set to true to limit clients to 1000 requests per 5 min.
+              value: "false"
+            - name: RTC_CONFIG # Set to the path of a file that specifies the STUN/TURN servers.
+              value: "false"
+            - name: DEBUG_MODE # Set to true to debug container and peer connections.
+              value: "false" #This is quite useful to check whether the #HTTP-Server is configured correctly, so the auto-discovery feature works correctly.
+          ports:
+            - containerPort: 3000
+              name: pairdrop-http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500Mi
+            limits:
+              cpu: "1000m"
+              memory: "1000Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pairdrop-http-svc
+spec:
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: pairdrop-http
+  selector:
+    app: pairdrop
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    #acme.cert-manager.io/http01-ingress-class: nginx-external
+    #kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+    #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: "nginx"
+    #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+    #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    #nginx.org/ssl-services: "tvheadend-http-svc"
+    # nginx.org/websocket-services: "pairdrop-http-svc"        
+    nginx.org/proxy-read-timeout: "3600"
+    nginx.org/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+  name: pairdrop
+spec:
+  rules:
+    - host: pairdrop.rockyroad.rocks
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pairdrop-http-svc
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - pairdrop.rockyroad.rocks
+      secretName: pairdrop-tls
+---

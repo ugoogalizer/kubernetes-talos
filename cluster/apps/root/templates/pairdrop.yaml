@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pairdrop
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    # name: talos-gpu
+    server: https://kubernetes.default.svc
+    namespace: pairdrop
+  project: default
+  source:
+    # path: charts/pairdrop
+    # repoURL: git@github.com:ugoogalizer/argo-cd.git
+    path: cluster/apps/charts/pairdrop
+    repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
