@@ -23,7 +23,7 @@ spec:
       #   - name: harbor-devuser-registry-secret
       containers:
         - name: pairdrop
-          image: lscr.io/linuxserver/pairdrop:1.11.2
+          image: lscr.io/linuxserver/pairdrop:1.11.2 # as at 20251229 
           imagePullPolicy: Always
           env:
             - name: TZ
