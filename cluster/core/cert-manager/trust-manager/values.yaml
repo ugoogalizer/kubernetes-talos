@@ -1,7 +1,9 @@
 secretTargets:
   enabled: true
   authorizedSecretsAll: false
-  authorizedSecrets: ["external-secrets/bitwarden-ca-secret"]
+  authorizedSecrets: 
+    - "external-secrets/bitwarden-tls-certs"
+    - "external-secrets/bitwarden-ca-secret"
 crds:
   enabled: true
   keep: true
