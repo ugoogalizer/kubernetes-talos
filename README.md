@@ -243,3 +243,16 @@ kubectl run busybox --restart=Never -ti --rm --namespace temp --image busybox:la
 kubectl run curl --restart=Never -ti --rm --namespace temp --image curlimages/curl:latest sh
 # kubectl delete ns temp
 ```
+
+
+
+
+# Issues with external-secrets certificate renewals
+
+Turns out this was trust-manager not propagating the CA properly into the secret.  I think I've fixed the root issue by authorising trust-manager to have access to the right certificate, but if not this was the once off fix:
+``` bash
+kubectl -n external-secrets delete secret bitwarden-tls-certs
+kubectl -n trust-manager rollout restart deployment trust-manager
+(restart bitwarden sdk too)
+```
+
