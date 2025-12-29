@@ -23,7 +23,7 @@ spec:
       containers:
         - name: spliit
           # https://github.com/spliit-app/spliit/pkgs/container/spliit 
-          image: ghcr.io/spliit-app/spliit:1.18.0
+          image: ghcr.io/spliit-app/spliit:1.19.0
           imagePullPolicy: Always
           env:
             # - name: PUID
