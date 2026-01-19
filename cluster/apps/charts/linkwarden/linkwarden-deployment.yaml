@@ -21,40 +21,6 @@ spec:
         app.kubernetes.io/name: linkwarden # required for Homepage
     spec:
       containers:
-        - name: meilisearch
-          # https://hub.docker.com/r/getmeili/meilisearch/tags
-          image: getmeili/meilisearch:v1.12.8 # v1.12.8 as at 20260120
-          imagePullPolicy: Always
-          env:
-            - name: TZ
-              value: "Australia/Sydney"
-          ports:
-            - containerPort: 7700
-              name: meilisearch
-              protocol: TCP
-          resources:
-            requests:
-              cpu: 250m
-              memory: 1000Mi
-            limits:
-              cpu: "750m"
-              memory: "2000Mi"
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: linkwarden-http
-          # readinessProbe:
-          #   httpGet:
-          #    path: /
-          #    port: linkwarden-http
-          # startupProbe:
-          #   httpGet:
-          #     path: /
-          #     port: linkwarden-http
-          #   failureThreshold: 30
-          volumeMounts:
-            - name: meilisearch-data
-              mountPath: /meili_data
         - name: linkwarden
           # https://github.com/linkwarden/linkwarden/pkgs/container/linkwarden
           image: ghcr.io/linkwarden/linkwarden:v2.13.5 # v2.13.5 as at 20260120
@@ -113,10 +79,66 @@ spec:
         - name: linkwarden-data
           persistentVolumeClaim:
             claimName: linkwarden-data-pvc
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: linkwarden
+  name: meilisearch
+#  namespace: linkwarden
+spec:
+  selector:
+    matchLabels:
+      app: linkwarden
+  template:
+    metadata:
+      labels:
+        app: linkwarden
+        app.kubernetes.io/name: linkwarden # required for Homepage
+    spec:
+      containers:
+        - name: meilisearch
+          # https://hub.docker.com/r/getmeili/meilisearch/tags
+          image: getmeili/meilisearch:v1.12.8 # v1.12.8 as at 20260120
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+          ports:
+            - containerPort: 7700
+              name: meilisearch
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1000Mi
+            limits:
+              cpu: "750m"
+              memory: "2000Mi"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: linkwarden-http
+          # readinessProbe:
+          #   httpGet:
+          #    path: /
+          #    port: linkwarden-http
+          # startupProbe:
+          #   httpGet:
+          #     path: /
+          #     port: linkwarden-http
+          #   failureThreshold: 30
+          volumeMounts:
+            - name: meilisearch-data
+              mountPath: /meili_data
+        
+      volumes:
         - name: meilisearch-data
           persistentVolumeClaim:
             claimName: meilisearch-data-pvc
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -151,6 +173,20 @@ spec:
       port: 3000
       protocol: TCP
       targetPort: linkwarden-http
+  selector:
+    app: linkwarden
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: meilisearch
+spec:
+  ports:
+    - name: http
+      port: 7700
+      protocol: TCP
+      targetPort: meilisearch
   selector:
     app: linkwarden
   type: ClusterIP
