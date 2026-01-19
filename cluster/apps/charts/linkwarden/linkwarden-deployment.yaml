@@ -46,6 +46,11 @@ spec:
                 secretKeyRef:
                   name: linkwarden-externalsecrets
                   key: linkwarden-postgres-secret # templated by external secrets
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-externalsecrets
+                  key: linkwarden-meili-secret # templated by external secrets
             - name: POSTGRES_TIMEOUT
               value: "60"
           ports:
