@@ -1,0 +1,129 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: linkwarden-postgres-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+# postgres-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:18.0 # Use a specific PostgreSQL version #  linkwarden did prefer postgres:16-alpine, but attempting 18 as I'm more familiar and it's later
+          env:
+            - name: POSTGRES_DB
+              value: "linkwarden"
+            - name: POSTGRES_USER
+              value: "linkwarden-user"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-externalsecrets
+                  key: linkwarden-postgres-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: linkwarden-postgres-pvc
+---
+# postgres-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: linkwarden-postgres-backup-pvc
+spec:
+  storageClassName: managed-nfs-storage-retain
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 1Gi 
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup-cronjob
+spec:
+  schedule: "0 2 * * *"   # every day at 2AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: pg-backup
+            image: postgres:18.0
+            env:
+              # "normal" env vars you want to keep as inline values
+              - name: POSTGRES_HOST
+                value: "postgres-service"
+              - name: POSTGRES_DB
+                value: "linkwarden"
+              - name: POSTGRES_USER
+                value: "linkwarden-user"
+              # ExternalSecret provides POSTGRES_USER and POSTGRES_PASSWORD
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: linkwarden-externalsecrets
+                    key: linkwarden-postgres-secret
+              # pg_dump needs PGPASSWORD separately
+              - name: PGPASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: linkwarden-externalsecrets
+                    key: linkwarden-postgres-secret
+            volumeMounts:
+              - name: backup-storage
+                mountPath: /backups
+            command:
+              - /bin/sh
+              - -c
+              - |
+                TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                echo "Starting backup at $TIMESTAMP"
+                pg_dump \
+                  -h "$POSTGRES_HOST" \
+                  -U "$POSTGRES_USER" \
+                  -d "$POSTGRES_DB" \
+                  | gzip > /backups/${POSTGRES_DB}_${TIMESTAMP}.sql.gz
+                echo "Backup finished: /backups/${POSTGRES_DB}_${TIMESTAMP}.sql.gz"
+          volumes:
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: linkwarden-postgres-backup-pvc
