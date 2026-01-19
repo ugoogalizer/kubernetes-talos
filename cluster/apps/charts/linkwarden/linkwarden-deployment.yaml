@@ -105,6 +105,11 @@ spec:
           env:
             - name: TZ
               value: "Australia/Sydney"
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-externalsecrets
+                  key: linkwarden-meili-secret # templated by external secrets
           ports:
             - containerPort: 7700
               name: meilisearch
