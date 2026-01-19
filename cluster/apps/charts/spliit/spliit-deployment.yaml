@@ -112,11 +112,11 @@ metadata:
     nginx.org/proxy-read-timeout: "3600"
     nginx.org/proxy-send-timeout: "3600" 
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
-    gethomepage.dev/description: spliit
+    gethomepage.dev/description: Track and share expenses with friends and family
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Lifestyle
     gethomepage.dev/icon: https://raw.githubusercontent.com/spliit-app/spliit/refs/heads/main/public/logo.svg
-    gethomepage.dev/name: spliit
+    gethomepage.dev/name: Spliit
 
   name: spliit
 spec:

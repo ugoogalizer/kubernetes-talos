@@ -125,11 +125,11 @@ metadata:
     nginx.org/proxy-read-timeout: "3600"
     nginx.org/proxy-send-timeout: "3600" 
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
-    gethomepage.dev/description: Gloomhaven Secreariat
+    gethomepage.dev/description: Companion app for Gloomhaven / Frosthaven based board games
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Gaming
     gethomepage.dev/icon: https://raw.githubusercontent.com/Lurkars/gloomhavensecretariat/refs/heads/main/src/assets/icons/icon-72x72.png
-    gethomepage.dev/name: Gloomhaven
+    gethomepage.dev/name: Gloomhaven Secreariat
 
   name: gloomhaven
 spec:

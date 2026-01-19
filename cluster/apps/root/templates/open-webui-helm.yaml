@@ -64,9 +64,9 @@ spec:
           tls: true
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
-            gethomepage.dev/description: Open-WebUI Self Hosted AI Interface
+            gethomepage.dev/description: Open-WebUI Self Hosted AI Platform
             gethomepage.dev/enabled: "true"
-            gethomepage.dev/group: Handy Tools
+            gethomepage.dev/group: AI Tools
             gethomepage.dev/icon: open-webui
             gethomepage.dev/name: Open WebUI
             # kubernetes.io/ingress.class: "nginx"

@@ -119,7 +119,7 @@ metadata:
     nginx.org/proxy-read-timeout: "3600"
     nginx.org/proxy-send-timeout: "3600" 
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
-    gethomepage.dev/description: Mealie
+    gethomepage.dev/description: Recipe management
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Lifestyle
     gethomepage.dev/icon: mealie

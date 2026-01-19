@@ -39,9 +39,9 @@ hubble:
         nginx.org/proxy-read-timeout: "3600"
         nginx.org/proxy-send-timeout: "3600" 
         nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
-        gethomepage.dev/description: Cilium Hubble
+        gethomepage.dev/description: K8s Network Observability
         gethomepage.dev/enabled: "true"
-        gethomepage.dev/group: Utils
+        gethomepage.dev/group: Network Services
         gethomepage.dev/icon: cilium
         gethomepage.dev/name: Cilium Hubble
  
