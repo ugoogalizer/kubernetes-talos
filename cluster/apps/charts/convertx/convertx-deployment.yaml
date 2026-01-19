@@ -105,7 +105,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100g" # allow uploads (aka backups) of up to 100GB
     gethomepage.dev/description: Online File Converter
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Handy Tools
+    gethomepage.dev/group: Productivity
     gethomepage.dev/icon: convertx
     gethomepage.dev/name: ConvertX
   name: convertx
