@@ -18,17 +18,17 @@ spec:
     - toEntities:
         - world
 
-    # Explicitly block Kubernetes cluster traffic
-    - toEntities:
-        - cluster
-      action: Deny
+    # # Explicitly block Kubernetes cluster traffic
+    # - toEntities:
+    #     - cluster
+    #   action: Deny
 
-    # Explicitly block local network ranges
-    - toCIDR:
-        - 10.0.0.0/8
-        - 172.16.0.0/12
-        - 192.168.0.0/16
-      action: Deny
+    # # Explicitly block local network ranges
+    # - toCIDR:
+    #     - 10.0.0.0/8
+    #     - 172.16.0.0/12
+    #     - 192.168.0.0/16
+    #   action: Deny
     # UNSURE IF I NEED TO ALLOW IT ACCESS TO THE CLUSTER DNS
     - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
         - matchLabels:
