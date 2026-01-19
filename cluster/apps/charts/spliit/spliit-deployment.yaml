@@ -114,8 +114,8 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
     gethomepage.dev/description: spliit
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Utils
-    gethomepage.dev/icon: https://raw.githubusercontent.com/Lurkars/spliitsecretariat/refs/heads/main/src/assets/icons/icon-72x72.png
+    gethomepage.dev/group: Lifestyle
+    gethomepage.dev/icon: https://raw.githubusercontent.com/spliit-app/spliit/refs/heads/main/public/logo.svg
     gethomepage.dev/name: spliit
 
   name: spliit

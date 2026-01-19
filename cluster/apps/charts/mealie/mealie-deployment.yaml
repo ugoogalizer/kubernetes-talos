@@ -121,7 +121,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
     gethomepage.dev/description: Mealie
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Gaming
+    gethomepage.dev/group: Lifestyle
     gethomepage.dev/icon: mealie
     gethomepage.dev/name: Mealie
 
