@@ -80,7 +80,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
     gethomepage.dev/description: Transfer Files Cross-Platform
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Multimedia
+    gethomepage.dev/group: Utils
     gethomepage.dev/icon: pairdrop
     gethomepage.dev/name: Pairdrop
   name: pairdrop
