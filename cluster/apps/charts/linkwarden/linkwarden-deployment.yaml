@@ -21,28 +21,22 @@ spec:
         app.kubernetes.io/name: linkwarden # required for Homepage
     spec:
       containers:
+        # https://hub.docker.com/r/getmeili/meilisearch/tags
+
         - name: linkwarden
           # https://github.com/linkwarden/linkwarden/pkgs/container/linkwarden
           image: ghcr.io/linkwarden/linkwarden:v2.13.5 # v2.13.5 as at 20260120
           imagePullPolicy: Always
           env:
-            # - name: PUID
-            #   value: "1000"
-            # - name: PGID
-            #   value: "1000"
             - name: TZ
               value: "Australia/Sydney"
-            # - name: POSTGRES_HOST
-            #   value: "postgres-service"
-            # - name: POSTGRES_NAME
-            #   value: "linkwarden"
-            # - name: POSTGRES_USER
-            #   value: "linkwarden-user"
-            # - name: POSTGRES_PASSWORD
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: linkwarden-externalsecrets
-            #       key: linkwarden-postgres-secret
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-externalsecrets
+                  key: linkwarden-nextauth-secret # templated by external secrets
+            - name: NEXTAUTH_URL
+              value: "http://localhost:3000/api/v1/auth"
             - name: DATABASE_URL
               # value: "postgresql://postgres:${POSTGRES_PASSWORD}@db"
               valueFrom:
@@ -50,7 +44,6 @@ spec:
                   name: linkwarden-externalsecrets
                   key: linkwarden-postgres-url # templated by external secrets
             - name: POSTGRES_PASSWORD
-              # value: "postgresql://postgres:${POSTGRES_PASSWORD}@db"
               valueFrom:
                 secretKeyRef:
                   name: linkwarden-externalsecrets
