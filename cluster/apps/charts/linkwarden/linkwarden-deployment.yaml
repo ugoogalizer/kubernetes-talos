@@ -117,6 +117,8 @@ spec:
                 secretKeyRef:
                   name: linkwarden-externalsecrets
                   key: linkwarden-meili-secret # templated by external secrets
+            - name: MEILI_MAX_INDEXING_MEMORY
+              value: "1500Mb"
           ports:
             - containerPort: 7700
               name: meilisearch
