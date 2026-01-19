@@ -46,6 +46,8 @@ spec:
                 secretKeyRef:
                   name: linkwarden-externalsecrets
                   key: linkwarden-postgres-secret # templated by external secrets
+            - name: MEILI_HOST
+              value: http://meilisearch:7700
             - name: MEILI_MASTER_KEY
               valueFrom:
                 secretKeyRef:
