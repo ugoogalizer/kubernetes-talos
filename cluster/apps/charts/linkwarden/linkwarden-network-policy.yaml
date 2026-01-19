@@ -14,6 +14,11 @@ spec:
       app: linkwarden
 
   egress:
+    # Allow access to pods/services in the same namespace
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: linkwarden
+
     # Allow public internet
     - toEntities:
         - world
@@ -29,7 +34,8 @@ spec:
     #     - 172.16.0.0/12
     #     - 192.168.0.0/16
     #   action: Deny
-    # UNSURE IF I NEED TO ALLOW IT ACCESS TO THE CLUSTER DNS
+    
+    # Allow Cluster DNS
     - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": kube-system # mandatory and doesn't matter that this label doesn't actually exist on the cluster
