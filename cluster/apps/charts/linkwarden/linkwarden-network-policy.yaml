@@ -21,27 +21,18 @@ spec:
 
     # Allow public internet but not local networks
     # - toEntities:
-    #     - world
+    #     - world # allows access to local networks - not ok!
     - toCIDRSet:
         - cidr: 0.0.0.0/0
           except:
             - 10.0.0.0/8
             - 172.16.0.0/12
             - 192.168.0.0/16
-
-
-    # # Explicitly block Kubernetes cluster traffic
-    # - toEntities:
-    #     - cluster
-    #   action: Deny
-
-    # # Explicitly block local network ranges
-    # - toCIDR:
-    #     - 10.0.0.0/8
-    #     - 172.16.0.0/12
-    #     - 192.168.0.0/16
-    #   action: Deny
-
+            # to test, exec into a pod and try: 
+            # curl https://10.20.10.1 -k
+            # curl mealie-http-svc.mealie.svc.cluster.local:9000
+            # curl https://www.google.com.au
+  
     # Allow Cluster DNS
     - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
         - matchLabels:
