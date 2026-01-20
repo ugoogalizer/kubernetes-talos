@@ -71,13 +71,13 @@ spec:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 600 # allow time to pull model
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 600 # allow time to pull model
             periodSeconds: 5
       volumes:
       - name: cache-volume
