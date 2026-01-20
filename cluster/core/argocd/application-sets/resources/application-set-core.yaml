@@ -12,7 +12,7 @@ spec:
   generators:
     - git:
         files:
-          - path: cluster/core/*/*/kustomization.yaml
+          - path: cluster/core/*/*/kustomization.yaml #the argo manifest is here at \cluster\core\argocd\argocd\kustomization.yaml
         repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
         requeueAfterSeconds: 20
         revision: HEAD
@@ -40,6 +40,8 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
+          - ServerSideApply=true # added 20260121 to resolve an issue with argo updating and throwing 'CustomResourceDefinition.apiextensions.k8s.io "applicationsets.argoproj.io" is invalid: metadata.annotations: Too long: may not be more than 262144 bytes'
+          # - Replace=true # 
       ignoreDifferences:
         - group: ""
           kind: PersistentVolumeClaim
