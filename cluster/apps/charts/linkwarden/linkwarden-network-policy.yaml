@@ -19,9 +19,16 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: linkwarden
 
-    # Allow public internet
-    - toEntities:
-        - world
+    # Allow public internet but not local networks
+    # - toEntities:
+    #     - world
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+
 
     # # Explicitly block Kubernetes cluster traffic
     # - toEntities:
@@ -34,7 +41,7 @@ spec:
     #     - 172.16.0.0/12
     #     - 192.168.0.0/16
     #   action: Deny
-    
+
     # Allow Cluster DNS
     - toEndpoints: # need to allow the pods/namespace to contact the cluster DNS service to resolve the FQDNs. 
         - matchLabels:
