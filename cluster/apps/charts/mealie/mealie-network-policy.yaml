@@ -1,6 +1,6 @@
 # # https://docs.cilium.io/en/stable/security/policy/language/
 ---
-# Allow access to cluster dns
+# Allow access to cluster dns, wolrd and own namespace, but nothing else
 # Note the existance of this policy applies a default deny-all for anything not listed.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
@@ -33,7 +33,9 @@ spec:
     - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": mealie
-
+    # Allow public internet
+    - toEntities:
+        - world
  
 # # Testing pod: 
 
