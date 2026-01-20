@@ -20,8 +20,9 @@ spec:
   source:
     chart: open-webui
     repoURL: https://helm.openwebui.com/
-    #targetRevision: 5.13.0 # 5.13.0 as at 20250216
-    targetRevision: 8.11.0  #8.11.0 as at 20251015
+    # targetRevision: 5.13.0 # 5.13.0 as at 20250216
+    # targetRevision: 8.11.0  #8.11.0 as at 20251015
+    targetRevision: 10.2.1  #8.11.0 as at 20260120
     helm:
       values: |
         ollama:
