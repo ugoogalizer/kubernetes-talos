@@ -63,6 +63,8 @@ spec:
               value: "qwen3:4b"
             - name: OPENAI_WORKERS
               value: "1"
+            - name: OPENAI_SEND_DATABASE_DATA
+              value: "false"
             # TODO:       
             # - name: OpenID Connect
             #   value: 
