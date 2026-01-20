@@ -68,12 +68,18 @@ spec:
             #   name: postgres
             #   protocol: TCP
           resources:
+            # requests:
+            #   cpu: 18000m # setting to import the world
+            #   memory: 60000Mi # setting to import the world
+            # limits:
+            #   cpu: 18000m # setting to import the world
+            #   memory: 60000Mi # setting to import the world
             requests:
-              cpu: 18000m # setting to import the world
-              memory: 60000Mi # setting to import the world
+              cpu: 180m # post import
+              memory: 600Mi # post import
             limits:
-              cpu: 18000m # setting to import the world
-              memory: 60000Mi # setting to import the world
+              cpu: 180m # post import
+              memory: 600Mi # post import
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/16/main # /var/lib/postgresql
