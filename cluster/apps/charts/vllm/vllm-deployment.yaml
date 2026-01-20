@@ -20,6 +20,13 @@ spec:
         app: vllm
         app.kubernetes.io/name: vllm # required for Homepage
     spec:
+      tolerations:
+      - key: "workload"
+        operator: "Equal"
+        value: "LargeWorkload"
+        effect: "NoSchedule"
+      nodeSelector:
+        workload: "LargeWorkload"
       containers:
         - name: vllm-qwen3-4b
           # https://github.com/vllm-app/vllm/pkgs/container/vllm 
