@@ -48,24 +48,25 @@ spec:
                 secretKeyRef:
                   name: mealie-externalsecrets
                   key: mealie-postgres-password
-            - name: OPENAI_BASE_URL
-              # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
-              # value: http://open-webui.ollama.svc.cluster.local:80
-              # value: http://open-webui.ollama.svc.cluster.local:80/api #/openai
-              # value: http://open-webui.ollama.svc.cluster.local:80/v1
-              value: http://open-webui.ollama.svc.cluster.local:80/api/v1
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mealie-externalsecrets
-                  key: mealie-openai-key
-            - name: OPENAI_MODEL
-              # value: "qwen3:4b"
-              value: "qwen3:1.7b"
-            - name: OPENAI_WORKERS
-              value: "1"
+            # - name: OPENAI_BASE_URL
+            #   # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
+            #   # value: http://open-webui.ollama.svc.cluster.local:80
+            #   # value: http://open-webui.ollama.svc.cluster.local:80/api #/openai
+            #   # value: http://open-webui.ollama.svc.cluster.local:80/v1
+            #   value: http://open-webui.ollama.svc.cluster.local:80/api/v1
+            # - name: OPENAI_API_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mealie-externalsecrets
+            #       key: mealie-openai-key
+            # - name: OPENAI_MODEL
+            #   # value: "qwen3:4b"
+            #   value: "qwen3:1.7b"
+            # - name: OPENAI_WORKERS
+            #   value: "1"
             # - name: OPENAI_SEND_DATABASE_DATA
             #   value: "false"
+
             # TODO:       
             # - name: OpenID Connect
             #   value: 
@@ -81,8 +82,8 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 250m
-              memory: 750Mi
+              cpu: 1000m
+              memory: 1000Mi
             limits:
               cpu: "500m"
               memory: "2000Mi"
