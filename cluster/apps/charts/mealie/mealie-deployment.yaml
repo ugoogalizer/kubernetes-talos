@@ -60,7 +60,8 @@ spec:
                   name: mealie-externalsecrets
                   key: mealie-openai-key
             - name: OPENAI_MODEL
-              value: "qwen3:4b"
+              # value: "qwen3:4b"
+              value: "qwen3:1.7b"
             - name: OPENAI_WORKERS
               value: "1"
             - name: OPENAI_SEND_DATABASE_DATA
