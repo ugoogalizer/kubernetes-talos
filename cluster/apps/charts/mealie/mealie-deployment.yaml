@@ -59,6 +59,8 @@ spec:
                   key: mealie-openai-key
             - name: OPENAI_MODEL
               value: "qwen3:4b"
+            - name: OPENAI_WORKERS
+              value: "1"
             # TODO:       
             # - name: OpenID Connect
             #   value: 
