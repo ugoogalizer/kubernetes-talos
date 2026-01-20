@@ -33,6 +33,9 @@ spec:
     - toEndpoints: # allow within the namespace - https://cilium.io/blog/2018/09/19/kubernetes-network-policies/
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": mealie
+    - toEndpoints: # allow within the namespace
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": ollama
 
     # Allow public internet but not local networks
     # - toEntities:
@@ -50,4 +53,4 @@ spec:
  
 # # Testing pod: 
 
-# kubectl -n autoshift2025 run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh
+# kubectl -n mealie run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh

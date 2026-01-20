@@ -48,6 +48,15 @@ spec:
                 secretKeyRef:
                   name: mealie-externalsecrets
                   key: mealie-postgres-password
+            - name: OPENAI_BASE_URL
+              value: http://open-webui-ollama.ollama.svc.cluster.local:11434
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-externalsecrets
+                  key: mealie-openai-key
+            - name: OPENAI_MODEL
+              value: "qwen3:4b"
             # TODO:       
             # - name: OpenID Connect
             #   value: 
