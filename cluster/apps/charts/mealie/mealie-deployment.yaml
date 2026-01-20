@@ -50,8 +50,8 @@ spec:
                   key: mealie-postgres-password
             - name: OPENAI_BASE_URL
               # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
-              value: http://open-webui.ollama.svc.cluster.local:80
-              # value: http://open-webui.ollama.svc.cluster.local:80/api/openai
+              # value: http://open-webui.ollama.svc.cluster.local:80
+              value: http://open-webui.ollama.svc.cluster.local:80/api/openai
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
