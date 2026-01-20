@@ -30,8 +30,9 @@ spec:
       containers:
         - name: vllm-qwen3-4b
           # https://github.com/vllm-app/vllm/pkgs/container/vllm 
-          image: vllm/vllm-openai:latest
+          image: vllm/vllm-openai:latest #v0.13.0
           imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
           args: [
             "vllm serve Qwen/Qwen3-4B --trust-remote-code --enable-chunked-prefill --max_num_batched_tokens 1024"
           ]
