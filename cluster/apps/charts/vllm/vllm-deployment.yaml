@@ -70,7 +70,7 @@ spec:
       volumes:
       - name: cache-volume
         persistentVolumeClaim:
-          claimName: Qwen3-4B
+          claimName: qwen3-4b
       # vLLM needs to access the host's shared memory for tensor parallel inference.
       - name: shm
         emptyDir:
@@ -95,7 +95,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: Qwen3-4B
+  name: qwen3-4b
 spec:
   storageClassName: managed-nfs-storage-retain
   accessModes:
