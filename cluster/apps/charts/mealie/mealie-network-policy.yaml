@@ -36,6 +36,9 @@ spec:
     - toEndpoints: # allow within the namespace
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": ollama
+    - toEndpoints: # allow within the namespace
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": vllm
 
     # Allow public internet but not local networks
     # - toEntities:
