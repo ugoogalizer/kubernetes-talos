@@ -23,13 +23,11 @@ spec:
   hostname:
     hostname: https://keycloak.rockyroad.rocks
     strict: true
-    httpEnabled: false
   http:
     httpEnabled: false
+    tlsSecret: keycloak-tls
   proxy:
     proxyAddressForwarding: true
-  tls:
-    secretName: keycloak-tls
   db:
     vendor: postgres
     host: postgres-service
