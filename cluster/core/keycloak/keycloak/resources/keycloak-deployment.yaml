@@ -1,0 +1,78 @@
+# https://www.keycloak.org/operator/basic-deployment
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-cert
+  namespace: keycloak
+spec:
+  secretName: keycloak-tls
+  issuerRef:
+    name: letsencrypt-dns01-prod 
+    kind: ClusterIssuer
+  dnsNames:
+    - keycloak.rockyroad.rocks
+---
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  instances: 1
+  hostname:
+    hostname: keycloak.rockyroad.rocks
+    strict: true
+  http:
+    httpEnabled: false
+  tls:
+    secretName: keycloak-tls
+  db:
+    vendor: postgres
+    host: postgres-service
+    database: keycloak
+    usernameSecret:
+      name: keycloak-postgres-externalsecrets
+      key: keycloak-postgres-username
+    passwordSecret:
+      name: keycloak-postgres-externalsecrets
+      key: keycloak-postgres-secret
+  bootstrapAdmin:
+    user:
+      secret:
+        name: keycloak-externalsecrets
+        key: username
+    password:
+      secret:
+        name: keycloak-externalsecrets
+        key: password
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  namespace: keycloak
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx   # change if you use traefik/cilium
+  tls:
+    - hosts:
+        - keycloak.rockyroad.rocks
+      secretName: keycloak-tls
+  rules:
+    - host: keycloak.rockyroad.rocks
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 8443
+
+
+# kubectl get secret example-kc-initial-admin -o jsonpath='{.data.username}' | base64 --decode
+# kubectl get secret example-kc-initial-admin -o jsonpath='{.data.password}' | base64 --decode
