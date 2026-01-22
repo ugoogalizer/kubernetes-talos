@@ -15,4 +15,6 @@ namespace: keycloak
 
 resources:
   - ./resources/namespace.yaml
+  - ./resources/keycloak-externalsecrets.yaml
+  - ./resources/keycloak-postgres.yaml
 
