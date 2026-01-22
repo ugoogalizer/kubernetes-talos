@@ -37,7 +37,7 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-externalsecrets
+                  name: keycloak-postgres-externalsecrets
                   key: keycloak-postgres-secret
           ports:
             - containerPort: 5432
@@ -100,13 +100,13 @@ spec:
               - name: POSTGRES_PASSWORD
                 valueFrom:
                   secretKeyRef:
-                    name: keycloak-externalsecrets
+                    name: keycloak-postgres-externalsecrets
                     key: keycloak-postgres-secret
               # pg_dump needs PGPASSWORD separately
               - name: PGPASSWORD
                 valueFrom:
                   secretKeyRef:
-                    name: keycloak-externalsecrets
+                    name: keycloak-postgres-externalsecrets
                     key: keycloak-postgres-secret
             volumeMounts:
               - name: backup-storage
