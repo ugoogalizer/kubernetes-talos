@@ -59,7 +59,7 @@ spec:
     https:
       - namespaceSelector:
           matchLabels:
-            "k8s:io.kubernetes.pod.namespace": mealie # allow mealie to connect to the service
+            kubernetes.io/metadata.name: mealie # allow mealie to connect to the service
 
 # Note that realm login is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/account
 # OIDC well-known config is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
