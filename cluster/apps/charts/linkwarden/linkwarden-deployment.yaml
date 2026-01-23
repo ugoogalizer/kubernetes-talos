@@ -224,7 +224,7 @@ metadata:
     gethomepage.dev/description: Collaborative bookmark manager, to collect, read, annotate and fully preserve
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: Lifestyle
-    gethomepage.dev/icon: https://github.com/linkwarden/linkwarden/blob/c7ab7678722fb5d62003123efebe59d8d9da1736/assets/logo.png
+    gethomepage.dev/icon: https://raw.githubusercontent.com/linkwarden/linkwarden/c7ab7678722fb5d62003123efebe59d8d9da1736/assets/logo.png
     gethomepage.dev/name: Linkwarden
 
   name: linkwarden
