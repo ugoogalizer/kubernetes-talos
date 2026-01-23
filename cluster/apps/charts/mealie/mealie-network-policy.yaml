@@ -39,6 +39,9 @@ spec:
     - toEndpoints: # allow within the namespace
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": ingress-nginx
+    - toEndpoints: # allow within the namespace
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": keycloak
 
     # Allow public internet but not local networks
     # - toEntities:
