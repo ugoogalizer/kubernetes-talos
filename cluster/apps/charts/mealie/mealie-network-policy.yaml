@@ -36,6 +36,9 @@ spec:
     - toEndpoints: # allow within the namespace
       - matchLabels:
           "k8s:io.kubernetes.pod.namespace": vllm
+    - toEndpoints: # allow within the namespace
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": ingress-nginx
 
     # Allow public internet but not local networks
     # - toEntities:
