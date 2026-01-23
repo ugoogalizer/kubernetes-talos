@@ -60,6 +60,12 @@ spec:
                 secretKeyRef:
                   name: mealie-externalsecrets
                   key: mealie-oidc-client-secret
+            - name: OIDC_PROVIDER_NAME
+              value: Rockyroad
+            - name: OIDC_USER_GROUP
+              value: mealie-users
+            - name: OIDC_ADMIN_GROUP
+              value: mealie-admins
               
             # - name: OPENAI_BASE_URL
             #   # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
