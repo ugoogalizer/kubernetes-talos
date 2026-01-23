@@ -23,9 +23,6 @@ spec:
           rules: # This is mandatory, without this cilium doesn't capture the IP addresses for the FQDN names below to add them to the allow list!
             dns:
               - matchPattern: "*" # allow all DNS lookups
-    # - toFQDNs: # Allow the container to connect to websites
-    #     - matchName: "recipetineats.com" 
-    #     - matchName: "www.recipetineats.com" 
     #   toPorts:
     #     - ports:
     #         - port: "443"
@@ -53,6 +50,9 @@ spec:
             # curl https://10.20.10.1 -k
             # curl mealie-http-svc.mealie.svc.cluster.local:9000
             # curl https://www.google.com.au
+    - toFQDNs: # Allow the container to connect to websites
+        - matchName: "keycloak.rockyroad.rocks" 
+    #     - matchName: "www.recipetineats.com" 
  
 # # Testing pod: 
 
