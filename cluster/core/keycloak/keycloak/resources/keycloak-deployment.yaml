@@ -67,13 +67,8 @@ spec:
   additionalOptions:
     - name: hostname-debug
       value: 'true'
-
-  #   - name: KC_HOSTNAME
-  #     value: keycloak.rockyroad.rocks
-  #   - name: KC_HOSTNAME_ADMIN
-  #     value: keycloak.rockyroad.rocks
-  #   - name: KC_HOSTNAME_BACKCHANNEL
-  #     value: keycloak-service.keycloak.svc.cluster.local
+      # This allows us to test against: 
+      #    curl http://keycloak-service.keycloak.svc.cluster.local:8080/realms/rockyroadrocks/.well-known/openid-configuration
 
 # Note that realm login is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/account
 # OIDC well-known config is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
