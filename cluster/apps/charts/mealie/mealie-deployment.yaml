@@ -51,7 +51,8 @@ spec:
             - name: OIDC_SIGNUP_ENABLED
               value: "true"
             - name: OIDC_CONFIGURATION_URL
-              value: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
+              value: http://keycloak-service.keycloak.svc.cluster.local:8080/realms/rockyroadrocks/.well-known/openid-configuration
+              # value: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
             - name: OIDC_CLIENT_ID
               value: mealie
             - name: OIDC_CLIENT_SECRET
