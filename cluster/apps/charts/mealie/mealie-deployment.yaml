@@ -48,6 +48,20 @@ spec:
                 secretKeyRef:
                   name: mealie-externalsecrets
                   key: mealie-postgres-password
+            - name: OIDC_AUTH_ENABLED
+              value: true
+            - name: OIDC_SIGNUP_ENABLED
+              value: true
+            - name: OIDC_CONFIGURATION_URL
+              value: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
+            - name: OIDC_CLIENT_ID
+              value: mealie
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-externalsecrets
+                  key: mealie-oidc-client-secret 
+              
             # - name: OPENAI_BASE_URL
             #   # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
             #   # value: http://open-webui.ollama.svc.cluster.local:80
@@ -143,7 +157,8 @@ metadata:
     gethomepage.dev/group: Lifestyle
     gethomepage.dev/icon: mealie
     gethomepage.dev/name: Mealie
-
+    # https://docs.mealie.io/documentation/getting-started/authentication/oidc/
+    # If you are hosting Mealie behind a reverse proxy (nginx, Caddy, ...) to terminate TLS, make sure to start Mealie's Gunicorn server with --forwarded-allow-ips=<ip-of-proxy>, otherwise the X-Forwarded-* headers will be ignored and the generated OIDC redirect URI will use the wrong scheme (http instead of https). This will lead to authentication errors with strict OIDC providers.
   name: mealie
 spec:
   rules:
