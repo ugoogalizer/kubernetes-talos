@@ -41,36 +41,50 @@ spec:
   bootstrapAdmin:
     user:
       secret: keycloak-externalsecrets # must contain username and password keys
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: keycloak
-  namespace: keycloak
-  annotations:
-    # cert-manager.io/cluster-issuer: letsencrypt-prod # Not required as we already defined a secret
-    gethomepage.dev/description: Identity and Access Management
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Network Services
-    gethomepage.dev/icon: keycloak
-    gethomepage.dev/name: Keycloak
-spec:
-  ingressClassName: nginx   # change if you use traefik/cilium
-  tls:
-    - hosts:
-        - keycloak.rockyroad.rocks
-      secretName: keycloak-tls
-  rules:
-    - host: keycloak.rockyroad.rocks
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak-service
-                port:
-                  number: 8443
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    tlsSecret: keycloak-tls
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      # cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+      gethomepage.dev/description: Identity and Access Management
+      gethomepage.dev/enabled: "true"
+      gethomepage.dev/group: Network Services
+      gethomepage.dev/icon: keycloak
+      gethomepage.dev/name: Keycloak
+
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: keycloak
+#   namespace: keycloak
+#   annotations:
+#     # cert-manager.io/cluster-issuer: letsencrypt-prod # Not required as we already defined a secret
+#     gethomepage.dev/description: Identity and Access Management
+#     gethomepage.dev/enabled: "true"
+#     gethomepage.dev/group: Network Services
+#     gethomepage.dev/icon: keycloak
+#     gethomepage.dev/name: Keycloak
+# spec:
+#   ingressClassName: nginx   # change if you use traefik/cilium
+#   tls:
+#     - hosts:
+#         - keycloak.rockyroad.rocks
+#       secretName: keycloak-tls
+#   rules:
+#     - host: keycloak.rockyroad.rocks
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: keycloak-service
+#                 port:
+#                   number: 8443
 
 
 # kubectl get secret example-kc-initial-admin -o jsonpath='{.data.username}' | base64 --decode
