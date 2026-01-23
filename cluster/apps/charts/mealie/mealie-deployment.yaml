@@ -60,7 +60,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mealie-externalsecrets
-                  key: mealie-oidc-client-secret 
+                  key: mealie-oidc-client-secret
               
             # - name: OPENAI_BASE_URL
             #   # value: http://open-webui-ollama.ollama.svc.cluster.local:11434
