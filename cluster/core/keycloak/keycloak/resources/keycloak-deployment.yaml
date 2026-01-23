@@ -57,7 +57,7 @@ spec:
   networkPolicy:
     enabled: true
     ingress:
-      allowFrom:
+      https:
         - namespaceSelector:
             matchLabels:
               name: mealie # allow mealie to connect to the service
