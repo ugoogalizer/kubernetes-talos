@@ -43,7 +43,7 @@ spec:
       secret: keycloak-externalsecrets # must contain username and password keys
   ingress:
     enabled: true
-    ingressClassName: nginx
+    # ingressClassName: nginx # not valid
     tlsSecret: keycloak-tls
     annotations:
       kubernetes.io/ingress.class: nginx
