@@ -47,9 +47,9 @@ spec:
                   name: mealie-externalsecrets
                   key: mealie-postgres-password
             - name: OIDC_AUTH_ENABLED
-              value: true
+              value: "true"
             - name: OIDC_SIGNUP_ENABLED
-              value: true
+              value: "true"
             - name: OIDC_CONFIGURATION_URL
               value: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
             - name: OIDC_CLIENT_ID
