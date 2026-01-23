@@ -53,8 +53,8 @@ spec:
             # curl https://10.20.10.1 -k
             # curl mealie-http-svc.mealie.svc.cluster.local:9000
             # curl https://www.google.com.au
-    - toFQDNs: # Allow the container to connect to websites
-        - matchName: "keycloak.rockyroad.rocks" 
+    # - toFQDNs: # Allow the container to connect to websites
+    #     - matchName: "keycloak.rockyroad.rocks" 
     #     - matchName: "www.recipetineats.com" 
  
 # # Testing pod: 
