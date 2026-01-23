@@ -23,6 +23,7 @@ spec:
   hostname:
     hostname: https://keycloak.rockyroad.rocks
     strict: true
+    # https://www.keycloak.org/server/hostname
     backchannelDynamic: true # enable a split hostname approach - separate URL for backchannel requests, enabling internal communication while maintaining the use of a public URL for frontchannel request
   http:
     httpEnabled: true
@@ -63,7 +64,10 @@ spec:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/metadata.name: mealie # allow mealie to connect to the service
-  # additionalOptions:
+  additionalOptions:
+    - name: hostname-debug
+      value: 'true'
+
   #   - name: KC_HOSTNAME
   #     value: keycloak.rockyroad.rocks
   #   - name: KC_HOSTNAME_ADMIN
