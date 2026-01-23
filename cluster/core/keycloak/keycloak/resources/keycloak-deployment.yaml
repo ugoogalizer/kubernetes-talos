@@ -54,6 +54,16 @@ spec:
       gethomepage.dev/group: Network Services
       gethomepage.dev/icon: keycloak
       gethomepage.dev/name: Keycloak
+  networkPolicy:
+    enabled: true
+    ingress:
+      allowFrom:
+        - namespaceSelector:
+            matchLabels:
+              name: mealie # allow mealie to connect to the service
+
+# Note that realm login is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/account
+# OIDC well-known config is here: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/.well-known/openid-configuration
 
 # ---
 # apiVersion: networking.k8s.io/v1
