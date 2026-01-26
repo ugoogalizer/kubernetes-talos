@@ -65,6 +65,9 @@ spec:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/metadata.name: mealie # allow mealie to connect to the service
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: wallos # allow wallos to connect to the service
   additionalOptions:
     - name: hostname-debug
       value: 'true'
