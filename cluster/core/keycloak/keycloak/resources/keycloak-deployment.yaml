@@ -1,5 +1,6 @@
 # https://www.keycloak.org/operator/basic-deployment
-
+# https://www.keycloak.org/operator/advanced-configuratio
+# https://www.keycloak.org/server/configuration -- noting this is only for config not available in the operator that you have to implement using 'additionalOptions'
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
