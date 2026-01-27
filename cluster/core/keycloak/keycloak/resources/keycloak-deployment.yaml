@@ -64,6 +64,9 @@ spec:
     http:
       - namespaceSelector:
           matchLabels:
+            kubernetes.io/metadata.name: argocd # allow mealie to connect to the service
+      - namespaceSelector:
+          matchLabels:
             kubernetes.io/metadata.name: mealie # allow mealie to connect to the service
       - namespaceSelector:
           matchLabels:
