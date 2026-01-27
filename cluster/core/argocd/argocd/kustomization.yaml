@@ -74,3 +74,8 @@ patches:
 #       - op: add
 #         path: "/spec/template/spec/containers/0/args/-"
 #         value: "--insecure"
+
+
+# in case you accidentally blow away the internal password secret
+# kubectl -n argocd rollout restart deploy/argocd-server
+# kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
