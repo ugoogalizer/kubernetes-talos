@@ -157,6 +157,7 @@ data:
   application.properties: |
     ghs-server.lastestClientOnStartup=true
     ghs-server.public=true
+    # ghs-server.defaultClientSettings=true # generates a default settings file as per https://github.com/Lurkars/ghs-server/issues/24
     
     # replace <path-to-backup> with an accessible path to store the backup files and <token> as authorization header for authentication.
     ghs-server.backup.path=/root/.ghs/backups
