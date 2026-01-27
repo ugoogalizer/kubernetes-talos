@@ -209,6 +209,9 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 dashboard --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 containers -k --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 get securitystate --talosconfig=./talosconfig
 
+talosctl -e 10.20.8.62 -n 10.20.8.62 service restart kubelet
+talosctl -e 10.20.8.62 -n 10.20.8.62 get machineconfig | yq '.machine.network.hostname'
+
 # Explore NVIDIA Setup
 talosctl -e 10.20.8.62 -n 10.20.8.62 read /proc/modules --talosconfig=./talosconfig
 talosctl -e 10.20.8.62 -n 10.20.8.62 get pcidevices -n gpu --talosconfig=./talosconfig
