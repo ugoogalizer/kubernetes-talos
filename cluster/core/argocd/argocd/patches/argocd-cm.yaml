@@ -24,6 +24,13 @@ data:
         - .data
   accounts.homepagereadonly: apiKey # Added to create a 'homepagereadonly' user to give gethomepage access
 
+  oidc.config: |
+    name: Rockyroad
+    issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+    clientID: argocd
+    clientSecret: $argocd-oidc-secret:argocd-oidc-secret # format of this is documented here: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+    requestedScopes: ["openid", "profile", "email", "groups"]
+
   # configManagementPlugins: |
   #   - name: flux
   #     generate:

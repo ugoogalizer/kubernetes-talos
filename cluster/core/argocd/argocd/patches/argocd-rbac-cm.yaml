@@ -6,5 +6,6 @@ data:
   policy.overlay.csv: |
     p, role:admin, exec, create, */*, allow
     g, homepagereadonly, role:readonly
+    g, argocd-admins, role:admin
   # Added to create a 'homepagereadonly' user to give gethomepage access
   policy.default: role:admin
