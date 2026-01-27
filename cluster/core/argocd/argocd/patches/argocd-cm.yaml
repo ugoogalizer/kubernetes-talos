@@ -26,7 +26,8 @@ data:
 
   oidc.config: |
     name: Rockyroad
-    issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+    # issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+    issuer: http://keycloak-service.keycloak.svc.cluster.local:8080/realms/rockyroadrocks
     clientID: argocd
     clientSecret: $argocd-oidc-secret:argocd-oidc-secret # format of this is documented here: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
     requestedScopes: ["openid", "profile", "email", "groups"]
