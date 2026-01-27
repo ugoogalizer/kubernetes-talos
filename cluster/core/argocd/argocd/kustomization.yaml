@@ -9,6 +9,7 @@ namespace: argocd
 resources:
   - ./resources/namespace.yaml
   - ./resources/argo-cd-ui-ingress.yaml
+  - ./recources/argocd-oidc-client-secret.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.2.5/manifests/install.yaml # v3.2.5 as at 20260120
   # - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/install.yaml # v3.1.9 as at ?
   # - https://raw.githubusercontent.com/argoproj/argo-cd/v2.11.0/manifests/ha/install.yaml # v2.14.2 as at 20250208  https://github.com/argoproj/argo-cd/releases
