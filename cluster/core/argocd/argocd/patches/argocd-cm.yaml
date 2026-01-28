@@ -24,14 +24,32 @@ data:
         - .data
   accounts.homepagereadonly: apiKey # Added to create a 'homepagereadonly' user to give gethomepage access
 
-  oidc.config: |
-    name: Rockyroad
-    # issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
-    issuer: http://keycloak-service.keycloak.svc.cluster.local:8080/realms/rockyroadrocks
-    clientID: argocd
-    clientSecret: $argocd-oidc-secret:argocd-oidc-secret # format of this is documented here: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
-    requestedScopes: ["openid", "profile", "email", "groups"]
+  # The native keycloak oidc provider for argocd cannot support backchannel/frontchannel oidc configurations.
+  # oidc.config: |
+  #   name: Rockyroad
+  #   issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+  #   # issuer: http://keycloak-service.keycloak.svc.cluster.local:8080/realms/rockyroadrocks
+  #   clientID: argocd
+  #   enablePKCEAuthentication: true
+  #   clientSecret: $argocd-oidc-secret:argocd-oidc-secret # format of this is documented here: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+  #   requestedScopes: ["openid", "profile", "email", "groups"]
 
+  # Use the dex oidc provider instead
+  dex.config: |
+    connectors:
+      # OIDC
+      - type: oidc
+        id: oidc
+        name: Rockyroad
+        config:
+          issuer: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+          clientID: argocd
+          clientSecret: $argocd-oidc-secret:argocd-oidc-secret # format of this is documented here: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+          scopes:
+          - profile
+          - email
+          - groups
+          
   # configManagementPlugins: |
   #   - name: flux
   #     generate:
@@ -51,3 +69,5 @@ data:
   #         - argo-rollouts-approvers
   #         - argo-workflows-approvers
   #         - argocd-approvers
+
+   # kubectl -n argocd run test-pod   --rm -i --tty   --image=curlimages/curl:8.1.2   --restart=Never   -- sh
