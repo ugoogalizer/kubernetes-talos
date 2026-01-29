@@ -3,7 +3,7 @@ kind: Kustomization
 metadata:
   name: coredns-overrides
 
-namespace: kube-dns
+namespace: kube-system
 
 # patch coredns to allow us to import overrides.
 
