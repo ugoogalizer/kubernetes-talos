@@ -30,7 +30,7 @@ spec:
             - name: TZ
               value: "Australia/Sydney"
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               name: omni-tools-http
               protocol: TCP
           resources:
@@ -61,7 +61,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 8080
+      port: 80
       protocol: TCP
       targetPort: omni-tools-http
   selector:
@@ -100,7 +100,7 @@ spec:
               service:
                 name: omni-tools-http-svc
                 port:
-                  number: 8080
+                  number: 80
             path: /
             pathType: Prefix
   tls:
