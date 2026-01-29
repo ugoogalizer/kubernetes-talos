@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-overrides
+  namespace: kube-system
+data:
+  keycloak-hosts.override: |
+    hosts {
+        keycloak.keycloak.svc.cluster.local keycloak.rockyroad.rocks
+        fallthrough
+    }

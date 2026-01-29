@@ -1,0 +1,20 @@
+# This patch mounts the coredns-overrides ConfigMap that allows us to 
+# set cluster-wide DNS rewrites
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coredns
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      volumes:
+        - name: coredns-overrides
+          configMap:
+            name: coredns-overrides
+      containers:
+        - name: coredns
+          volumeMounts:
+            - name: coredns-overrides
+              mountPath: /etc/coredns
+              readOnly: true
