@@ -16,5 +16,5 @@ spec:
         - name: coredns
           volumeMounts:
             - name: coredns-overrides
-              mountPath: /etc/coredns
+              mountPath: /etc/coredns/overrides
               readOnly: true
