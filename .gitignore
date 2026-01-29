@@ -53,6 +53,7 @@ provision/1password/1password-token
 ### Talos ###
 
 provision/talos/controlplane.yaml
+provision/talos/worker-largeworkload.yaml
 provision/talos/secrets.yaml
 provision/talos/talosconfig
 provision/talos/worker.yaml
