@@ -16,7 +16,12 @@ data:
         }
         prometheus :9153
 
-        import /etc/coredns/overrides/*.override
+        rewrite name keycloak.rockyroad.rocks keycloak-service.keycloak.svc.cluster.local
+        # hosts {
+        #     keycloak-service.keycloak.svc.cluster.local keycloak.rockyroad.rocks
+        #     fallthrough
+        # }
+        #import /etc/coredns/overrides/*.override
 
         kubernetes cluster.local in-addr.arpa ip6.arpa {
             pods insecure
