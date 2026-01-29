@@ -18,19 +18,19 @@ resources:
   - ./resources/keycloak-externalsecrets.yaml
   - ./resources/keycloak-postgres.yaml
   - ./resources/keycloak-deployment.yaml
-  - /resources/coredns-overrides.yaml # the config map for the coredns imports below
+  - ./resources/coredns-overrides.yaml # the config map for the coredns imports below
 
 # patch coredns to allow us to import overrides.
 patches:
   # tell coredns to import files in a given folder
   # Comment out / remove this patch if you want to revert coredns to Talos linux' default
-  - path: /resources/coredns-import-patch.yaml
+  - path: ./resources/coredns-import-patch.yaml
     target:
       kind: ConfigMap
       name: coredns
       namespace: kube-system
   # mount that folder from a config map
-  - path: /resources/coredns-override-mount-patch.yaml
+  - path: ./resources/coredns-override-mount-patch.yaml
     target:
       kind: Deployment
       name: coredns
