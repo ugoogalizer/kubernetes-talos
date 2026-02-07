@@ -150,6 +150,44 @@ kubectl taint nodes maurice workload=LargeWorkload:NoSchedule
 kubectl label nodes maurice workload=LargeWorkload
 ```
 
+# Setting up a new management node in linux (Bazzite) (to remote in with)
+
+``` bash
+# install bitwarden secrets manager (bws)
+curl https://bws.bitwarden.com/install | sh
+
+# install kubectl
+mkdir ~/.local/bin
+curl -LO "https://dl.k8s.io/release/v1.34.1/bin/linux/amd64/kubectl"
+cp ./kubectl ~/.local/bin
+
+# install talosctl
+brew install siderolabs/tap/talosctl
+
+# install helm
+
+#Check this resolves: 
+nslookup talos-gpu.rockyroad.rocks
+
+
+#Load the bitwarden access token (but not store it in history)
+set +o history
+export BWS_ACCESS_TOKEN=<MACHINE_TOKEN>
+set -o history
+
+cd ~
+git clone https://github.com/ugoogalizer/kubernetes-talos.git
+cd ~/kubernetes-talos/provision/talos
+./generate.sh
+
+#Test it works: 
+talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get rd
+
+#Now get the kubeconfig: 
+talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
+
+
+```
 
 # Troubleshooting
 
