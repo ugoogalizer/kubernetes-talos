@@ -290,10 +290,21 @@ kubectl run curl --restart=Never -ti --rm --namespace temp --image curlimages/cu
 
 # Issues with external-secrets certificate renewals
 
-Turns out this was trust-manager not propagating the CA properly into the secret.  I think I've fixed the root issue by authorising trust-manager to have access to the right certificate, but if not this was the once off fix:
+Turns out this was trust-manager not propagating the CA properly into the secret.  
+I think I've fixed the root issue by authorising trust-manager to have access to the right certificate, 
+but if not this was the once off fix:
 ``` bash
+#get info on current secret
+kubectl -n external-secrets get secret bitwarden-tls-certs
+kubectl -n external-secrets describe secret bitwarden-tls-certs
+#delete secret
 kubectl -n external-secrets delete secret bitwarden-tls-certs
-kubectl -n trust-manager rollout restart deployment trust-manager
-(restart bitwarden sdk too)
+#restart trust manager
+kubectl -n cert-manager rollout restart deployment trust-manager
+#get info on new secret
+kubectl -n external-secrets get secret bitwarden-tls-certs
+kubectl -n external-secrets describe secret bitwarden-tls-certs
+#restart bitwarden sdk too
+kubectl -n external-secrets rollout restart deployment bitwarden-sdk-server
 ```
 
