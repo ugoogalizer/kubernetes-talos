@@ -32,9 +32,19 @@ Inside WSL
 ``` bash
 #install brew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo >> /home/green/.bashrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> /home/green/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+sudo apt-get install build-essential
 
-#install talosctl
-brew install siderolabs/tap/talosctl
+#install talosctl if installing latest:
+brew install siderolabs/tap/talosctl@v1.11.2 # ideally install v1.11.2 to match cluster version
+
+# install talosctl if installing a specific version: 
+curl -LO https://github.com/siderolabs/talos/releases/download/v1.11.2/talosctl-linux-amd64
+chmod +x talosctl-linux-amd64
+sudo mv talosctl-linux-amd64 /usr/local/bin/talosctl
+talosctl version
 
 #Check this resolves: 
 nslookup talos-gpu.rockyroad.rocks
@@ -54,10 +64,14 @@ talosctl -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig get rd
 
 #Now get the kubeconfig: 
 talosctl kubeconfig ~/.kube/config -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig
-talosctl -e 10.20.8.62 -n 10.20.8.62 dashboard --talosconfig=./talosconfig
+#talosctl -e 10.20.8.62 -n 10.20.8.62 dashboard --talosconfig=./talosconfig
 
 # Install kubectl (you need to use the same version as the kubernetes cluster - this is shown from the above dashboard command)
-curl -LO "https://dl.k8s.io/release/v1.32.1/bin/linux/amd64/kubectl"
+cd ~
+curl -LO "https://dl.k8s.io/release/v1.34.1/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/kubectl
+kubectl version
 
 #Test the kubeconfig works
 ```
