@@ -6,11 +6,11 @@ spec:
   controllerName: io.cilium/gateway-controller
   parametersRef:
     group: cilium.io
-    kind: CiliumGatewayConfig
+    kind: Config
     name: cilium-gateway-config
 ---
 apiVersion: cilium.io/v2
-kind: CiliumGatewayConfig
+kind: Config
 metadata:
   name: cilium-gateway-config
 spec:
