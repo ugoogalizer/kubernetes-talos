@@ -14,7 +14,12 @@ helmCharts:
                     # See compatibility here: https://docs.cilium.io/en/latest/network/servicemesh/gateway-api/gateway-api/
     valuesFile: ./values.yaml
 
+resources:
+  - ./resources/cilium-gateway.yaml
 # Disabled these - best to install cilium fully before trying to use it or else it may not be able to install properly.
-# resources:
 #   - ./resources/cilium-l2-announcement-policy.yaml
 #   - ./resources/cilium-load-balancer-ip-pool.yaml
+
+
+# Can use this command to check current running version of cilium: 
+# kubectl -n kube-system get ds/cilium -o jsonpath='{.spec.template.spec.containers[0].image}'
