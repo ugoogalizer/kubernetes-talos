@@ -6,5 +6,5 @@ metadata:
 namespace: metallb-system
 
 resources:
-  - https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
-  - ./resources/metallb-config.yaml
+  # - https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+  # - ./resources/metallb-config.yaml
