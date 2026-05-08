@@ -2,7 +2,7 @@ machine:
   features:
     hostDNS:
       enabled: true
-      forwardKubeDNSToHost: false
+      forwardKubeDNSToHost: false # required to allow Cilium DNS to work properly 
   network:
     interfaces:
       - deviceSelector:
