@@ -7,6 +7,7 @@ spec:
   parametersRef:
     # group: cilium.io
     kind: ConfigMap
+    group: ""
     name: cilium-gateway-config
 ---
 apiVersion: v1
