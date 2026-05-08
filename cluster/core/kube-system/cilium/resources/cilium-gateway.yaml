@@ -5,15 +5,20 @@ metadata:
 spec:
   controllerName: io.cilium/gateway-controller
   parametersRef:
-    # group: cilium.io
-    kind: ConfigMap
-    group: ""
+    group: cilium.io
+    kind: CiliumGatewayClassConfig
     name: cilium-gateway-config
 ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: cilium.io/v2alpha1
+kind: CiliumGatewayClassConfig
 metadata:
   name: cilium-gateway-config
 spec:
-  loadBalancer:
-    ip: 10.20.26.14
+  service:
+    type: LoadBalancer
+    # Use annotations to request a specific IP from your LB provider
+    annotations: 
+      # Example for MetalLB or general LB controllers
+      networking.gke.io/load-balancer-type: "Internal" 
+      # Some environments use this annotation for static IPs:
+      cni.cilium.io/loadBalancerIP: "10.20.26.14"
