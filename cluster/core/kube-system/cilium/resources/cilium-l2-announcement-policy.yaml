@@ -5,3 +5,7 @@ metadata:
 spec:
   externalIPs: true
   loadBalancerIPs: true
+  # Optional: Select specific nodes to perform announcements
+  # nodeSelector:
+  #   matchLabels:
+  #     kubernetes.io/hostname: node-1

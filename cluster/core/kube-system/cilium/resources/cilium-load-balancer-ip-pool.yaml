@@ -4,6 +4,7 @@ metadata:
   name: default-load-balancer-ip-pool
 spec:
   blocks:
-    - start: "10.20.26.32"
-      stop: "10.20.26.63"
+    - cidr: 10.20.26.32/27 # start: "10.20.26.32"  stop: "10.20.26.63"
+    # - start: "10.20.26.32"
+    #   stop: "10.20.26.63"
   disabled: false
