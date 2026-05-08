@@ -197,18 +197,33 @@ If you have issues with argocd, and need to downgrade it / uninstall it, this gu
 
 If you need to upgrade the Talos Linux cluster, either in version or adding extensions (such as the NVIDIA extensions) you are supposed to do it via API.  I think this is **really stupid**, because the whole point of Talos was to declaratively define it's state in a configuration file.  Running an API command moves your Talos Configuration out of sync with your configuration files.  So in my case, I tried to ensure my process ensured they stayed in sync by: 
 1. go to https://factory.talos.dev/ and select what you want (i.e. newer version / new extensions)
-1. Copy the image link (i.e. factory.talos.dev/installer/6698d6f136c5bb37ca8bb8482c9084305084da0a5ead1f4dcae760796f8ab3a2:v1.9.3)
+    1. Noting that provision\talos\patches\image.yaml is where I'm recording options chosen
+    1. Update the provision\talos\patches\image.yaml file to match and commit to git
+1. Copy the image link (i.e. factory.talos.dev/metal-installer/a16b5437683037ec314efd168d2bc0521c2c611f99517e47a9bee751108c6cf5:v1.13.0)
 1. Patch it into the machine config at machine.install.image.  
 1. commit/pull the patch to your control server with talosctl then run:
 
 ``` bash
+# Upgrade your client version first to match the target version: 
+cd ~
+curl -LO https://github.com/siderolabs/talos/releases/download/v1.13.0/talosctl-linux-amd64
+chmod +x talosctl-linux-amd64
+sudo mv talosctl-linux-amd64 /usr/local/bin/talosctl
+talosctl version
+
 # Upgrade the configuration file (which seems meaningless)
 cd ~/kubernetes-talos/provision/talos
+git pull
 rm talosconfig # the config file doesn't generate if this still exists
 ./generate.sh
 talosctl apply-config -e 10.20.8.62 -n 10.20.8.62 --file ./controlplane.yaml --talosconfig=./talosconfig
 # Now actually upgrade the node/s: 
-talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/installer/bf15920e4fb61a67819ed5311e240dde640765ae84840c2c82f71cd6b36b3075:v1.9.3
+
+#Worker first: 
+talosctl upgrade -e 10.20.8.62 -n 10.20.8.61 --talosconfig=./talosconfig --image factory.talos.dev/metal-installer/a16b5437683037ec314efd168d2bc0521c2c611f99517e47a9bee751108c6cf5:v1.13.0
+
+# Controller second
+talosctl upgrade -e 10.20.8.62 -n 10.20.8.62 --talosconfig=./talosconfig --image factory.talos.dev/metal-installer/a16b5437683037ec314efd168d2bc0521c2c611f99517e47a9bee751108c6cf5:v1.13.0
 # Note this actually takes a few minutes before it starts to apply for some reason, be patient (I almost sent a follow up command to tell it to reboot, but then it did reboot all on it's own)
 ```
 
