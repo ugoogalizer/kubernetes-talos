@@ -10,7 +10,7 @@ helmCharts:
     repo: https://helm.cilium.io
     releaseName: cilium
     namespace: kube-system
-    version: 1.18.2 # make sure you update the CRDs in the separate file at the same time
+    version: 1.19.3 # make sure you update the CRDs in the separate file at the same time
     valuesFile: ./values.yaml
 
 # Disabled these - best to install cilium fully before trying to use it or else it may not be able to install properly.
