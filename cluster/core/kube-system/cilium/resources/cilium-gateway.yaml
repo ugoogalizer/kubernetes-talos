@@ -5,12 +5,12 @@ metadata:
 spec:
   controllerName: io.cilium/gateway-controller
   parametersRef:
-    group: cilium.io
-    kind: Config
+    # group: cilium.io
+    kind: ConfigMap
     name: cilium-gateway-config
 ---
-apiVersion: cilium.io/v2
-kind: Config
+apiVersion: v1
+kind: ConfigMap
 metadata:
   name: cilium-gateway-config
 spec:
