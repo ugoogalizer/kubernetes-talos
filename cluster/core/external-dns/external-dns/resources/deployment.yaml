@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+      - name: external-dns
+        image: registry.k8s.io/external-dns/external-dns:v0.21.0 # as at 20260509
+        args:
+        # ...
+        - --provider=rfc2136
+        # DNS server IP address; this is my router.
+        - --rfc2136-host=10.20.0.1
+        - --rfc2136-port=53
+        # The zone for the updates.
+        - --rfc2136-zone=rockyroad.rocks
+        # The 'secret' key
+        - --rfc2136-tsig-secret=$(RFC2136_TSIG_SECRET)
+        # The example has hmac-sha256; we want hmac-sha512; make *sure* you've changed it.
+        - --rfc2136-tsig-secret-alg=hmac-sha512
+        # The keyname MUST match; it's part of the key.
+        - --rfc2136-tsig-keyname=talos-externaldns-rockyroad
+        - --rfc2136-tsig-axfr
+        - --source=ingress
+        - --source=service
+        - --source=gateway-httproute
+        - --source=gateway-grpcroute
+        - --source=gateway-tlsroute
+        - --source=gateway-tcproute
+        - --source=gateway-udproute
+        - --domain-filter=rockyroad.rocks
+        env:
+        - name: RFC2136_TSIG_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: external-dns-externalsecrets
+              key: talos-externaldns-rockyroad

@@ -1,0 +1,24 @@
+# https://blog.differentpla.net/blog/2025/05/03/k8s-external-dns-synology/
+# https://github.com/kubernetes-sigs/external-dns/blob/master/docs/sources/gateway-api.md
+# https://kubernetes-sigs.github.io/external-dns/v0.15.0/#deploying-to-a-cluster
+# https://kubernetes-sigs.github.io/external-dns/v0.15.0/charts/external-dns/apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: external-dns
+
+namespace: external-dns
+
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/secret.yaml
+  - ./resources/deployment.yaml
+
+
+# helmCharts:
+#   - name: external-dns
+#     repo: https://kubernetes-sigs.github.io/external-dns/
+#     releaseName: external-dns
+#     namespace: external-dns
+#     version: 1.21.1 # as at 20260509
+#     valuesFile: ./values.yaml
+
