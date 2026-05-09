@@ -14,7 +14,7 @@ spec:
     namespace: argocd
   syncPolicy:
     automated:
-      prune: false
-      selfHeal: false
+      prune: true
+      selfHeal: true
     syncOptions:
       - Replace=true      #  fixes the 262144 byte bug
