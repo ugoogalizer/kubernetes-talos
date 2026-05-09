@@ -6,7 +6,7 @@ controller:
   service:
     enabled: true
     type: LoadBalancer
-    externalTrafficPolicy: Local
+    externalTrafficPolicy: Cluster # was Local but this meant that the controller couldn't forward traffic to pods on other nodes.
     loadBalancerIP: "10.20.26.10"
     ipFamilyPolicy: SingleStack
     ipFamilies:
