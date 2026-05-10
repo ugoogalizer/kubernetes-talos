@@ -11,3 +11,7 @@ spec:
     # - start: "10.20.26.32"
     #   stop: "10.20.26.63"
   disabled: false
+
+
+# COMMAND TO RUN TO SEE ALL THE ADDRESSES ALLOCATED BY CILIUM 
+# kubectl get svc -A -o jsonpath='{range .items[?(@.status.loadBalancer.ingress)]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.status.loadBalancer.ingress[*].ip}{"\n"}{end}'
