@@ -25,7 +25,7 @@ This was taken and customised from [https://github.com/btkostner/infrastructure]
 - [external-secrets](https://external-secrets.io/latest/) and [bitwarden-sdk-server](https://github.com/external-secrets/bitwarden-sdk-server)to connect to the cloud instance of Bitwarden Secrets Manager for secrets storage and dynamic sync into the cluster. Only needs to be unlocked once at the start. Relies on cert-manager to create a self-signed certificate in order to allow the bitwarden-sdk-server to function.
 - [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner) to allow for basic storage provisioning. This has been setup to provision the same storage if deployed twice. This effectively means deploying the same cluster twice (say you lose the first one) all your applications will stay identical / not lose their state.
 - [external-dns](https://github.com/kubernetes-sigs/external-dns) Used to update DNS records in my Synology SRM DNS Server (via rfc2136) to keep DNS records in sync with l2 loadbalancers dynamically provisioned. With metallb + ingress, this was less important as you could more easily share a single loadbalanced IP across many services. But with Cilium l2 + gateway-api, they really don't seem to be setup to share a single IP, and instead are provisioning a new IP per gateway. Therefore, external-dns helps keep everything in sync.
-= [keycloak](https://www.keycloak.org/) identity provider to cluster applications that want it, currently linked up to Google as an identity provider for me.  Haven't explored making this any sort of cluster-level identity provider.
+= [keycloak](https://www.keycloak.org/) identity provider to cluster applications that want it, currently linked up to Google as an identity provider for me.`  Haven't explored making this any sort of cluster-level identity provider.
 - [Talos NVIDIA GPU Extensions](https://www.talos.dev/v1.9/talos-guides/configuration/nvidia-gpu/) Kernel modules and everything required to run GPU workloads within the cluster
 - [NVIDIA k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) - advertises GPU stats on nodes that have GPUs
   - [gpu-feature-discovery](https://github.com/NVIDIA/k8s-device-plugin?tab=readme-ov-file#deploying-with-gpu-feature-discovery-for-automatic-node-labels) Installed automatically with the NVIDIA k8s-device-plugin, advertises basic k8s node features.
@@ -81,7 +81,7 @@ talosctl version
 see wsl.md for details on how to install the management client within Windows Subsystem for Linux (Ubuntu 24.04)
 
 ## DNS
-ockyroad.rocks (TalosOS requires a fixed DNS record to point to it. There are other options, but this was the easiest for me)
+talos-gpu.rockyroad.rocks (TalosOS requires a fixed DNS record to point to it. There are other options, but this was the easiest for me).  The TalosOS API will be hosted at: https://talos-gpu.rockyroad.rocks:6443
 
 ## Steps to Form Cluster and Bootstrap Argo-CD 
 
