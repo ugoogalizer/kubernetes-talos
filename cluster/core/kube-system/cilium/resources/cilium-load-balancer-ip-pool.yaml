@@ -4,9 +4,10 @@ metadata:
   name: default-load-balancer-ip-pool
 spec:
   blocks:
-    - cidr: 10.20.26.0/27 # start: "10.20.26.0"  stop: "10.20.26.31"
-    - cidr: 10.20.26.32/27 # start: "10.20.26.32"  stop: "10.20.26.63"
-    - cidr: 10.20.10.10/32 # specifically for adguardhome
+    - cidr: 10.20.26.0/26 # start: "10.20.26.0"  stop: "10.20.26.63"
+    # - cidr: 10.20.26.0/27 # start: "10.20.26.0"  stop: "10.20.26.31"
+    # - cidr: 10.20.26.32/27 # start: "10.20.26.32"  stop: "10.20.26.63"
+    # - cidr: 10.20.10.10/32 # specifically for adguardhome
     # - start: "10.20.26.32"
     #   stop: "10.20.26.63"
   disabled: false
