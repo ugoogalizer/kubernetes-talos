@@ -23,6 +23,7 @@ spec:
     group: cilium.io
     kind: CiliumGatewayClassConfig
     name: cilium-lb-config
+    namespace: kube-system
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
