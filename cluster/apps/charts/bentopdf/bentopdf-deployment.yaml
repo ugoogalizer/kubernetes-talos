@@ -1,0 +1,127 @@
+# https://github.com/alam00000/bentopdf/#-run-with-docker-compose--podman-compose-recommended
+--- # deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: bentopdf
+  name: bentopdf
+#  namespace: bentopdf
+spec:
+  selector:
+    matchLabels:
+      app: bentopdf
+  template:
+    metadata:
+      labels:
+        app: bentopdf
+        app.kubernetes.io/name: bentopdf # required for Homepage
+    spec:
+      containers:
+        - name: bentopdf
+          image: ghcr.io/alam00000/bentopdf-simple:sha-58a0053 # as at 20260516
+          # https://github.com/alam00000/bentopdf/pkgs/container/bentopdf-simple
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: "Australia/Sydney"
+          ports:
+            - containerPort: 8080
+              name: bentopdf-http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 750Mi
+            limits:
+              cpu: "250m"
+              memory: "750Mi"
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bentopdf-http-svc
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: bentopdf-http
+  selector:
+    app: bentopdf
+  type: ClusterIP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bentopdf
+  namespace: bentopdf
+spec:
+  parentRefs:
+    - name: external-gateway
+      namespace: cilium-ingress
+  hostnames:
+    - "bentopdf.rockyroad.rocks"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: bentopdf-http-svc
+          port: 8080
+
+---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     #acme.cert-manager.io/http01-ingress-class: nginx-external
+#     #kubernetes.io/ingress.class: nginx
+#     cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
+#     #cert-manager.io/cluster-issuer: "letsencrypt-staging"
+#     kubernetes.io/ingress.class: "nginx"
+#     #acme.cert-manager.io/http01-ingress-class: "nginx-external"
+#     #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+#     #nginx.org/ssl-services: "tvheadend-http-svc"
+#     nginx.org/websocket-services: "bentopdf-http-svc"        
+#     nginx.org/proxy-read-timeout: "3600"
+#     nginx.org/proxy-send-timeout: "3600" 
+#     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
+#     gethomepage.dev/description: Track and share expenses with friends and family
+#     gethomepage.dev/enabled: "true"
+#     gethomepage.dev/group: Lifestyle
+#     gethomepage.dev/icon: https://raw.githubusercontent.com/bentopdf-app/bentopdf/refs/heads/main/public/logo.svg
+#     gethomepage.dev/name: bentopdf
+
+#   name: bentopdf
+# spec:
+#   rules:
+#     - host: bentopdf.rockyroad.rocks
+#       http:
+#         paths:
+#           - backend:
+#               service:
+#                 name: bentopdf-http-svc
+#                 port:
+#                   number: 80
+#             path: /
+#             pathType: Prefix
+#   tls:
+#     - hosts:
+#         - bentopdf.rockyroad.rocks
+#       secretName: bentopdf-tls
+# ---
