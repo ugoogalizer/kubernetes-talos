@@ -12,7 +12,7 @@ metadata:
   namespace: cilium-ingress
   annotations:
     # This matches the VIP defined in your networking.md
-    io.cilium/lb-ipam-ips: 192.168.3.51
+    # io.cilium/lb-ipam-ips: 192.168.3.51
     cert-manager.io/cluster-issuer: "letsencrypt-dns01-prod"
 spec:
   gatewayClassName: cilium
