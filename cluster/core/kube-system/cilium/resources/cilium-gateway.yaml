@@ -10,6 +10,8 @@ kind: Gateway
 metadata:
   name: external-gateway
   namespace: cilium-ingress
+  labels:
+    io.cilium/ip-pool: default-load-balancer-ip-pool # tells k8s to alloate an IP from this pool
   annotations:
     # This matches the VIP defined in your networking.md
     # io.cilium/lb-ipam-ips: 192.168.3.51
