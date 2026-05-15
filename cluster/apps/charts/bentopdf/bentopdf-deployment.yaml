@@ -72,7 +72,7 @@ metadata:
 spec:
   parentRefs:
     - name: external-gateway
-      namespace: cilium-ingress
+      namespace: kube-system
   hostnames:
     - "bentopdf.rockyroad.rocks"
   rules:
