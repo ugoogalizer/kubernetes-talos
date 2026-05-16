@@ -37,16 +37,17 @@ spec:
               cpu: "250m"
               memory: "750Mi"
           livenessProbe:
+            # as per: https://github.com/alam00000/bentopdf/blob/main/chart/values.yaml
             httpGet:
-              path: /ping
-              port: 3000
+              path: /
+              # port: 3000
             initialDelaySeconds: 180
             periodSeconds: 10
 
           readinessProbe:
             httpGet:
-              path: /ready
-              port: 3000
+              path: /
+              # port: 3000
             initialDelaySeconds: 180
             periodSeconds: 5
 ---
