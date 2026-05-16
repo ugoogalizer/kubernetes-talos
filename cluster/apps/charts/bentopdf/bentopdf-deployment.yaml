@@ -70,6 +70,12 @@ kind: HTTPRoute
 metadata:
   name: bentopdf
   namespace: bentopdf
+  annotations:
+    gethomepage.dev/description: "A self-hosted, web-based PDF reader and manager with a focus on simplicity and ease of use."
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: "Productivity"
+    gethomepage.dev/icon: https://raw.githubusercontent.com/bentopdf-app/bentopdf/refs/heads/main/public/logo.svg
+    gethomepage.dev/name: BentoPDF
 spec:
   parentRefs:
     - name: external-gateway
