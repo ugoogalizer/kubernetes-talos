@@ -40,14 +40,14 @@ spec:
             # as per: https://github.com/alam00000/bentopdf/blob/main/chart/values.yaml
             httpGet:
               path: /
-              # port: 3000
+              port: bentopdf-http
             initialDelaySeconds: 180
             periodSeconds: 10
 
           readinessProbe:
             httpGet:
               path: /
-              # port: 3000
+              port: bentopdf-http
             initialDelaySeconds: 180
             periodSeconds: 5
 ---
