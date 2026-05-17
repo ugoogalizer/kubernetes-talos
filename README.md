@@ -32,9 +32,7 @@ This was taken and customised from [https://github.com/btkostner/infrastructure]
   - [local-path-provisioner](https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/)
   - A NFS-CSI - I believe the nfs-subdir-external-provisioner above is sufficient for this, skipped
 
-
 ## High Level Concepts
-
 
 Deploys main components: 
  - everything in the `provision` sets up the TalosOS installation, TalosOS cluster, and empty kubenetes cluster
@@ -56,10 +54,8 @@ Basic steps would be:
 1. NOTE - because there are some operators installed within this cluster, Argo-cd has been told what to ignore, otherwise the Operators and Argo have a fight over state.
 
 Disabled from the original repository I forked from
--  as a kube proxy replacement and sidecar-less networking
 - [Rook Ceph](https://rook.io) for stateful replicated storage for all nodes
 - [Velero](https://velero.io) for offsite cluster backup
-
 
 ## Management Client
 
@@ -134,7 +130,6 @@ Create keys for talos-backup
 age-keygen
 
 ```
-
 
 # Adding Worker Node/s
 
