@@ -14,7 +14,7 @@ fqdn: # added from chatgpt recommendation
 gatewayAPI:
   enabled: true
   hostNetwork:
-    enabled: true
+    enabled: false # if this is on it disables the use of Cilium's internal loadbalancer when creating gateways
   secretsNamespace:
     create: false
     name: kube-system

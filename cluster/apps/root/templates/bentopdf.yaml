@@ -1,20 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: bentopdf
   namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
 spec:
+  destination:
+    # name: talos-gpu
+    server: https://kubernetes.default.svc
+    namespace: bentopdf
   project: default
   source:
+    path: cluster/apps/charts/bentopdf
     repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
     targetRevision: HEAD
-    path: cluster/core/argocd/argocd   # uses EXISTING kustomization
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - Replace=true      #  fixes the 262144 byte bug
+      - CreateNamespace=true
