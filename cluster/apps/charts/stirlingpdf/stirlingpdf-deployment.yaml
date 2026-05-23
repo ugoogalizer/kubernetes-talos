@@ -31,11 +31,11 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 250m
-              memory: 750Mi
+              cpu: 1000m
+              memory: 2000Mi
             limits:
-              cpu: "250m"
-              memory: "750Mi"
+              cpu: "1000m"
+              memory: "2000Mi"
           # livenessProbe:
           #   # as per: https://github.com/alam00000/stirlingpdf/blob/main/chart/values.yaml
           #   httpGet:
