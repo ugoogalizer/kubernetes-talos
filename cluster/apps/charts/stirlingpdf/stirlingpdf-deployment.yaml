@@ -36,20 +36,20 @@ spec:
             limits:
               cpu: "250m"
               memory: "750Mi"
-          livenessProbe:
-            # as per: https://github.com/alam00000/stirlingpdf/blob/main/chart/values.yaml
-            httpGet:
-              path: /healthz
-              port: stirling-http
-            initialDelaySeconds: 180
-            periodSeconds: 10
+          # livenessProbe:
+          #   # as per: https://github.com/alam00000/stirlingpdf/blob/main/chart/values.yaml
+          #   httpGet:
+          #     path: /healthz
+          #     port: stirling-http
+          #   initialDelaySeconds: 180
+          #   periodSeconds: 10
 
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: stirling-http
-            initialDelaySeconds: 180
-            periodSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /healthz
+          #     port: stirling-http
+          #   initialDelaySeconds: 180
+          #   periodSeconds: 5
           volumeMounts:
             - mountPath: /configs
               name: stirlingpdf-connfig-pv
