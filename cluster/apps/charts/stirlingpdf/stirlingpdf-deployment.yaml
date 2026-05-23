@@ -39,14 +39,14 @@ spec:
           livenessProbe:
             # as per: https://github.com/alam00000/stirlingpdf/blob/main/chart/values.yaml
             httpGet:
-              path: /
+              path: /healthz
               port: stirling-http
             initialDelaySeconds: 180
             periodSeconds: 10
 
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: stirling-http
             initialDelaySeconds: 180
             periodSeconds: 5
