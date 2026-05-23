@@ -27,7 +27,7 @@ spec:
               value: "Australia/Sydney"
           ports:
             - containerPort: 8080
-              name: stirlingpdf-http
+              name: stirling-http
               protocol: TCP
           resources:
             requests:
@@ -40,14 +40,14 @@ spec:
             # as per: https://github.com/alam00000/stirlingpdf/blob/main/chart/values.yaml
             httpGet:
               path: /
-              port: stirlingpdf-http
+              port: stirling-http
             initialDelaySeconds: 180
             periodSeconds: 10
 
           readinessProbe:
             httpGet:
               path: /
-              port: stirlingpdf-http
+              port: stirling-http
             initialDelaySeconds: 180
             periodSeconds: 5
           volumeMounts:
@@ -74,13 +74,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: stirlingpdf-http-svc
+  name: stirling-http-svc
 spec:
   ports:
     - name: http
       port: 8080
       protocol: TCP
-      targetPort: stirlingpdf-http
+      targetPort: stirling-http
   selector:
     app: stirlingpdf
   type: ClusterIP
@@ -108,7 +108,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: stirlingpdf-http-svc
+        - name: stirling-http-svc
           port: 8080
 
 ---
@@ -124,7 +124,7 @@ spec:
 #     #acme.cert-manager.io/http01-ingress-class: "nginx-external"
 #     #nginx.ingress.kubernetes.io/backend-protocol: HTTPS
 #     #nginx.org/ssl-services: "tvheadend-http-svc"
-#     nginx.org/websocket-services: "stirlingpdf-http-svc"        
+#     nginx.org/websocket-services: "stirling-http-svc"        
 #     nginx.org/proxy-read-timeout: "3600"
 #     nginx.org/proxy-send-timeout: "3600" 
 #     nginx.ingress.kubernetes.io/proxy-body-size: "100m" # allow uploads (aka backups) of up to 100MB
@@ -142,7 +142,7 @@ spec:
 #         paths:
 #           - backend:
 #               service:
-#                 name: stirlingpdf-http-svc
+#                 name: stirling-http-svc
 #                 port:
 #                   number: 80
 #             path: /
