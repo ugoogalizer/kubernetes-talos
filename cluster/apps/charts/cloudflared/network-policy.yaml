@@ -163,7 +163,14 @@ spec:
             #   protocol: TCP
             - port: "8000" # has to be the targetPort became Cilium's policy effectively bypasses the service port 
               protocol: TCP
-
+    - toServices: # Permit access to the cmui webapp service
+      - k8sService:
+          serviceName: cmui-web-http-svc
+          namespace: cmui
+      toPorts:
+        - ports:
+            - port: "8080" # targetPort: Cilium policy applies after service translation
+              protocol: TCP
 # TODO  --- Still not letting through ICMP packets
 
 # # Testing pod: 
