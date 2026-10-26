@@ -8,6 +8,7 @@ resources:
   # - ./cert-manager/trust-manager
   - ./external-secrets/bitwarden-sdk-certificate-issuer
   - ./external-secrets/external-secrets-operator
+  - ./reloader/reloader
   - ./metallb-system/metallb
   - ./local-path-storage/local-path-provisioner
   - ./kube-system/nfs-subdir-external-provisioner

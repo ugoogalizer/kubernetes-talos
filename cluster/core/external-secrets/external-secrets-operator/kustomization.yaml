@@ -19,3 +19,17 @@ resources:
   - ./resources/bitwarden-certificate.yaml
   # - ./resources/bitwarden-certificate-bundle.yaml
   - ./resources/cluster-secret-store.yaml
+
+patches:
+  # The sdk server only loads its TLS cert at startup. Have Reloader restart it
+  # whenever cert-manager renews bitwarden-tls-certs.
+  - target:
+      kind: Deployment
+      name: bitwarden-sdk-server
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: bitwarden-sdk-server
+        annotations:
+          secret.reloader.stakater.com/reload: "bitwarden-tls-certs"

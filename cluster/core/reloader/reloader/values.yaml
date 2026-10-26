@@ -1,0 +1,8 @@
+reloader:
+  # Only restart workloads that opt in via an annotation, e.g.
+  # secret.reloader.stakater.com/reload: "<secret-name>"
+  autoReloadAll: false
+  watchGlobally: true # watch all namespaces
+  reloadStrategy: annotations
+  deployment:
+    replicas: 1
