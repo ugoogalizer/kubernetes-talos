@@ -6,3 +6,4 @@ reloader:
   reloadStrategy: annotations
   deployment:
     replicas: 1
+  reloadOnCreate: true
