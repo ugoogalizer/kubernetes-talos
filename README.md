@@ -353,7 +353,7 @@ kubectl -n external-secrets describe secret bitwarden-tls-certs
 #delete secret
 kubectl -n external-secrets delete secret bitwarden-tls-certs
 #restart trust manager
-kubectl -n cert-manager rollout restart deployment trust-manager
+# kubectl -n cert-manager rollout restart deployment trust-manager # not required
 #get info on new secret
 kubectl -n external-secrets get secret bitwarden-tls-certs
 kubectl -n external-secrets describe secret bitwarden-tls-certs

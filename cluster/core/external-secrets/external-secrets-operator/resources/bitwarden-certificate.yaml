@@ -21,3 +21,5 @@ spec:
     name: bitwarden-certificate-issuer
     kind: ClusterIssuer
     group: cert-manager.io
+  duration: 8760h
+  renewBefore: 720h

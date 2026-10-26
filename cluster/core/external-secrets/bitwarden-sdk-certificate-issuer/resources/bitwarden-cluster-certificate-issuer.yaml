@@ -26,7 +26,10 @@ spec:
   ipAddresses:
     - 127.0.0.1
     - ::1
+  duration: 87600h      # 10y
+  renewBefore: 8760h    # 1y
   privateKey:
+    rotationPolicy: Never  
     algorithm: RSA
     encoding: PKCS8
     size: 2048
