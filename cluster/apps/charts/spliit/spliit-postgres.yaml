@@ -18,6 +18,10 @@ metadata:
   name: postgres
 spec:
   replicas: 1
+  # Never two postgres processes on one data directory: a rolling update would start the new pod before the old one
+  # stops, and the NFS volume doesn't prevent a second mount.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: postgres
