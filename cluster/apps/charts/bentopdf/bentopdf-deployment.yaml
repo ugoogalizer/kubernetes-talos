@@ -91,6 +91,10 @@ spec:
       backendRefs:
         - name: bentopdf-http-svc
           port: 8080
+      # Static site (PDF work happens in the browser), but its WASM bundles are large: allow slow downloads
+      # beyond Envoy's 15 s default while keeping a bound.
+      timeouts:
+        request: 300s
 
 ---
 # apiVersion: networking.k8s.io/v1
