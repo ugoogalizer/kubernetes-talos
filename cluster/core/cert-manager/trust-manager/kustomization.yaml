@@ -9,7 +9,7 @@ helmCharts:
   - name: trust-manager
     repo: https://charts.jetstack.io
     releaseName: trust-manager
-    version: v0.15.0 # 0.15.0 as at 20250207 https://artifacthub.io/packages/helm/cert-manager/trust-manager
+    version: v0.26.0 # 0.26.0 as at 20261120 https://github.com/cert-manager/trust-manager/releases
     namespace: cert-manager
     valuesFile: ./values.yaml
 
