@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:18.0 # Use a specific PostgreSQL version
+          image: postgres:18.7@sha256:e754b839f447639b7004895f4d8a4bfcb4e9dbe3a1bc035f27f646562a16fd61 # 18.7 as at 20261120 https://www.postgresql.org/docs/release/18.7/
           env:
             - name: POSTGRES_DB
               value: "keycloak"
@@ -92,7 +92,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: pg-backup
-            image: postgres:18.0
+            image: postgres:18.7@sha256:e754b839f447639b7004895f4d8a4bfcb4e9dbe3a1bc035f27f646562a16fd61 # 18.7 as at 20261120 https://www.postgresql.org/docs/release/18.7/
             env:
               # "normal" env vars you want to keep as inline values
               - name: POSTGRES_HOST
