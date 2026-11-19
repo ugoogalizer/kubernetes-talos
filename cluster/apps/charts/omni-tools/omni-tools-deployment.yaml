@@ -20,7 +20,7 @@ spec:
       containers:
         - name: omni-tools
           # https://github.com/omni-tools-app/omni-tools/pkgs/container/omni-tools 
-          image: iib0011/omni-tools:latest
+          image: iib0011/omni-tools:0.7.0@sha256:85f0e052a97326396c753e39de0ef74631c0783999ccca81ebc36262903ec9fa # 0.7.0 as at 20261120 (latest release; :latest was a later untagged build) https://hub.docker.com/r/iib0011/omni-tools
           imagePullPolicy: Always
           env:
             # - name: PUID

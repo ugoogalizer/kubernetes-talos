@@ -45,6 +45,11 @@ spec:
             value: "https://open-webui.rockyroad.rocks"
         pipelines:
           enabled: true
+          image:
+            # git-039f9c5 (= main) as at 20261120 (running); pipelines has no releases, only per-commit tags
+            # https://github.com/open-webui/pipelines/pkgs/container/pipelines
+            tag: git-039f9c5@sha256:b48e9bc338ce2be0acfbeff01810db72408a12f07739f9e3879c1f2b00952d6e
+            pullPolicy: IfNotPresent
         tika:
           enabled: true
         ingress:

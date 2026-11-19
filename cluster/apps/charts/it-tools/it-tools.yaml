@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: it-tools
-          image: ghcr.io/corentinth/it-tools:latest
+          image: ghcr.io/corentinth/it-tools:2024.10.22-7ca5933@sha256:8b8128748339583ca951af03dfe02a9a4d7363f61a216226fc28030731a5a61f # 2024.10.22-7ca5933 as at 20261120 (running; still the latest release) https://github.com/CorentinTh/it-tools/releases
           imagePullPolicy: Always
           ports:
             - containerPort: 80

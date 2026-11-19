@@ -20,7 +20,7 @@ spec:
       containers:
         - name: ghs
           #image: gloomhavensecretariat/ghs-server:latest
-          image: gloomhavensecretariat/ghs-server-postgresql:latest
+          image: gloomhavensecretariat/ghs-server-postgresql:v0.176.0@sha256:5ec44e33b26a7afb7e4fb0f31c4229f4a223287c3cec74d114bbb98c28f710d8 # v0.176.0 as at 20261120 (running; latest) https://hub.docker.com/r/gloomhavensecretariat/ghs-server-postgresql
           imagePullPolicy: Always
           env:
             # - name: PUID
