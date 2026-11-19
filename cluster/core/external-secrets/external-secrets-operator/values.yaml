@@ -1,5 +1,30 @@
 bitwarden-sdk-server:
   enabled: true
+  image:
+    # The ESO chart still bundles sdk-server v0.6.0; v0.8.1 fixes a thread/memory leak on every failed login.
+    tag: v0.8.1@sha256:d2266559f57eff819aab5016c565f9e203895850b0d8a1ea8fc340fad34f4a10 # v0.8.1 as at 20261120 https://github.com/external-secrets/bitwarden-sdk-server/releases
+    tls:
+      # The chart defaults plus an emptyDir for the session state v0.8+ keeps at /home/nonroot/.bitwarden-state
+      # (without it every request logs in again, and Bitwarden rate-limits with 429).
+      volumeMounts:
+        - mountPath: /certs
+          name: bitwarden-tls-certs
+        - mountPath: /home/nonroot
+          name: bitwarden-state
+      volumes:
+        - name: bitwarden-tls-certs
+          secret:
+            secretName: bitwarden-tls-certs
+            items:
+              - key: tls.crt
+                path: cert.pem
+              - key: tls.key
+                path: key.pem
+              - key: ca.crt
+                path: ca.pem
+        - name: bitwarden-state
+          emptyDir:
+            sizeLimit: 16Mi
 revisionHistoryLimit: 1
 installCRDs: true
 crds:
