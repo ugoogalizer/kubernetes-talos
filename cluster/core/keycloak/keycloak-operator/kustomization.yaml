@@ -5,5 +5,7 @@ metadata:
 
 namespace: keycloak
 resources:
-  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.5.1/kubernetes/kubernetes.yml
+  # 26.8.2 as at 20261120 https://github.com/keycloak/keycloak/releases; the operator deploys the Keycloak image of
+  # its own version (the Keycloak CR sets no image). Keep in step with the Keycloak CRDs in cluster/crds.
+  - https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.8.2/kubernetes/kubernetes.yml
 
