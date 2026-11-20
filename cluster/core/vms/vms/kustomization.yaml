@@ -10,3 +10,4 @@ namespace: vms
 resources:
   - resources/namespace.yaml
   - resources/vm-operators-rolebinding.yaml
+  - resources/network-policy.yaml

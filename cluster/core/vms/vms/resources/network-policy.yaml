@@ -1,0 +1,22 @@
+# https://docs.cilium.io/en/stable/security/policy/language/
+# VMs accept connections only from the home network (10.20.0.0/16), and only on remote-access ports; nothing else in
+# the cluster can reach them. Their own outbound traffic (Windows Update etc.) is not restricted.
+# The VM's screen and serial console (Headlamp, virtctl) go through the API server and virt-handler, not the pod
+# network, so they aren't affected. Add ports here (e.g. 22 for Linux VMs) as VMs need them.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: vm-remote-access
+spec:
+  endpointSelector:
+    matchLabels:
+      kubevirt.io: virt-launcher # every VM's pod
+  ingress:
+    - fromCIDR:
+        - 10.20.0.0/16
+      toPorts:
+        - ports:
+            - port: "3389"
+              protocol: TCP
+            - port: "3389"
+              protocol: UDP
