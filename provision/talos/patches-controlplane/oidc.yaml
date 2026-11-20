@@ -1,0 +1,16 @@
+# The API server also accepts Keycloak ID tokens (realm rockyroadrocks, client "kubernetes"), for Headlamp and
+# kubectl via kubelogin. Users become "oidc:<preferred_username>", Keycloak groups "oidc:<group>"; rights come only from
+# RBAC bindings in git (cluster/core/headlamp/headlamp/resources/user-rbac.yaml). Certificate (admin) access is
+# unchanged and still works if Keycloak is down.
+#
+# Legacy --oidc-* flags because this cluster's config uses .cluster.apiServer: Talos 1.14 only honours a
+# KubeAuthenticationConfig document together with a KubeAPIServerConfig document (migrate both later, then move this).
+cluster:
+  apiServer:
+    extraArgs:
+      oidc-issuer-url: https://keycloak.rockyroad.rocks/realms/rockyroadrocks
+      oidc-client-id: kubernetes
+      oidc-username-claim: preferred_username
+      oidc-username-prefix: "oidc:"
+      oidc-groups-claim: groups
+      oidc-groups-prefix: "oidc:"
