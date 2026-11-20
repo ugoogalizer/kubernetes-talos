@@ -1,0 +1,25 @@
+# The KubeVirt install itself (reconciled by virt-operator, cluster/core/kubevirt/kubevirt-operator).
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+spec:
+  certificateRotateStrategy: {}
+  configuration:
+    developerConfiguration:
+      featureGates: []
+  imagePullPolicy: IfNotPresent
+  # virt-operator creates a ServiceMonitor here for kube-prometheus-stack (VM and KubeVirt metrics in Grafana).
+  monitorNamespace: monitoring
+  monitorAccount: kube-prometheus-stack-prometheus
+  # virt-handler (the per-node agent) must also run on the tainted GPU worker, since VMs are meant to run there
+  # (decided 20261120). VMs themselves carry the same toleration plus a nodeSelector for maurice.
+  workloads:
+    nodePlacement:
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: LargeWorkload
+          effect: NoSchedule
+  workloadUpdateStrategy: {}
