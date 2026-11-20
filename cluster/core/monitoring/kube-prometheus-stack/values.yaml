@@ -1,0 +1,163 @@
+# kube-prometheus-stack for talos-gpu. Chart defaults unless noted.
+
+# CRDs are applied by the crds app (cluster/crds, server-side: they exceed the client-side annotation limit).
+crds:
+  enabled: false
+
+# --- Talos specifics -------------------------------------------------------------------------------------------------
+# etcd, kube-scheduler and kube-controller-manager only listen on localhost on Talos, and Cilium replaces kube-proxy,
+# so these targets would always be down. Turned off with their rules rather than exposing the components.
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+defaultRules:
+  rules:
+    etcd: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+    kubeControllerManager: false
+    kubeProxy: false
+
+# Kubelet serving certs are signed by the cluster CA since 20261120 (kubelet-serving-cert-approver), so verify them
+# against kube-root-ca.crt instead of the chart default insecureSkipVerify.
+kubelet:
+  serviceMonitor:
+    tlsConfig:
+      insecureSkipVerify: false
+      ca:
+        configMap:
+          name: kube-root-ca.crt
+          key: ca.crt
+
+# --- Prometheus Operator ---------------------------------------------------------------------------------------------
+prometheusOperator:
+  # The webhook only validates PrometheusRule syntax; turning it off avoids the certgen hook Jobs under Argo CD.
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+
+# --- Prometheus ------------------------------------------------------------------------------------------------------
+prometheus:
+  prometheusSpec:
+    # Pick up every ServiceMonitor/PodMonitor/PrometheusRule in the cluster (Hubble, KubeVirt, apps later), not just
+    # the ones labelled for this Helm release.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    scrapeConfigSelectorNilUsesHelmValues: false
+    retention: 15d
+    retentionSize: 40GB
+    # local-path, not NFS: Prometheus' TSDB is not safe on NFS. local-path volumes are tied to one node.
+    nodeSelector:
+      kubernetes.io/hostname: maurice-02
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    resources:
+      requests:
+        cpu: 200m
+        memory: 2Gi
+      limits:
+        memory: 6Gi
+
+# --- Alertmanager ----------------------------------------------------------------------------------------------------
+# Runs with the chart's default config (all alerts go to the "null" receiver): alerts are visible in Grafana and the
+# Alertmanager API, but nothing is sent yet. Notification channel: roadmap Phase 3.9 / 3.5 Stage 3.
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+
+# --- Grafana ---------------------------------------------------------------------------------------------------------
+grafana:
+  # The chart's Helm test Pod would be deployed by Argo CD as an ordinary Pod.
+  testFramework:
+    enabled: false
+  admin:
+    existingSecret: grafana-secrets
+    userKey: admin-user
+    passwordKey: admin-password
+  envValueFrom:
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+      secretKeyRef:
+        name: grafana-secrets
+        key: oidc-client-secret
+  grafana.ini:
+    server:
+      root_url: https://grafana.rockyroad.rocks
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+      check_for_plugin_updates: false
+    auth:
+      # Keycloak is the normal way in; the local admin (password in Bitwarden) is break-glass only.
+      oauth_allow_insecure_email_lookup: false
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak
+      icon: signin
+      client_id: grafana
+      # client_secret comes from GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+      scopes: openid email profile groups
+      auth_url: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/protocol/openid-connect/auth
+      token_url: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/protocol/openid-connect/token
+      api_url: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/protocol/openid-connect/userinfo
+      signout_redirect_url: https://keycloak.rockyroad.rocks/realms/rockyroadrocks/protocol/openid-connect/logout?client_id=grafana&post_logout_redirect_uri=https%3A%2F%2Fgrafana.rockyroad.rocks%2Flogin
+      use_pkce: true
+      allow_sign_up: true
+      login_attribute_path: preferred_username
+      email_attribute_path: email
+      name_attribute_path: name
+      # Keycloak group grafana-admins → Grafana Admin; any other realm user → Viewer.
+      role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || 'Viewer'
+  # SQLite (users, preferences, dashboards made in the UI) on local-path next to Prometheus. The bundled dashboards
+  # come from ConfigMaps and don't need it.
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: local-path
+    accessModes: ["ReadWriteOnce"]
+    size: 5Gi
+  deploymentStrategy:
+    type: Recreate
+  nodeSelector:
+    kubernetes.io/hostname: maurice-02
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+# --- Exporters -------------------------------------------------------------------------------------------------------
+# node-exporter tolerates every NoSchedule taint by default, so it runs on maurice too.
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      memory: 256Mi

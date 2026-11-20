@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: kube-prometheus-stack
+
+namespace: monitoring
+
+# Prometheus, Alertmanager, Grafana, node-exporter, kube-state-metrics and the Prometheus Operator. CRDs live in
+# cluster/crds (pinned to the same chart tag). Grafana: https://grafana.rockyroad.rocks, Keycloak sign-in.
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    releaseName: kube-prometheus-stack
+    version: 93.4.1 # 93.4.1 as at 20261120 https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+    namespace: monitoring
+    valuesFile: ./values.yaml
+
+resources:
+  - ./resources/namespace.yaml
+  - ./resources/grafana-oidc-externalsecret.yaml
+  - ./resources/grafana-httproute.yaml
