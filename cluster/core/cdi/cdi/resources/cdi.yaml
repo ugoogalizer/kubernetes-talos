@@ -11,6 +11,13 @@ spec:
   infra:
     nodeSelector:
       kubernetes.io/os: linux
+  # CDI's per-volume pods (importer, upload, clone) must be able to run on maurice, the tainted GPU worker where VM
+  # disks live (local-path volumes are tied to their node), like virt-handler (cluster/core/kubevirt/kubevirt).
   workload:
     nodeSelector:
       kubernetes.io/os: linux
+    tolerations:
+      - key: workload
+        operator: Equal
+        value: LargeWorkload
+        effect: NoSchedule
