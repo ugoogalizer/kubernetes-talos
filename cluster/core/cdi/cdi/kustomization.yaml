@@ -5,3 +5,4 @@ metadata:
 
 resources:
   - ./resources/cdi.yaml
+  - ./resources/storageprofiles.yaml

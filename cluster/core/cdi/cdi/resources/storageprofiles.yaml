@@ -1,0 +1,24 @@
+# CDI doesn't recognise our two provisioners (StorageProfile status "UnrecognizedProvisioner"), so it can't tell which
+# access modes they support. Without this, KubeVirt asks for ReadWriteMany for a VM's persistent TPM/UEFI state
+# volume (vmStateStorageClass: local-path), which local-path refuses, and the VM never starts.
+# CDI creates these objects itself (one per StorageClass) and only writes their status; the spec is ours.
+# https://github.com/kubevirt/containerized-data-importer/blob/main/doc/storageprofile.md
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: StorageProfile
+metadata:
+  name: local-path
+spec:
+  claimPropertySets:
+    - accessModes:
+        - ReadWriteOnce
+      volumeMode: Filesystem
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: StorageProfile
+metadata:
+  name: managed-nfs-storage-retain
+spec:
+  claimPropertySets:
+    - accessModes:
+        - ReadWriteMany # NFS: any node can mount it, so VMs on it can live-migrate
+      volumeMode: Filesystem
