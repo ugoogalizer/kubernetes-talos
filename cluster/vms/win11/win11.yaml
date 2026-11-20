@@ -61,10 +61,11 @@ spec:
           acpi: {}
           apic: {}
           smm: {} # required for Secure Boot
+          # Hyper-V `frequencies` and `reenlightenment` (in the windows.11 preference) are left out: they pin the VM
+          # to one exact TSC frequency, which KubeVirt picks as the lowest in the cluster (maurice-02's), so the VM
+          # could never schedule on maurice. Their only benefit is smoother timekeeping across live migration.
           hyperv:
-            frequencies: {}
             ipi: {}
-            reenlightenment: {}
             relaxed: {}
             reset: {}
             runtime: {}
