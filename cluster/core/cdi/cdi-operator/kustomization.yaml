@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: cdi-operator
+
+# Containerized Data Importer operator + CDI CRD + namespace cdi. CDI imports/uploads/clones VM disk images into
+# PVCs (DataVolumes). Our storage (nfs-subdir, local-path) is not CSI, so clones are host-assisted copies, no snapshots.
+resources:
+  # v1.66.1 as at 20261120 https://github.com/kubevirt/containerized-data-importer/releases
+  - https://github.com/kubevirt/containerized-data-importer/releases/download/v1.66.1/cdi-operator.yaml
+
+patches:
+  # The CDI CRD (~385 KB) exceeds the client-side last-applied annotation limit.
+  - target:
+      group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      name: cdis.cdi.kubevirt.io
+    patch: |-
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-options
+        value: ServerSideApply=true
