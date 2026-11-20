@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: kubelet-serving-cert-approver
+
+# Approves the kubelets' serving-certificate CSRs (kubernetes.io/kubelet-serving) after checking the requester is
+# the node and the SANs are that node's own names/IPs. Needed because the kubelets request serving certs signed by
+# the cluster CA (Talos kubelet extraConfig serverTLSBootstrap, provision/talos/patches/kubelet.yaml), which lets
+# metrics-server and Prometheus verify kubelet TLS instead of skipping it. Kubelets re-request before expiry, so
+# this must keep running; if it is down, kubelets keep their current cert and retry.
+# No `namespace:` here: the manifest has a RoleBinding in `default` (CSR events land there) that must stay put.
+resources:
+  # v0.12.1 as at 20261120 https://github.com/alex1989hu/kubelet-serving-cert-approver/releases
+  - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.12.1/deploy/standalone-install.yaml
+
+images:
+  - name: ghcr.io/alex1989hu/kubelet-serving-cert-approver
+    newTag: 0.12.1@sha256:445a8e5584f659701092d2ec8b625da8929dc75fe4d45274333bd9fe6db8fb75
+
+patches:
+  # Upstream uses Always; the tag is pinned by digest, so pulling again on every restart adds nothing.
+  - target:
+      kind: Deployment
+      name: kubelet-serving-cert-approver
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent

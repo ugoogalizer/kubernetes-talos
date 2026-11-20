@@ -3,6 +3,11 @@ machine:
     nodeIP:
       validSubnets:
         - 10.20.0.0/16 # forces kubelets to use IPv4 instead of IPv6
+    extraConfig:
+      # Kubelet requests its serving cert from the cluster CA (CSR approved by cluster/core/kubelet-serving-cert-approver)
+      # instead of self-signing, so metrics-server/Prometheus can verify it. Added 20261120; applied to the running
+      # nodes as a machine config patch, not by regenerating. https://docs.siderolabs.com/kubernetes-guides/monitoring-and-observability/deploy-metrics-server
+      serverTLSBootstrap: true
     extraMounts: # added for local-path-provisioner required for KubeVirt as per https://www.talos.dev/v1.9/kubernetes-guides/configuration/local-storage/
       - destination: /var/local-path-provisioner
         type: bind
