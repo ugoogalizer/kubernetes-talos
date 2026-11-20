@@ -2,7 +2,7 @@
 # VMs accept connections only from the home network (10.20.0.0/16), and only on remote-access ports; nothing else in
 # the cluster can reach them. Their own outbound traffic (Windows Update etc.) is not restricted.
 # The VM's screen and serial console (Headlamp, virtctl) go through the API server and virt-handler, not the pod
-# network, so they aren't affected. Add ports here (e.g. 22 for Linux VMs) as VMs need them.
+# network, so they aren't affected. Ports: RDP (3389) and SSH (22); add others here as VMs need them.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -20,3 +20,5 @@ spec:
               protocol: TCP
             - port: "3389"
               protocol: UDP
+            - port: "22"
+              protocol: TCP
