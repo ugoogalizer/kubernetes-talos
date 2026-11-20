@@ -24,3 +24,12 @@ rules:
   - apiGroups: [argoproj.io, cilium.io, cert-manager.io, acme.cert-manager.io, trust.cert-manager.io, external-secrets.io, generators.external-secrets.io, k8s.keycloak.org, gateway.networking.k8s.io, snapshot.storage.k8s.io]
     resources: ["*"]
     verbs: [get, list, watch]
+  # kube-prometheus-stack (20261120)
+  - apiGroups: [monitoring.coreos.com]
+    resources: ["*"]
+    verbs: [get, list, watch]
+  # KubeVirt + CDI objects. Deliberately NOT subresources.kubevirt.io: a VM's console/vnc/portforward are GET
+  # requests on that group, so read access there would mean interactive access to the guests.
+  - apiGroups: [kubevirt.io, cdi.kubevirt.io, instancetype.kubevirt.io, pool.kubevirt.io, migrations.kubevirt.io, snapshot.kubevirt.io, export.kubevirt.io, clone.kubevirt.io]
+    resources: ["*"]
+    verbs: [get, list, watch]
