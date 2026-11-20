@@ -1,0 +1,28 @@
+# Remote Desktop (GNOME Remote Desktop) and SSH to the Ubuntu VM from the LAN: ubuntu-desktop.rockyroad.rocks
+# (10.20.26.21). Reachable only from 10.20.0.0/16 (CiliumNetworkPolicy in cluster/core/vms/vms).
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntu-desktop
+  annotations:
+    io.cilium/lb-ipam-ips: 10.20.26.21
+    external-dns.alpha.kubernetes.io/hostname: ubuntu-desktop.rockyroad.rocks
+spec:
+  type: LoadBalancer
+  # Keep the client's address (the network policy checks it) and answer only from the node running the VM.
+  externalTrafficPolicy: Local
+  selector:
+    kubevirt.io/vm: ubuntu-desktop
+  ports:
+    - name: rdp-tcp
+      port: 3389
+      targetPort: 3389
+      protocol: TCP
+    - name: rdp-udp
+      port: 3389
+      targetPort: 3389
+      protocol: UDP
+    - name: ssh
+      port: 22
+      targetPort: 22
+      protocol: TCP

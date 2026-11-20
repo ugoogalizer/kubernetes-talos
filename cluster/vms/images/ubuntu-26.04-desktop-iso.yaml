@@ -1,0 +1,23 @@
+# Ubuntu 26.04.1 LTS desktop installer ISO, downloaded by CDI and checked against Ubuntu's published SHA256 (CDI fails
+# the import on a mismatch). Imported once: a newer point release later means a new DataVolume, not an edit (a
+# DataVolume's source can't change). ReadWriteMany on NFS, so a VM on any node can use it.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: ubuntu-26.04-desktop-iso
+  annotations:
+    # Never deleted by Argo CD when removed from git: delete by hand.
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  source:
+    http:
+      url: https://releases.ubuntu.com/26.04/ubuntu-26.04.1-desktop-amd64.iso # 26.04.1 as at 20261121 https://releases.ubuntu.com/26.04/
+      checksum: sha256:601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f # https://releases.ubuntu.com/26.04/SHA256SUMS
+  storage:
+    storageClassName: managed-nfs-storage-retain
+    accessModes:
+      - ReadWriteMany
+    volumeMode: Filesystem
+    resources:
+      requests:
+        storage: 8Gi # ISO is 6.04 GiB

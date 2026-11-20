@@ -1,0 +1,86 @@
+# Ubuntu 26.04 LTS desktop VM. Configuration is here in git; start/stop it and use its screen (VNC) from Headlamp.
+# Runs on maurice with its OS disk on that node's local disk (local-path), like win11.
+# Install: start the VM, open VNC, choose "Try or Install Ubuntu" and install to the 64 GiB virtio disk (Linux has
+# the drivers built in). Then remove the installer cdrom here and its ISO DataVolume is free for the next VM.
+# Remote desktop afterwards: Settings > System > Remote Desktop (GNOME's built-in RDP server), then RDP to
+# ubuntu-desktop.rockyroad.rocks (rdp-service.yaml).
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: ubuntu-desktop
+  annotations:
+    # Never deleted by Argo CD when removed from git (it would take the disk with it): delete by hand.
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  runStrategy: Manual # start/stop from Headlamp; stays Halted until started
+  dataVolumeTemplates:
+    - metadata:
+        name: ubuntu-desktop-os
+      spec:
+        source:
+          blank: {}
+        storage:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 64Gi
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: ubuntu-desktop
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: maurice
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: LargeWorkload
+          effect: NoSchedule
+      domain:
+        cpu:
+          sockets: 1
+          cores: 4
+          threads: 1
+        memory:
+          guest: 8Gi
+        features:
+          acpi: {}
+          smm: {} # required for Secure Boot
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true # Ubuntu's signed shim boots under Secure Boot
+              persistent: true # keep UEFI boot entries across restarts
+        devices:
+          rng: {}
+          autoattachInputDevice: false
+          inputs:
+            - name: tablet # absolute pointer: the mouse tracks properly in VNC
+              type: tablet
+              bus: usb
+          disks:
+            - name: installer
+              bootOrder: 1 # empty disk on first boot, so the CD boots; afterwards GRUB on the disk
+              cdrom:
+                bus: sata
+            - name: os
+              bootOrder: 2
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: installer
+          dataVolume:
+            name: ubuntu-26.04-desktop-iso
+        - name: os
+          dataVolume:
+            name: ubuntu-desktop-os

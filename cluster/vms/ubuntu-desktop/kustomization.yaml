@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: vm-ubuntu-desktop
+
+# Ubuntu 26.04 desktop VM. Argo CD app vm-ubuntu-desktop, project vms.
+namespace: vms
+
+resources:
+  - ubuntu-desktop.yaml
+  - rdp-service.yaml
