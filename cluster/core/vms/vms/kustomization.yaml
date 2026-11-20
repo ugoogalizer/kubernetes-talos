@@ -3,13 +3,10 @@ kind: Kustomization
 metadata:
   name: vms
 
-# Namespace for KubeVirt virtual machines. VM definitions (CPU, memory, disks, cloud-init) live here in git;
-# whether a VM is running is controlled from Headlamp or virtctl (runStrategy: Manual, so start/stop don't
-# change the spec and Argo CD sees no drift).
+# The namespace for KubeVirt virtual machines and who may operate them. The VMs themselves and their images are
+# not core: they live in cluster/vms/<name>/, one Argo CD app each (ApplicationSet and project vms).
 namespace: vms
 
 resources:
   - resources/namespace.yaml
   - resources/vm-operators-rolebinding.yaml
-  - resources/win11-iso.yaml
-  - resources/win11.yaml

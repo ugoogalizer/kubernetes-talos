@@ -1,0 +1,27 @@
+# Argo CD project for the KubeVirt VM apps (ApplicationSet vms, folders cluster/vms/*). Groups them in the UI
+# (Applications -> filter Project: vms) and limits what a VM folder can deploy: only this repo, only namespace vms,
+# only the kinds below, nothing cluster-scoped. The namespace and who may operate VMs stay in core
+# (cluster/core/vms/vms). Disks that KubeVirt/CDI create from a VM's dataVolumeTemplates aren't deployed by Argo CD,
+# so they don't need listing.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: vms
+  namespace: argocd
+spec:
+  description: KubeVirt virtual machines and their images
+  sourceRepos:
+    - https://github.com/ugoogalizer/kubernetes-talos.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: vms
+  clusterResourceWhitelist: [] # nothing cluster-scoped
+  namespaceResourceWhitelist:
+    - group: kubevirt.io
+      kind: VirtualMachine
+    - group: cdi.kubevirt.io
+      kind: DataVolume # ISOs and base images (cluster/vms/images)
+    - group: ""
+      kind: Service # per-VM access (RDP/VNC/SSH)
+    - group: external-secrets.io
+      kind: ExternalSecret # cloud-init credentials from Bitwarden

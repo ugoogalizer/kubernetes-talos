@@ -1,0 +1,44 @@
+# One Argo CD Application per folder cluster/vms/<name>/ (a VM, or `images` for ISOs and base images), named
+# vm-<name>, in project vms (appproject-vms.yaml) and labelled app.kubernetes.io/part-of=vms, so they can be
+# filtered together in the UI. Runs after core (KubeVirt, CDI, the vms namespace).
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/managed-by: argocd
+    app.kubernetes.io/name: vms
+  name: vms
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        files:
+          - path: cluster/vms/*/kustomization.yaml
+        repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+        requeueAfterSeconds: 20
+        revision: HEAD
+  syncPolicy:
+    preserveResourcesOnDeletion: true # removing a folder deletes the Application, never the VM or its disks
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/managed-by: argocd
+        app.kubernetes.io/part-of: vms
+        app.kubernetes.io/name: "vm-{{path.basenameNormalized}}"
+      name: "vm-{{path.basenameNormalized}}"
+      namespace: argocd
+    spec:
+      project: vms
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: vms
+      source:
+        path: "{{path}}"
+        repoURL: https://github.com/ugoogalizer/kubernetes-talos.git
+      syncPolicy:
+        automated:
+          allowEmpty: false
+          prune: true # VMs and DataVolumes carry Prune=false, so this only removes e.g. Services
+          selfHeal: true

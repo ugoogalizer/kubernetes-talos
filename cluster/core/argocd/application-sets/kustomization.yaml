@@ -8,6 +8,8 @@ namespace: argocd
 resources:
   - ./resources/application-set-crds.yaml
   - ./resources/application-set-core.yaml
+  - ./resources/appproject-vms.yaml
+  - ./resources/application-set-vms.yaml
   - ./resources/argocd-application.yaml
   - ./resources/root.yaml
   - ./resources/root-private.yaml # apps setup not in public github

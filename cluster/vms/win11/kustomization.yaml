@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: vm-win11
+
+# Windows 11 desktop VM. Argo CD app vm-win11, project vms.
+namespace: vms
+
+resources:
+  - win11.yaml

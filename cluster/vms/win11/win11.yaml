@@ -2,7 +2,7 @@
 # Spelled out rather than using KubeVirt's instancetype/preference objects (u1.*, windows.11), whose revision
 # references KubeVirt records on the VM; the settings below follow the windows.11 preference.
 # Runs on maurice (the GPU worker, mostly idle) with its OS disk on that node's local disk (local-path).
-# Install: upload the ISO (win11-iso.yaml), start the VM, open VNC and press a key at "Press any key to boot from
+# Install: upload the ISO (cluster/vms/images/win11-iso.yaml), start the VM, open VNC and press a key at "Press any key to boot from
 # CD"; when Windows can't see a disk, Load driver -> the virtio CD -> viostor\w11\amd64.
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
