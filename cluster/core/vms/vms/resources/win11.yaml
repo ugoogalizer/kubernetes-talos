@@ -8,6 +8,9 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: win11
+  annotations:
+    # Never deleted by Argo CD when removed from git (it would take the disk with it): delete by hand.
+    argocd.argoproj.io/sync-options: Prune=false
 spec:
   runStrategy: Manual # start/stop from Headlamp; stays Halted until started
   dataVolumeTemplates:

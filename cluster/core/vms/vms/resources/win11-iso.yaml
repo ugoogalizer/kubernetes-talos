@@ -6,6 +6,9 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: win11-iso
+  annotations:
+    # Never deleted by Argo CD when removed from git (it would take the disk with it): delete by hand.
+    argocd.argoproj.io/sync-options: Prune=false
 spec:
   source:
     upload: {}
