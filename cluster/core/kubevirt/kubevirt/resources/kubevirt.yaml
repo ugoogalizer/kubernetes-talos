@@ -9,6 +9,9 @@ spec:
   configuration:
     developerConfiguration:
       featureGates: []
+    # Where KubeVirt keeps a VM's persistent TPM and UEFI variables (Windows 11, Secure Boot keys): a small PVC per
+    # VM. local-path, on the node that runs the VM, like the VM disks. Persistent state is GA in 1.9 (no feature gate).
+    vmStateStorageClass: local-path
   imagePullPolicy: IfNotPresent
   # virt-operator creates a ServiceMonitor here for kube-prometheus-stack (VM and KubeVirt metrics in Grafana).
   monitorNamespace: monitoring
