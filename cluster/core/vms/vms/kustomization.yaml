@@ -11,3 +11,5 @@ namespace: vms
 resources:
   - resources/namespace.yaml
   - resources/vm-operators-rolebinding.yaml
+  - resources/win11-iso.yaml
+  - resources/win11.yaml

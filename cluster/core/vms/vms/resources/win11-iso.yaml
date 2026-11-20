@@ -1,0 +1,19 @@
+# Windows 11 installer ISO. Microsoft's download links expire, so CDI can't fetch it from a URL: this DataVolume
+# declares an empty volume waiting for an upload, filled once by hand with
+#   virtctl image-upload dv win11-iso -n vms --no-create --image-path <Win11 ISO> ...
+# On NFS, so it isn't tied to a node. Remove it (and the VM's installer cdrom) once Windows is installed.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: win11-iso
+spec:
+  source:
+    upload: {}
+  storage:
+    storageClassName: managed-nfs-storage-retain
+    accessModes:
+      - ReadWriteOnce
+    volumeMode: Filesystem
+    resources:
+      requests:
+        storage: 10Gi

@@ -1,0 +1,121 @@
+# Windows 11 desktop VM. Configuration is here in git; start/stop it and use its screen (VNC) from Headlamp.
+# Spelled out rather than using KubeVirt's instancetype/preference objects (u1.*, windows.11), whose revision
+# references KubeVirt records on the VM; the settings below follow the windows.11 preference.
+# Runs on maurice (the GPU worker, mostly idle) with its OS disk on that node's local disk (local-path).
+# Install: upload the ISO (win11-iso.yaml), start the VM, open VNC and press a key at "Press any key to boot from
+# CD"; when Windows can't see a disk, Load driver -> the virtio CD -> viostor\w11\amd64.
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: win11
+spec:
+  runStrategy: Manual # start/stop from Headlamp; stays Halted until started
+  dataVolumeTemplates:
+    - metadata:
+        name: win11-os
+      spec:
+        source:
+          blank: {}
+        storage:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Filesystem
+          resources:
+            requests:
+              storage: 128Gi
+  template:
+    metadata:
+      labels:
+        kubevirt.io/vm: win11
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: maurice
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: LargeWorkload
+          effect: NoSchedule
+      terminationGracePeriodSeconds: 3600 # let Windows shut down cleanly (windows.11 preference)
+      domain:
+        cpu:
+          sockets: 1 # Windows 11 Home allows 1 socket, Pro 2: use cores
+          cores: 4
+          threads: 1
+        memory:
+          guest: 8Gi
+        clock:
+          utc: {}
+          timer:
+            hpet:
+              present: false
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+            hyperv: {}
+        features:
+          acpi: {}
+          apic: {}
+          smm: {} # required for Secure Boot
+          hyperv:
+            frequencies: {}
+            ipi: {}
+            reenlightenment: {}
+            relaxed: {}
+            reset: {}
+            runtime: {}
+            spinlocks:
+              spinlocks: 8191
+            synic: {}
+            synictimer:
+              direct: {}
+            tlbflush: {}
+            vapic: {}
+            vpindex: {}
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+              persistent: true # keep UEFI variables (boot entries, Secure Boot keys) across restarts
+        devices:
+          tpm:
+            persistent: true # Windows 11 needs a TPM; persistent so BitLocker/Hello keys survive restarts
+          rng: {}
+          autoattachInputDevice: false
+          inputs:
+            - name: tablet # USB tablet: works in the installer without extra drivers, mouse tracks in VNC
+              type: tablet
+              bus: usb
+          disks:
+            - name: installer
+              bootOrder: 1 # empty disk on first boot, so the CD boots; afterwards the prompt times out to the disk
+              cdrom:
+                bus: sata
+            - name: os
+              bootOrder: 2
+              disk:
+                bus: virtio
+            - name: virtio-drivers
+              cdrom:
+                bus: sata
+          interfaces:
+            - name: default
+              masquerade: {}
+              # e1000e has a driver built into Windows, so the network works during setup; switch to virtio after
+              # installing the virtio guest tools from the drivers CD.
+              model: e1000e
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: installer
+          dataVolume:
+            name: win11-iso
+        - name: os
+          dataVolume:
+            name: win11-os
+        - name: virtio-drivers
+          containerDisk:
+            # Windows virtio drivers and guest tools, matching KubeVirt 1.9.1
+            image: quay.io/kubevirt/virtio-container-disk:v1.9.1@sha256:6b823946eb7493347a93d6daa16b4101a68e16a0ee1766e01ac3adf82e4b5838 # v1.9.1 as at 20261120 https://quay.io/repository/kubevirt/virtio-container-disk?tab=tags
