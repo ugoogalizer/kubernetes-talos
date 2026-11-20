@@ -1,0 +1,18 @@
+image:
+  # v0.9.1 as at 20261120 (chart 3.14.0 ships v0.9.0; 0.9.1 drops distrusted CA roots, Go 1.26.10)
+  # https://github.com/kubernetes-sigs/metrics-server/releases
+  tag: v0.9.1@sha256:9b0ba1926e1d3089673f45461c3c1416109dea33b3ba3434048defd380df329b
+
+# The API server talks to metrics-server over TLS too: cert-manager issues its serving cert (chart's own self-signed
+# Issuer) and cainjector puts the CA into the APIService, instead of the chart default insecureSkipTLSVerify.
+tls:
+  type: cert-manager
+apiService:
+  insecureSkipTLSVerify: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    memory: 400Mi
