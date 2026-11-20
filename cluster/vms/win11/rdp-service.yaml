@@ -1,0 +1,25 @@
+# Remote Desktop to the Windows VM from the LAN: win11.rockyroad.rocks (10.20.26.20) port 3389. Reachable only from
+# 10.20.0.0/16 (CiliumNetworkPolicy in cluster/core/vms/vms). Enable Remote Desktop in Windows (Settings > System >
+# Remote Desktop, with Network Level Authentication). Headlamp's VNC screen keeps working regardless.
+apiVersion: v1
+kind: Service
+metadata:
+  name: win11-rdp
+  annotations:
+    io.cilium/lb-ipam-ips: 10.20.26.20
+    external-dns.alpha.kubernetes.io/hostname: win11.rockyroad.rocks
+spec:
+  type: LoadBalancer
+  # Keep the client's address (the network policy checks it) and answer only from the node running the VM.
+  externalTrafficPolicy: Local
+  selector:
+    kubevirt.io/vm: win11 # label on the VM's template, so on its virt-launcher pod
+  ports:
+    - name: rdp-tcp
+      port: 3389
+      targetPort: 3389
+      protocol: TCP
+    - name: rdp-udp # RDP's UDP transport: smoother screen updates
+      port: 3389
+      targetPort: 3389
+      protocol: UDP
