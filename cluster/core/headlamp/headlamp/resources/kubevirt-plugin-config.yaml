@@ -1,0 +1,10 @@
+# Cluster default for the headlamp-kubevirt plugin's graphs and system health: Prometheus through the API server's
+# service proxy, so queries run with the signed-in user's rights (Role prometheus-query in user-rbac.yaml). The plugin
+# finds this ConfigMap by name in any namespace; a value saved "to browser" in its settings overrides it.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: headlamp-kubevirt-config
+  namespace: headlamp
+data:
+  metricsEndpoint: /api/v1/namespaces/monitoring/services/kube-prometheus-stack-prometheus:9090/proxy

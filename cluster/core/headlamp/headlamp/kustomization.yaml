@@ -17,6 +17,7 @@ resources:
   - resources/httproute.yaml
   - resources/network-policy.yaml
   - resources/user-rbac.yaml
+  - resources/kubevirt-plugin-config.yaml
 
 helmCharts:
   - name: headlamp
