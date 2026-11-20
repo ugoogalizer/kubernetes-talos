@@ -30,6 +30,17 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    # In-cluster traffic through the gateway is also checked against this pod's egress policy for the route's final
+    # backend: without this rule Envoy answers keycloak.rockyroad.rocks with 403 "Access denied".
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": keycloak
+            app: keycloak
+            app.kubernetes.io/instance: keycloak
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": kube-system
