@@ -1,0 +1,45 @@
+# https://docs.cilium.io/en/stable/security/policy/language/
+# Headlamp: reachable only from the gateway (Cilium's Envoy carries the reserved `ingress` identity) and the node
+# (kubelet probes). Talks only to the API server, Keycloak (keycloak.rockyroad.rocks, via the gateway address) and DNS.
+# Prometheus is reached through the API server's service proxy, with the user's rights, not directly.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headlamp
+  namespace: headlamp
+spec:
+  endpointSelector: {}
+  ingress:
+    - fromEntities:
+        - ingress
+        - host
+      toPorts:
+        - ports:
+            - port: "4466"
+              protocol: TCP
+  egress:
+    - toEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "6443"
+              protocol: TCP
+    - toEntities:
+        - ingress
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+          rules:
+            dns:
+              - matchPattern: "*"

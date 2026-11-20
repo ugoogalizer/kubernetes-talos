@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: headlamp
+
+# Headlamp (Kubernetes web UI, kubernetes-sigs) + the headlamp-kubevirt plugin at headlamp.rockyroad.rocks.
+#
+# Users sign in with Keycloak (client "kubernetes"); Headlamp sends their own ID token to the API server, which trusts
+# Keycloak (Talos patch provision/talos/patches-controlplane/oidc.yaml). Each request runs with that user's RBAC
+# (resources/user-rbac.yaml, cluster/core/vms/vms): read the cluster, start/stop/console VMs. Changing configuration
+# stays in git. Headlamp's own ServiceAccount has no permissions.
+# No kustomize `namespace:`: user-rbac.yaml has objects in monitoring; the rest set namespace: headlamp themselves.
+
+resources:
+  - resources/namespace.yaml
+  - resources/externalsecret.yaml
+  - resources/httproute.yaml
+  - resources/network-policy.yaml
+  - resources/user-rbac.yaml
+
+helmCharts:
+  - name: headlamp
+    repo: https://kubernetes-sigs.github.io/headlamp/
+    # 0.46.0 as at 20261120 https://github.com/kubernetes-sigs/headlamp/releases
+    version: 0.46.0
+    releaseName: headlamp
+    namespace: headlamp
+    valuesFile: values.yaml

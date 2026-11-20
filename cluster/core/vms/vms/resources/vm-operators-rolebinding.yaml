@@ -1,0 +1,14 @@
+# Keycloak group vm-operators may start/stop/restart VMs and open their consoles here (ClusterRole vm-operator,
+# cluster/core/headlamp/headlamp/resources/user-rbac.yaml). It can't create or change them: that is git's job.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc-vm-operators
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: vm-operator
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: oidc:vm-operators

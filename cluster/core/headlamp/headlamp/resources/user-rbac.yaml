@@ -1,0 +1,73 @@
+# Rights for people signed in with Keycloak (Headlamp now, kubectl via kubelogin later). The API server maps the ID
+# token's `groups` claim to Kubernetes groups with the prefix "oidc:" (provision/talos/patches-controlplane/oidc.yaml).
+#
+# Keycloak group vm-operators:
+# - read the whole cluster: the built-in `view` role (no Secrets; KubeVirt/CDI aggregate their read rules into it)
+# - start/stop/restart/pause VMs and open their VNC/serial consoles in namespace vms (RoleBinding in cluster/core/vms/vms)
+# - query Prometheus through the API server's service proxy (the plugin's VM graphs)
+# No create/update/delete of objects: VM and cluster configuration stays in git.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: oidc-vm-operators-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: oidc:vm-operators
+---
+# Run state and consoles only (subset of KubeVirt's kubevirt.io:edit, v1.9.1). With runStrategy Manual these calls
+# don't change the VM spec, so Argo CD sees no drift. Bound per namespace (vms).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vm-operator
+rules:
+  - apiGroups: [subresources.kubevirt.io]
+    resources:
+      - virtualmachineinstances/console
+      - virtualmachineinstances/vnc
+      - virtualmachineinstances/vnc/screenshot
+    verbs: [get]
+  - apiGroups: [subresources.kubevirt.io]
+    resources:
+      - virtualmachines/start
+      - virtualmachines/stop
+      - virtualmachines/restart
+      - virtualmachineinstances/pause
+      - virtualmachineinstances/unpause
+      - virtualmachineinstances/softreboot
+    verbs: [update]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus-query
+  namespace: monitoring
+rules:
+  - apiGroups: [""]
+    resources: [services/proxy]
+    resourceNames:
+      - kube-prometheus-stack-prometheus
+      - kube-prometheus-stack-prometheus:9090
+      - http:kube-prometheus-stack-prometheus:9090
+      - kube-prometheus-stack-prometheus:http-web
+      - http:kube-prometheus-stack-prometheus:http-web
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oidc-vm-operators-prometheus-query
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-query
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: oidc:vm-operators

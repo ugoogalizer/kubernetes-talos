@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: vms
+
+# Namespace for KubeVirt virtual machines. VM definitions (CPU, memory, disks, cloud-init) live here in git;
+# whether a VM is running is controlled from Headlamp or virtctl (runStrategy: Manual, so start/stop don't
+# change the spec and Argo CD sees no drift).
+namespace: vms
+
+resources:
+  - resources/namespace.yaml
+  - resources/vm-operators-rolebinding.yaml

@@ -1,0 +1,76 @@
+image:
+  # v0.46.0 as at 20261120 https://github.com/kubernetes-sigs/headlamp/releases
+  tag: v0.46.0@sha256:8a0ef97527544baa2b35825940ddf4db6e2d09c30cd5aa31fd269ff604cc8b75
+
+config:
+  inCluster: true
+  oidc:
+    secret:
+      create: false
+    # OIDC_* from resources/externalsecret.yaml. In this mode the values below only switch the matching
+    # -oidc-* flags on; their values come from the secret.
+    externalSecret:
+      enabled: true
+      name: headlamp-oidc
+      hasScopes: true
+    callbackURL: https://headlamp.rockyroad.rocks/oidc-callback
+    usePKCE: true
+
+# The chart binds its ServiceAccount to cluster-admin by default. Headlamp acts with each user's own token, so the
+# ServiceAccount gets nothing. (The token is still mounted: in-cluster mode reads the API server CA from it.)
+clusterRoleBinding:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 100
+  runAsGroup: 101
+  allowPrivilegeEscalation: false
+  privileged: false
+  capabilities:
+    drop: [ALL]
+  seccompProfile:
+    type: RuntimeDefault
+
+# headlamp-kubevirt plugin: copied from its (signed, digest-pinned) image into the plugins folder at start.
+# Not the chart's pluginsManager, which installs from the internet at runtime with node:lts-alpine.
+initContainers:
+  - name: headlamp-kubevirt
+    # 0.3.1 as at 20261120 https://github.com/naval-group/headlamp-kubevirt/releases
+    image: ghcr.io/naval-group/headlamp-kubevirt:0.3.1@sha256:2e2102c52cef9318f15d07718a3ffcac91c54f2a2ef187c498c3f25b56cb657e
+    command: ["/bin/sh", "-c", "cp -r /plugins/kubevirt /headlamp-plugins/"]
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: [ALL]
+      seccompProfile:
+        type: RuntimeDefault
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        memory: 64Mi
+    volumeMounts:
+      - name: plugins
+        mountPath: /headlamp-plugins
+volumes:
+  - name: plugins
+    emptyDir: {}
+volumeMounts:
+  - name: plugins
+    mountPath: /headlamp/plugins
+
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi
+  limits:
+    memory: 512Mi
